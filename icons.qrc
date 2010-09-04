@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="alarmIcon">img/icons/alarm_icon.png</file>
+        <file alias="bugIcon">img/icons/bug_icon.png</file>
+        <file alias="closeIcon">img/icons/close_icon.png</file>
+        <file alias="deleteIcon">img/icons/delete_icon.png</file>
+        <file alias="helpIcon">img/icons/help_icon.png</file>
+        <file alias="infoIcon">img/icons/info_icon.png</file>
+        <file alias="loadIcon">img/icons/load_icon.png</file>
+        <file alias="optionsIcon">img/icons/options_icon.png</file>
+        <file alias="startIcon">img/icons/play_icon.png</file>
+        <file alias="qtIcon">img/icons/qt_icon.png</file>
+        <file alias="stopIcon">img/icons/stop_icon.png</file>
+    </qresource>
+    <qresource prefix="/splashs">
+        <file alias="tuxSplash">img/splash/tux.png</file>
+    </qresource>
+</RCC>

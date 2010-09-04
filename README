@@ -1,0 +1,43 @@
+# sAlarm
+
+> * Author: Sabart Otto <seberm[at]gmail[dot]com>
+> * Jabber: seberm[at]jabber[dot]cz
+> * Version: 0.5
+> * Contributors: Nobody
+> * Web: http://www.seberm.homelinux.org/sAlarm
+
+
+> # About application
+> sAlarm is a scheduler written in C++, with General public license version 3 used.
+
+
+#### Copyright © 2009-2010 Sabart Otto <seberm[at]gmail[dot]com>
+
+
+## CONTENT
+> 1) Requirements
+> 2) Compiling
+> 3) Bugs
+> 4) Contributing
+
+
+
+### 1) REQUIREMENTS
+> Qt >= 4.5
+
+
+### 2) COMPILING
+> qmake
+> make
+> make install
+
+
+### 3) BUGS
+If you find somthing you think that is a bug, feel free to contact me.
+
+
+### 4) CONTRIBUTING
+You can feel free to contribute to sAlarm.
+You can checkout current sources from gitorious.org
+> git clone git://gitorious.org/salarm/salarm.git
+> git clone http://git.gitorious.org/salarm/salarm.git
