@@ -15,8 +15,7 @@ HEADERS += mainwindow.h \
     timer.h \
     database.h \
     constants.h \
-    scheduler.h \
-    schedule.h
+    scheduler.h
 
 # Sources definition
 SOURCES += main.cpp \
@@ -25,8 +24,7 @@ SOURCES += main.cpp \
     timer.cpp \
     database.cpp \
     constants.cpp \
-    scheduler.cpp \
-    schedule.cpp
+    scheduler.cpp
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \

@@ -5,7 +5,6 @@
 #include <QMessageBox>
 
 #include "scheduler.h"
-#include "schedule.h"
 
 
 Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
@@ -27,12 +26,7 @@ Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
 
 
 void Scheduler::addSchedule(const QString &title, const QString &text, QDateTime expiration) {
-	QStringList strs;
-	strs << title << text << expiration.toString();
-	
-	QTreeWidgetItem *item = new QTreeWidgetItem(this, strs);
-	insertTopLevelItem(0, item);
-	
+
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
 	query.prepare("INSERT INTO Schedules (title, text, datetime)" \
@@ -44,6 +38,14 @@ void Scheduler::addSchedule(const QString &title, const QString &text, QDateTime
 	
 	if (!query.exec())
 		qDebug() << query.lastError();
+
+        QStringList strs;
+        // Insert data: DBID, title, text, date
+        strs << query.lastInsertId().toString() << title << text << expiration.toString();
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(this, strs);
+        insertTopLevelItem(0, item);
+
 	
 	emit (changed());
 }
@@ -59,11 +61,8 @@ void Scheduler::removeSchedule(QTreeWidgetItem *i) {
 	if (msg.exec() == QMessageBox::No)
 		return;
 	
-	Schedule *sch = dynamic_cast<Schedule*>(i);
-	int dbID = 0;
-	if (sch != NULL)
-		dbID = sch->dbID(); 
-	else return;
+        // Read DBID from the hidden first column
+        int dbID = i->data(0,Qt::EditRole).toInt();
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
@@ -87,15 +86,16 @@ void Scheduler::refreshSchedules() {
 	clear();
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	QString sql("SELECT title, text, datetime FROM Schedules;");
+        QString sql("SELECT id,title, text, datetime FROM Schedules;");
 	QSqlQuery query(sql, sqlConnection);
 	
 	QList<QTreeWidgetItem*> items;
 	while (query.next()) {
 		QStringList strs;
-		strs << query.value(0).toString()
+                strs << query.value(0).toString()
 			 << query.value(1).toString()
-			 << query.value(2).toString();
+                         << query.value(2).toString()
+                         << query.value(3).toString();
 		
 		QTreeWidgetItem *item = new QTreeWidgetItem(this, strs);
 		items.append(item);

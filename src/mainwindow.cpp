@@ -65,11 +65,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_showTimeTimer = new QTimer(this);
 	
 	QStringList columnLabels;
-	columnLabels << tr("Title")
+	columnLabels << "DBID" 
+                                 << tr("Title")
 				 << tr("Text")
 				 << tr("Date");
 					
 	ui->scheduler->setHeaderLabels(columnLabels);
+        // Hide the first column that holds DBID
+        ui->scheduler->setColumnHidden(0,true);
 	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();

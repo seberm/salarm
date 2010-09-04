@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include <QTreeWidget>
+#include <QDateEdit>
 
 #include "database.h"
 

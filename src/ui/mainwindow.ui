@@ -230,7 +230,7 @@
              <item>
               <widget class="Scheduler" name="scheduler">
                <property name="columnCount">
-                <number>3</number>
+                <number>4</number>
                </property>
                <attribute name="headerCascadingSectionResizes">
                 <bool>false</bool>
@@ -240,7 +240,12 @@
                </attribute>
                <column>
                 <property name="text">
-                 <string notr="true">1</string>
+                 <string notr="true">0</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>1</string>
                 </property>
                </column>
                <column>
