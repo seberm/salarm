@@ -124,13 +124,14 @@ void Database::dbInit(Database::DriverTypes dbType) {
 		
 		case SQLite: {
 			sql = QString (
-					"CREATE TABLE Schedules (" \
-					" id INTEGER AUTOINCREMENT," \
-					" title CHAR(150) NOT NULL," \
-					" text TEXT NOT NULL," \
-					" datetime DATETIME NOT NULL," \
-					"PRIMARY KEY(id));");
+					"CREATE TABLE `Schedules` (" \
+                                        " `id` INTEGER PRIMARY KEY AUTOINCREMENT," \
+					" `title` CHAR(150) NOT NULL," \
+					" `text` TEXT NOT NULL," \
+                                        " `datetime` DATETIME NOT NULL);");
+                        
 			QSqlQuery query(sql, sqlDatabase);
+                        qDebug() << query.lastError();
 		} break;
 	}
 }
