@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sat Aug 28 23:12:46 2010
+** Created: Mon Sep 6 21:23:45 2010
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -267,12 +267,12 @@ public:
 
         scheduler = new Scheduler(groupBoxSchedules);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
-        __qtreewidgetitem->setText(2, QString::fromUtf8("3"));
-        __qtreewidgetitem->setText(1, QString::fromUtf8("2"));
-        __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
+        __qtreewidgetitem->setText(3, QString::fromUtf8("3"));
+        __qtreewidgetitem->setText(2, QString::fromUtf8("2"));
+        __qtreewidgetitem->setText(0, QString::fromUtf8("0"));
         scheduler->setHeaderItem(__qtreewidgetitem);
         scheduler->setObjectName(QString::fromUtf8("scheduler"));
-        scheduler->setColumnCount(3);
+        scheduler->setColumnCount(4);
         scheduler->header()->setCascadingSectionResizes(false);
 
         verticalLayout_3->addWidget(scheduler);
@@ -349,6 +349,8 @@ public:
         groupBoxSchedules->setTitle(QApplication::translate("MainWindow", "Set schedule", 0, QApplication::UnicodeUTF8));
         dateTimeEditEndDateTime->setDisplayFormat(QApplication::translate("MainWindow", "M/d/yy hh:mm", 0, QApplication::UnicodeUTF8));
         pushButtonAdd->setText(QApplication::translate("MainWindow", "Add", 0, QApplication::UnicodeUTF8));
+        QTreeWidgetItem *___qtreewidgetitem = scheduler->headerItem();
+        ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8));
         pushButtonRemove->setText(QApplication::translate("MainWindow", "Delete", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tabSchedules), QApplication::translate("MainWindow", "Schedules", 0, QApplication::UnicodeUTF8));
         menu_Main->setTitle(QApplication::translate("MainWindow", "&Main", 0, QApplication::UnicodeUTF8));

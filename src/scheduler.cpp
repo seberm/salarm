@@ -67,8 +67,6 @@ void Scheduler::removeSchedule(QTreeWidgetItem *i) {
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
 	QString sql("DELETE FROM Schedules WHERE id = %1;");
-	
-qDebug() << sql;
 
 	query.prepare(sql.arg(dbID));
 	if (!query.exec())
