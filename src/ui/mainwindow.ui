@@ -34,6 +34,7 @@
     <property name="title">
      <string>&amp;Main</string>
     </property>
+    <addaction name="actionNewSchedule"/>
     <addaction name="actionPreferences"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -46,7 +47,14 @@
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisApplication"/>
    </widget>
+   <widget class="QMenu" name="menuSchedule">
+    <property name="title">
+     <string>&amp;Schedules</string>
+    </property>
+    <addaction name="actionOpenSchedulesList"/>
+   </widget>
    <addaction name="menu_Main"/>
+   <addaction name="menuSchedule"/>
    <addaction name="menu_Help"/>
   </widget>
   <action name="actionQuit">
@@ -98,6 +106,45 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionNewSchedule">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/loadIcon</normaloff>:/icons/loadIcon</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New schedule</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionScheduleEdit">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/editIcon</normaloff>:/icons/editIcon</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Edit</string>
+   </property>
+  </action>
+  <action name="actionScheduleRemove">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/deleteIcon</normaloff>:/icons/deleteIcon</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Remove</string>
+   </property>
+  </action>
+  <action name="actionOpenSchedulesList">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/openIcon</normaloff>:/icons/openIcon</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open schedules list</string>
    </property>
   </action>
  </widget>

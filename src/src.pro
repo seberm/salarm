@@ -12,7 +12,6 @@ MOC_DIR = ../build/moc
 # Header files definition
 HEADERS += mainwindow.h \
     optionsdialog.h \
-    timer.h \
     database.h \
     constants.h \
     scheduler.h
@@ -21,7 +20,6 @@ HEADERS += mainwindow.h \
 SOURCES += main.cpp \
     mainwindow.cpp \
     optionsdialog.cpp \
-    timer.cpp \
     database.cpp \
     constants.cpp \
     scheduler.cpp

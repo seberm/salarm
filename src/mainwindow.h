@@ -22,12 +22,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "timer.h"
-
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QSettings>
-#include <QTimer>
+
 #include <QLabel>
 #include <QStatusBar>
 
@@ -41,50 +39,51 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
+	
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
 	
 protected:
+	
 	void changeEvent(QEvent *e);
 	void closeEvent(QCloseEvent *e);
 
 	
 private:
+	
 	//! Creates the StatusBar on the MainWindow
 	void createStatusBar();
 	
+	//! Creates the tools box
+	void createToolsBar();
+	
+	//! Makes the connections between objects
 	void makeConnections();
+	
+void readSettings();
+void writeSettings();
 	
 	//! Opens a confirmation messageBox
 	/*!
 	  \return Returns true when is clicked on "Yes"
 	*/
-	/*
 	bool okToContinue();
 	
-	void writeSettings();
-	*/
+	
+	//! The MainWindow variable
 	Ui::MainWindow *ui;
 	
+	//! Indicates if the user can close the MainWindow
 	bool _canClose;
-	/*QSettings *_settings;
-	*/
-	QSystemTrayIcon *_trayIcon;
-	/*Timer *_timer;
-	QTimer *_showTimeTimer;
-	*/
+	
+	QSettings *_settings;	
+	QSystemTrayIcon *_trayIcon;	
 	QStatusBar *_statusBar;
 	QWorkspace *_workspace;
 			
 	
 private slots:
-	//void on_pushButtonStop_clicked();
-	//void on_pushButtonStart_clicked();
-	
-	/*
-	//! Updates the mainwindow StatusBar
-	void updateStatusBar();
 	
 	//! Shows or hides the MainWindow
 	void showHide (QSystemTrayIcon::ActivationReason);
@@ -92,14 +91,12 @@ private slots:
 	void reportBug();
 	void openPreferences();
 	
+	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
 	void addSchedule();
-	void removeSchedule();
 	
-	void timeouted();
-	void printLCDTime();
+	void openSchedulesList();
 	
-	void readSettings();
-	*/
+
 };
 
 #endif // MAINWINDOW_H

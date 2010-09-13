@@ -11,6 +11,13 @@
         <file alias="startIcon">img/icons/play_icon.png</file>
         <file alias="qtIcon">img/icons/qt_icon.png</file>
         <file alias="stopIcon">img/icons/stop_icon.png</file>
+        <file alias="nextIcon">img/icons/next_icon.png</file>
+        <file alias="pauseIcon">img/icons/pause_icon.png</file>
+        <file alias="previousIcon">img/icons/previous_icon.png</file>
+        <file alias="repeatIcon">img/icons/repeat_icon.png</file>
+        <file alias="repeatAllIcon">img/icons/repeatall_icon.png</file>
+        <file alias="openIcon">img/icons/open_icon.png</file>
+        <file alias="editIcon">img/icons/edit_icon.png</file>
     </qresource>
     <qresource prefix="/splashs">
         <file alias="tuxSplash">img/splash/tux.png</file>

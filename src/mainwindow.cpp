@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <QSplashScreen>
 
-#include <QTreeWidgetItem>
+//#include <QTreeWidgetItem>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -46,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	
-//	readSettings();
-//	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
-//	restoreState(_settings->value("Window/State", saveState()).toByteArray());
+	readSettings();
+	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
+	restoreState(_settings->value("Window/State", saveState()).toByteArray());
 	
 //	ui->dateTimeEditEndDateTime->setDateTime(QDateTime::currentDateTime());
 
@@ -58,11 +58,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setContextMenu(trayMenu);
 	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	_trayIcon->setVisible(true);
-	
-	createStatusBar();
-	
-//	_timer = new Timer;
-//	_showTimeTimer = new QTimer(this);
+
 	/*
 	QStringList columnLabels;
 	columnLabels << "DBID" 
@@ -70,13 +66,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 				 << tr("Text")
 				 << tr("Date");
 		*/			
-//	ui->scheduler->setHeaderLabels(columnLabels);
+		//	ui->scheduler->setHeaderLabels(columnLabels);
         // Hide the first column that holds DBID
-//       ui->scheduler->setColumnHidden(0,true);
+		//       ui->scheduler->setColumnHidden(0,true);
+	
 	
 	_workspace = new QWorkspace(this);
 	setCentralWidget(_workspace);
 	
+	createStatusBar();
+	createToolsBar();
 	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();
@@ -86,10 +85,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 /*
-void MainWindow::addSchedule() {
-//	ui->scheduler->addSchedule(ui->titleLineEdit->text(), ui->plainTextEditSchedule->toPlainText(), ui->dateTimeEditEndDateTime->dateTime());
-}
-
 
 void MainWindow::removeSchedule() {
 	QList<QTreeWidgetItem *> items;
@@ -104,8 +99,6 @@ void MainWindow::removeSchedule() {
 
 void MainWindow::makeConnections() {
 	
-//	connect (_showTimeTimer, SIGNAL(timeout()), this, SLOT(printLCDTime()));
-	
 	connect (_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
 	
 	connect (ui->actionPreferences, SIGNAL(triggered()), SLOT(openPreferences()));
@@ -113,26 +106,24 @@ void MainWindow::makeConnections() {
 	connect (ui->actionAboutThisApplication, SIGNAL(triggered()), this, SLOT(about()));
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
-	
-//	connect (ui->pushButtonAdd, SIGNAL(clicked()), this, SLOT(addSchedule()));
-//	connect (ui->pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeSchedule()));
 }
 
 
 MainWindow::~MainWindow() {
 	
-//	writeSettings();
+	writeSettings();
 	
 //	delete _timer;
     delete ui;
 }
 
-/*
+
 void MainWindow::writeSettings() {
 	
 	_settings->beginGroup("Window");
-		_settings->setValue("Geometry", geometry());
+		_settings->setValue("Geometry", saveGeometry());
 		_settings->setValue("State", saveState());
+	
 	_settings->endGroup();
 	
 	_settings->beginGroup("App");
@@ -146,20 +137,18 @@ void MainWindow::readSettings() {
 	// Load new settings
 	_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
 	
+	_settings->beginGroup("Window");
+		this->restoreGeometry(_settings->value("Geometry", QRect(200, 200, 370, 450)).toByteArray());
+		restoreState(_settings->value("State", Qt::WindowFullScreen).toByteArray());
+	_settings->endGroup();
+	
+	
 	_settings->beginGroup("App");
 		_canClose = _settings->value("CanClose", false).toBool();
 	_settings->endGroup();
-	
-	_settings->beginGroup("Window");
-		QRect rect = _settings->value("Geometry", QRect(200, 200, 370, 450)).toRect();
-	_settings->endGroup();
-	
-	move(rect.topLeft());
-	resize(rect.size());
-	
 }
 
-*/
+
 void MainWindow::createStatusBar() {
 	
 	QLabel *lblVersion = new QLabel(tr("Version: ") + qApp->applicationVersion());
@@ -172,13 +161,12 @@ void MainWindow::createStatusBar() {
 	
 	setStatusBar(_statusBar);
 	
-//	updateStatusBar();
+
 }
 
-/*
-void MainWindow::updateStatusBar() {
+
+void MainWindow::createToolsBar() {
 	
-	//! \todo Finish an updating of the statusBar
 }
 
 
@@ -204,7 +192,7 @@ bool MainWindow::okToContinue() {
 	}
 }
 
-*/
+
 void MainWindow::changeEvent(QEvent *e) {
 	
     QMainWindow::changeEvent(e);
@@ -231,7 +219,7 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 	}
 }
 
-/*
+
 void MainWindow::showHide(QSystemTrayIcon::ActivationReason reason) {
 	
 	if (reason == QSystemTrayIcon::Trigger) {
@@ -272,49 +260,13 @@ void MainWindow::openPreferences() {
 }
 
 
-
-//SLOT
-void MainWindow::timeouted() {
+void MainWindow::addSchedule() {
 	
-	_timer->stopApp();
-	_showTimeTimer->stop();
 	
-	_trayIcon->showMessage(tr("Timeouted"), tr("The timer has timeouted!"));
-	ui->labelTimerInfo->setText(tr("Ended!"));
-	ui->pushButtonStop->setDisabled(true);
-	ui->pushButtonStart->setEnabled(true);
-	ui->groupBoxTimer->setEnabled(true);
-
 }
 
 
-void MainWindow::on_pushButtonStart_clicked() {
-
-	ui->pushButtonStart->setDisabled(true);
-	ui->pushButtonStop->setEnabled(true);
-	ui->groupBoxTimer->setDisabled(true);
-	ui->labelTimerInfo->setText(tr("Timer started"));
+void MainWindow::openSchedulesList() {
 	
-	_showTimeTimer->start(1000);
-	_timer->setTime(ui->spinBoxSeconds->value(), ui->spinBoxMinutes->value(), ui->spinBoxHours->value());
 	
-	connect (_timer, SIGNAL(timeout()), this, SLOT(timeouted()));
-	_timer->startApp();
-	
-	ui->lcdNumber->display(_timer->interval() / 1000);
-
 }
-
-
-void MainWindow::on_pushButtonStop_clicked() {
-	
-	timeouted();
-}
-
-
-//SLOT
-void MainWindow::printLCDTime() {
-	
-	ui->lcdNumber->display(ui->lcdNumber->intValue() - 1);
-}
-*/

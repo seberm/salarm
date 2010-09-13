@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Sep 13 22:00:35 2010
+** Created: Mon Sep 13 22:43:15 2010
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -31,11 +31,16 @@ public:
     QAction *actionAboutQt;
     QAction *actionAboutThisApplication;
     QAction *actionPreferences;
+    QAction *actionNewSchedule;
+    QAction *actionScheduleEdit;
+    QAction *actionScheduleRemove;
+    QAction *actionOpenSchedulesList;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
     QMenuBar *menuBar;
     QMenu *menu_Main;
     QMenu *menu_Help;
+    QMenu *menuSchedule;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -70,6 +75,26 @@ public:
         QIcon icon5;
         icon5.addFile(QString::fromUtf8(":/icons/optionsIcon"), QSize(), QIcon::Normal, QIcon::Off);
         actionPreferences->setIcon(icon5);
+        actionNewSchedule = new QAction(MainWindow);
+        actionNewSchedule->setObjectName(QString::fromUtf8("actionNewSchedule"));
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icons/loadIcon"), QSize(), QIcon::Normal, QIcon::Off);
+        actionNewSchedule->setIcon(icon6);
+        actionScheduleEdit = new QAction(MainWindow);
+        actionScheduleEdit->setObjectName(QString::fromUtf8("actionScheduleEdit"));
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/icons/editIcon"), QSize(), QIcon::Normal, QIcon::Off);
+        actionScheduleEdit->setIcon(icon7);
+        actionScheduleRemove = new QAction(MainWindow);
+        actionScheduleRemove->setObjectName(QString::fromUtf8("actionScheduleRemove"));
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/icons/deleteIcon"), QSize(), QIcon::Normal, QIcon::Off);
+        actionScheduleRemove->setIcon(icon8);
+        actionOpenSchedulesList = new QAction(MainWindow);
+        actionOpenSchedulesList->setObjectName(QString::fromUtf8("actionOpenSchedulesList"));
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/icons/openIcon"), QSize(), QIcon::Normal, QIcon::Off);
+        actionOpenSchedulesList->setIcon(icon9);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_2 = new QVBoxLayout(centralWidget);
@@ -84,16 +109,21 @@ public:
         menu_Main->setObjectName(QString::fromUtf8("menu_Main"));
         menu_Help = new QMenu(menuBar);
         menu_Help->setObjectName(QString::fromUtf8("menu_Help"));
+        menuSchedule = new QMenu(menuBar);
+        menuSchedule->setObjectName(QString::fromUtf8("menuSchedule"));
         MainWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menu_Main->menuAction());
+        menuBar->addAction(menuSchedule->menuAction());
         menuBar->addAction(menu_Help->menuAction());
+        menu_Main->addAction(actionNewSchedule);
         menu_Main->addAction(actionPreferences);
         menu_Main->addAction(actionQuit);
         menu_Help->addAction(actionReportBug);
         menu_Help->addSeparator();
         menu_Help->addAction(actionAboutQt);
         menu_Help->addAction(actionAboutThisApplication);
+        menuSchedule->addAction(actionOpenSchedulesList);
 
         retranslateUi(MainWindow);
 
@@ -110,8 +140,14 @@ public:
         actionAboutThisApplication->setText(QApplication::translate("MainWindow", "About this application", 0, QApplication::UnicodeUTF8));
         actionPreferences->setText(QApplication::translate("MainWindow", "&Preferences", 0, QApplication::UnicodeUTF8));
         actionPreferences->setShortcut(QApplication::translate("MainWindow", "Ctrl+P", 0, QApplication::UnicodeUTF8));
+        actionNewSchedule->setText(QApplication::translate("MainWindow", "&New schedule", 0, QApplication::UnicodeUTF8));
+        actionNewSchedule->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0, QApplication::UnicodeUTF8));
+        actionScheduleEdit->setText(QApplication::translate("MainWindow", "&Edit", 0, QApplication::UnicodeUTF8));
+        actionScheduleRemove->setText(QApplication::translate("MainWindow", "&Remove", 0, QApplication::UnicodeUTF8));
+        actionOpenSchedulesList->setText(QApplication::translate("MainWindow", "&Open schedules list", 0, QApplication::UnicodeUTF8));
         menu_Main->setTitle(QApplication::translate("MainWindow", "&Main", 0, QApplication::UnicodeUTF8));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0, QApplication::UnicodeUTF8));
+        menuSchedule->setTitle(QApplication::translate("MainWindow", "&Schedules", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
