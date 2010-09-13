@@ -46,11 +46,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	
-	readSettings();
-	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
-	restoreState(_settings->value("Window/State", saveState()).toByteArray());
+//	readSettings();
+//	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
+//	restoreState(_settings->value("Window/State", saveState()).toByteArray());
 	
-	ui->dateTimeEditEndDateTime->setDateTime(QDateTime::currentDateTime());
+//	ui->dateTimeEditEndDateTime->setDateTime(QDateTime::currentDateTime());
 
 	_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
 	QMenu *trayMenu = new QMenu;
@@ -61,18 +61,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	
 	createStatusBar();
 	
-	_timer = new Timer;
-	_showTimeTimer = new QTimer(this);
-	
+//	_timer = new Timer;
+//	_showTimeTimer = new QTimer(this);
+	/*
 	QStringList columnLabels;
 	columnLabels << "DBID" 
                                  << tr("Title")
 				 << tr("Text")
 				 << tr("Date");
-					
-	ui->scheduler->setHeaderLabels(columnLabels);
+		*/			
+//	ui->scheduler->setHeaderLabels(columnLabels);
         // Hide the first column that holds DBID
-        ui->scheduler->setColumnHidden(0,true);
+//       ui->scheduler->setColumnHidden(0,true);
+	
+	_workspace = new QWorkspace(this);
+	setCentralWidget(_workspace);
+	
 	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();
@@ -81,9 +85,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	delete splash;
 }
 
-
+/*
 void MainWindow::addSchedule() {
-	ui->scheduler->addSchedule(ui->titleLineEdit->text(), ui->plainTextEditSchedule->toPlainText(), ui->dateTimeEditEndDateTime->dateTime());
+//	ui->scheduler->addSchedule(ui->titleLineEdit->text(), ui->plainTextEditSchedule->toPlainText(), ui->dateTimeEditEndDateTime->dateTime());
 }
 
 
@@ -96,11 +100,11 @@ void MainWindow::removeSchedule() {
 		ui->scheduler->removeSchedule(items.at(i));	
 	}
 }
-
+*/
 
 void MainWindow::makeConnections() {
 	
-	connect (_showTimeTimer, SIGNAL(timeout()), this, SLOT(printLCDTime()));
+//	connect (_showTimeTimer, SIGNAL(timeout()), this, SLOT(printLCDTime()));
 	
 	connect (_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
 	
@@ -110,20 +114,20 @@ void MainWindow::makeConnections() {
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	
-	connect (ui->pushButtonAdd, SIGNAL(clicked()), this, SLOT(addSchedule()));
-	connect (ui->pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeSchedule()));
+//	connect (ui->pushButtonAdd, SIGNAL(clicked()), this, SLOT(addSchedule()));
+//	connect (ui->pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeSchedule()));
 }
 
 
 MainWindow::~MainWindow() {
 	
-	writeSettings();
+//	writeSettings();
 	
-	delete _timer;
+//	delete _timer;
     delete ui;
 }
 
-
+/*
 void MainWindow::writeSettings() {
 	
 	_settings->beginGroup("Window");
@@ -155,7 +159,7 @@ void MainWindow::readSettings() {
 	
 }
 
-
+*/
 void MainWindow::createStatusBar() {
 	
 	QLabel *lblVersion = new QLabel(tr("Version: ") + qApp->applicationVersion());
@@ -168,10 +172,10 @@ void MainWindow::createStatusBar() {
 	
 	setStatusBar(_statusBar);
 	
-	updateStatusBar();
+//	updateStatusBar();
 }
 
-
+/*
 void MainWindow::updateStatusBar() {
 	
 	//! \todo Finish an updating of the statusBar
@@ -200,7 +204,7 @@ bool MainWindow::okToContinue() {
 	}
 }
 
-
+*/
 void MainWindow::changeEvent(QEvent *e) {
 	
     QMainWindow::changeEvent(e);
@@ -227,7 +231,7 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 	}
 }
 
-
+/*
 void MainWindow::showHide(QSystemTrayIcon::ActivationReason reason) {
 	
 	if (reason == QSystemTrayIcon::Trigger) {
@@ -280,11 +284,12 @@ void MainWindow::timeouted() {
 	ui->pushButtonStop->setDisabled(true);
 	ui->pushButtonStart->setEnabled(true);
 	ui->groupBoxTimer->setEnabled(true);
+
 }
 
 
 void MainWindow::on_pushButtonStart_clicked() {
-	
+
 	ui->pushButtonStart->setDisabled(true);
 	ui->pushButtonStop->setEnabled(true);
 	ui->groupBoxTimer->setDisabled(true);
@@ -297,6 +302,7 @@ void MainWindow::on_pushButtonStart_clicked() {
 	_timer->startApp();
 	
 	ui->lcdNumber->display(_timer->interval() / 1000);
+
 }
 
 
@@ -311,3 +317,4 @@ void MainWindow::printLCDTime() {
 	
 	ui->lcdNumber->display(ui->lcdNumber->intValue() - 1);
 }
+*/

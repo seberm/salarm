@@ -31,6 +31,8 @@
 #include <QLabel>
 #include <QStatusBar>
 
+#include <QWorkspace>
+
 namespace Ui {
     class MainWindow;
 }
@@ -58,25 +60,29 @@ private:
 	/*!
 	  \return Returns true when is clicked on "Yes"
 	*/
+	/*
 	bool okToContinue();
 	
 	void writeSettings();
-	
+	*/
 	Ui::MainWindow *ui;
-	bool _canClose;
-	QSettings *_settings;
 	
+	bool _canClose;
+	/*QSettings *_settings;
+	*/
 	QSystemTrayIcon *_trayIcon;
-	Timer *_timer;
+	/*Timer *_timer;
 	QTimer *_showTimeTimer;
+	*/
 	QStatusBar *_statusBar;
+	QWorkspace *_workspace;
 			
 	
 private slots:
-	void on_pushButtonStop_clicked();
-	void on_pushButtonStart_clicked();
+	//void on_pushButtonStop_clicked();
+	//void on_pushButtonStart_clicked();
 	
-	
+	/*
 	//! Updates the mainwindow StatusBar
 	void updateStatusBar();
 	
@@ -93,6 +99,7 @@ private slots:
 	void printLCDTime();
 	
 	void readSettings();
+	*/
 };
 
 #endif // MAINWINDOW_H
