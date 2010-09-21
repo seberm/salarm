@@ -28,7 +28,8 @@ SOURCES += main.cpp \
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
-    ui/optionsdialog.ui
+    ui/optionsdialog.ui \
+    scheduledialog.ui
 
 # App resources
 RESOURCES += ../icons.qrc

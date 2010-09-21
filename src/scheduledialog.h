@@ -3,16 +3,21 @@
 
 #include <QDialog>
 
-class ScheduleDialog : public QDialog
-{
-Q_OBJECT
+namespace Ui {
+    class ScheduleDialog;
+}
+
+class ScheduleDialog : public QDialog {
+    Q_OBJECT
 public:
-    explicit ScheduleDialog(QWidget *parent = 0);
+    ScheduleDialog(QWidget *parent = 0);
+    ~ScheduleDialog();
 
-signals:
+protected:
+    void changeEvent(QEvent *e);
 
-public slots:
-
+private:
+    Ui::ScheduleDialog *ui;
 };
 
 #endif // SCHEDULEDIALOG_H
