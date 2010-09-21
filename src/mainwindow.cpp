@@ -1,6 +1,6 @@
 /*
  * sAlarm - Scheduler
- * http://seberm.homelinux.org/salarm
+ * http://seberm.homelinux.org/project/salarm
  *
  * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
  * 
@@ -33,8 +33,6 @@
 #include <QtDebug>
 #include <QSplashScreen>
 
-//#include <QTreeWidgetItem>
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 	
@@ -59,20 +57,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	_trayIcon->setVisible(true);
 
-	/*
-	QStringList columnLabels;
-	columnLabels << "DBID" 
-                                 << tr("Title")
-				 << tr("Text")
-				 << tr("Date");
-		*/			
-		//	ui->scheduler->setHeaderLabels(columnLabels);
-        // Hide the first column that holds DBID
-		//       ui->scheduler->setColumnHidden(0,true);
 	
 	
-	_workspace = new QWorkspace(this);
-	setCentralWidget(_workspace);
+	//_workspace = new QWorkspace(this);
+	//setCentralWidget(_workspace);
+	_scheduler = new Scheduler(this);
+	setCentralWidget(_scheduler);
 	
 	createStatusBar();
 	createToolsBar();

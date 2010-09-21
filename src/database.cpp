@@ -1,6 +1,6 @@
 /*
  * sAlarm - Scheduler
- * http://seberm.homelinux.org/salarm
+ * http://seberm.homelinux.org/project/salarm
  *
  * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
  * 

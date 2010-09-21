@@ -1,6 +1,6 @@
 /*
  * sAlarm - Scheduler
- * http://seberm.homelinux.org/salarm
+ * http://seberm.homelinux.org/project/salarm
  *
  * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
  * 
@@ -29,7 +29,8 @@
 #include <QLabel>
 #include <QStatusBar>
 
-#include <QWorkspace>
+//#include <QWorkspace>
+#include "scheduler.h"
 
 namespace Ui {
     class MainWindow;
@@ -77,10 +78,11 @@ void writeSettings();
 	//! Indicates if the user can close the MainWindow
 	bool _canClose;
 	
-	QSettings *_settings;	
-	QSystemTrayIcon *_trayIcon;	
-	QStatusBar *_statusBar;
-	QWorkspace *_workspace;
+	QSettings* _settings;	
+	QSystemTrayIcon* _trayIcon;	
+	QStatusBar* _statusBar;
+//	QWorkspace *_workspace;
+	Scheduler* _scheduler;
 			
 	
 private slots:

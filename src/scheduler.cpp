@@ -1,3 +1,23 @@
+/*
+ * sAlarm - Scheduler
+ * http://seberm.homelinux.org/project/salarm
+ *
+ * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 3 as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 
 #include <QDebug>
 #include <QtSql/QSqlQuery>
@@ -8,6 +28,18 @@
 
 
 Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
+	
+	// Set the column names
+	QStringList columnLabels;
+	columnLabels << "DBID" 
+				 << tr("Title")
+				 << tr("Text")
+				 << tr("Date");
+
+	setHeaderLabels(columnLabels);
+	// Hide the first column that holds DBID
+	setColumnHidden(0, true);
+	
 	
 	_db = new Database ("Schedules");
 	
@@ -20,12 +52,12 @@ Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
 		
 	connect(this, SIGNAL(changed()), this, SLOT(refreshSchedules()));
 		
-	// We need to update the list
+	// We need to update the list of schedules
 	refreshSchedules();
 }
 
 
-void Scheduler::addSchedule(const QString &title, const QString &text, QDateTime expiration) {
+void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration) {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
