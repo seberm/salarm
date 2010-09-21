@@ -14,7 +14,8 @@ HEADERS += mainwindow.h \
     optionsdialog.h \
     database.h \
     constants.h \
-    scheduler.h
+    scheduler.h \
+    scheduledialog.h
 
 # Sources definition
 SOURCES += main.cpp \
@@ -22,7 +23,8 @@ SOURCES += main.cpp \
     optionsdialog.cpp \
     database.cpp \
     constants.cpp \
-    scheduler.cpp
+    scheduler.cpp \
+    scheduledialog.cpp
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
