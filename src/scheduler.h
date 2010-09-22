@@ -46,7 +46,7 @@ public:
 	  \param text the schedule's text
 	  \param expiration tells when the schedule expirate
 	*/
-	void addSchedule(const QString &title, const QString &text, const QDateTime &expiration);
+	//void addSchedule(const QString &title, const QString &text, const QDateTime &expiration);
 			
 	//! Removes schedule
 	/*!
@@ -58,11 +58,6 @@ public:
 public slots:	
 	//! Updates a list of schedules
 	void refreshSchedules();
-
-
-signals:
-	//! Is emitted when is the update of schedules needed
-	void changed();
 	
 	
 private:

@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "optionsdialog.h"
+#include "scheduledialog.h"
 
 #include "constants.h"
 
@@ -96,14 +97,15 @@ void MainWindow::makeConnections() {
 	connect (ui->actionAboutThisApplication, SIGNAL(triggered()), this, SLOT(about()));
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect (ui->actionNewSchedule, SIGNAL(triggered()), this, SLOT(addSchedule()));
+	connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
 }
 
 
 MainWindow::~MainWindow() {
 	
 	writeSettings();
-	
-//	delete _timer;
+
     delete ui;
 }
 
@@ -243,7 +245,7 @@ void MainWindow::reportBug() {
 void MainWindow::openPreferences() {
 	
 	OptionsDialog *d = new OptionsDialog(_settings, this);
-	connect (d, SIGNAL(canCloseChanged()), this, SLOT(readSettings()));
+	//connect (d, SIGNAL(canCloseChanged()), this, SLOT(readSettings()));
 			
 	//connect (d, SIGNAL(accepted()), this, );
 	d->exec();
@@ -252,11 +254,14 @@ void MainWindow::openPreferences() {
 
 void MainWindow::addSchedule() {
 	
+	ScheduleDialog *d = new ScheduleDialog(this);
 	
+	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+	
+	d->exec();
 }
 
 
-void MainWindow::openSchedulesList() {
-	
+void MainWindow::editSchedule(QTreeWidgetItem *i, int n) {
 	
 }

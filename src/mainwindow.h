@@ -41,7 +41,7 @@ class MainWindow : public QMainWindow {
 
 public:
 	
-	MainWindow(QWidget *parent = 0);
+	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
 	
@@ -95,8 +95,7 @@ private slots:
 	
 	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
 	void addSchedule();
-	
-	void openSchedulesList();
+	void editSchedule(QTreeWidgetItem *i, int n);
 	
 
 };

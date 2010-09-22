@@ -49,37 +49,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
 		qDebug() << "Error in connection - " << _db->getConnectionName();
 		return;
 	}
-		
-	connect(this, SIGNAL(changed()), this, SLOT(refreshSchedules()));
+	
 		
 	// We need to update the list of schedules
 	refreshSchedules();
-}
-
-
-void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration) {
-
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	QSqlQuery query(sqlConnection);
-	query.prepare("INSERT INTO Schedules (title, text, datetime)" \
-				  "VALUES(:title, :text, :datetime)");
-	
-	query.bindValue(0, title);
-	query.bindValue(1, text);
-	query.bindValue(2, expiration);
-	
-	if (!query.exec())
-		qDebug() << query.lastError();
-
-        QStringList strs;
-        // Insert data: DBID, title, text, date
-        strs << query.lastInsertId().toString() << title << text << expiration.toString();
-
-        QTreeWidgetItem *item = new QTreeWidgetItem(this, strs);
-        insertTopLevelItem(0, item);
-
-	
-	emit (changed());
 }
 
 
@@ -105,8 +78,6 @@ void Scheduler::removeSchedule(QTreeWidgetItem *i) {
 		qDebug() << query.lastError();
 	
 	takeTopLevelItem(indexOfTopLevelItem(i));
-	
-	emit (changed());
 }
 
 
