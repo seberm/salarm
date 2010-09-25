@@ -23,7 +23,6 @@
 #define SCHEDULER_H
 
 
-#include "database.h"
 #include "schedulermodel.h"
 
 #include <QTreeWidget>
@@ -53,7 +52,7 @@ public:
 	/*!
 	  \param i pointer to QTreeWidgetItem class
 	*/
-	//void removeSchedule(QTreeWidgetItem *i);
+	void removeSchedule();
 	
 	
 public slots:	
@@ -62,8 +61,6 @@ public slots:
 	
 	
 private:
-	//! The database class pointer
-	Database* _db;
 	SchedulerModel* _model;
 
 };

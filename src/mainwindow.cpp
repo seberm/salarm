@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 		qDebug() << "Error in connection - " << _db->getConnectionName();
 		return;
 	}
+	
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	
 	readSettings();
@@ -91,6 +92,7 @@ void MainWindow::makeConnections() {
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect (ui->actionNewSchedule, SIGNAL(triggered()), this, SLOT(addSchedule()));
+	connect (ui->actionRemoveSchedule, SIGNAL(triggered()), this, SLOT(removeSchedule()));
 	//connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
 }
 
@@ -255,6 +257,12 @@ void MainWindow::addSchedule() {
 	
 	// Opens the ScheduleDialog
 	d->exec();
+}
+
+
+void MainWindow::removeSchedule() {
+	
+	_scheduler->removeSchedule();
 }
 
 /*

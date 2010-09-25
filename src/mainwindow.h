@@ -97,6 +97,7 @@ private slots:
 	
 	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
 	void addSchedule();
+	void removeSchedule();
 	//void editSchedule(QTreeWidgetItem* i, int n);
 	
 
