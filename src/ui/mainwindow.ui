@@ -19,7 +19,11 @@
     <normaloff>:/icons/alarmIcon</normaloff>:/icons/alarmIcon</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2"/>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="Scheduler" name="scheduler"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -149,6 +153,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Scheduler</class>
+   <extends>QListView</extends>
+   <header>scheduler.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../icons.qrc"/>
  </resources>

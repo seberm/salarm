@@ -56,9 +56,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	_trayIcon->setVisible(true);
 	
-
-	_scheduler = new Scheduler(this);
-	setCentralWidget(_scheduler);
+	
+	QStringList headers;
+	headers << tr("Title") << tr("Text") << tr("Datetime");
+	SchedulerModel *_schedulerModel = new SchedulerModel(headers, this);
+	ui->scheduler->setModel(_schedulerModel);
 	
 	createStatusBar();
 	createToolsBar();
@@ -93,7 +95,7 @@ void MainWindow::makeConnections() {
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect (ui->actionNewSchedule, SIGNAL(triggered()), this, SLOT(addSchedule()));
-	connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
+	//connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
 }
 
 
@@ -252,13 +254,14 @@ void MainWindow::addSchedule() {
 	ScheduleDialog *d = new ScheduleDialog(this);
 	
 	// We need to refresh the schedule list every time the schedules change
-	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+//	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
 	
 	// Opens the ScheduleDialog
 	d->exec();
 }
 
-
+/*
 void MainWindow::editSchedule(QTreeWidgetItem *i, int n) {
 	i->
 }
+*/

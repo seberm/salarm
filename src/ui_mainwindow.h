@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Sep 22 21:22:17 2010
+** Created: Sat Sep 25 12:07:41 2010
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -20,6 +20,7 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
+#include "scheduler.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -37,6 +38,7 @@ public:
     QAction *actionOpenSchedulesList;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
+    Scheduler *scheduler;
     QMenuBar *menuBar;
     QMenu *menu_Main;
     QMenu *menu_Help;
@@ -101,6 +103,11 @@ public:
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        scheduler = new Scheduler(centralWidget);
+        scheduler->setObjectName(QString::fromUtf8("scheduler"));
+
+        verticalLayout_2->addWidget(scheduler);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));

@@ -29,7 +29,7 @@
 #include <QDateEdit>
 
 
-class Scheduler : public QTreeWidget {
+class Scheduler : public QTreeView {
 	
 Q_OBJECT
 
@@ -52,17 +52,17 @@ public:
 	/*!
 	  \param i pointer to QTreeWidgetItem class
 	*/
-	void removeSchedule(QTreeWidgetItem *i);
+	//void removeSchedule(QTreeWidgetItem *i);
 	
 	
 public slots:	
 	//! Updates a list of schedules
-	void refreshSchedules();
+	//void refreshSchedules();
 	
 	
 private:
 	//! The database class pointer
-	Database *_db;
+	//Database *_db;
 
 };
 

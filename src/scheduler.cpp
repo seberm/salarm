@@ -27,8 +27,10 @@
 #include "scheduler.h"
 
 
-Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
+Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
+	
+/*	
 	// Set the column names
 	QStringList columnLabels;
 	columnLabels << "DBID" 
@@ -53,9 +55,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeWidget(parent) {
 		
 	// We need to update the list of schedules
 	refreshSchedules();
+*/
 }
 
-
+/*
 void Scheduler::removeSchedule(QTreeWidgetItem *i) {
 
 	QMessageBox msg(this);
@@ -104,3 +107,6 @@ void Scheduler::refreshSchedules() {
 	
 	insertTopLevelItems(0, items);
 }
+*/
+
+
