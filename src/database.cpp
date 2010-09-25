@@ -37,14 +37,11 @@ Database::Database(QString name): _name(name) {
 
 
 Database::~Database() {
-	sqlDatabase.close();
 	
-	/**
-	  @todo Closing db connection untimely!... why?
-	  */
 	qDebug() << "Closing database connection " << _name;
 	
-	QSqlDatabase::removeDatabase(_name);
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	sqlConnection.close();
 }
 
 

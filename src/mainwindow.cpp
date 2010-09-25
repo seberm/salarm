@@ -42,7 +42,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	splash->setPixmap(QPixmap(":/splashs/tuxSplash"));
 	splash->show();
 	
+	// The alignment of the splash notice text
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
+	
+	splash->showMessage(QObject::tr("Connecting the database ..."), topRight, Qt::white);
+	_db = new Database ("Schedules");
+	
+	if (_db->dbConnect())
+		qDebug() << "Successfuly connected - " << _db->getConnectionName();
+	else {
+		qDebug() << "Error in connection - " << _db->getConnectionName();
+		return;
+	}
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	
 	readSettings();
@@ -69,18 +80,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	delete splash;
 }
 
-/*
-
-void MainWindow::removeSchedule() {
-	QList<QTreeWidgetItem *> items;
-	
-	items = ui->scheduler->selectedItems();
-	
-	for (int i = 0; i < items.count(); i++) {
-		ui->scheduler->removeSchedule(items.at(i));	
-	}
-}
-*/
 
 void MainWindow::makeConnections() {
 	
@@ -99,7 +98,8 @@ void MainWindow::makeConnections() {
 MainWindow::~MainWindow() {
 	
 	writeSettings();
-
+	
+	delete _db;
     delete ui;
 }
 
@@ -251,7 +251,7 @@ void MainWindow::addSchedule() {
 	ScheduleDialog *d = new ScheduleDialog(this);
 	
 	// We need to refresh the schedule list every time the schedules change
-//	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
 	
 	// Opens the ScheduleDialog
 	d->exec();

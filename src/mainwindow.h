@@ -30,6 +30,7 @@
 #include <QStatusBar>
 
 #include "scheduler.h"
+#include "database.h"
 
 namespace Ui {
     class MainWindow;
@@ -81,6 +82,9 @@ void writeSettings();
 	QSystemTrayIcon* _trayIcon;	
 	QStatusBar* _statusBar;
 	Scheduler* _scheduler;
+	
+	//! The database class pointer
+	Database* _db;
 			
 	
 private slots:
