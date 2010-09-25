@@ -1,19 +1,24 @@
+#include <QtGui>
+//// -> proc tam musi byt qtGui?
+
+
 #include "schedulermodel.h"
+#include "schedule.h"
+
 
 SchedulerModel::SchedulerModel(const QStringList &headers, QObject *parent) : QAbstractItemModel(parent) {
 	
-	QVector<QVariant> data;
+	QVector<QVariant> rootData;
 	
 	foreach (QString header, headers)
-		data << header;
+		rootData << header;
 	
-	_item = new Schedule(data);
+	_rootItem = new Schedule(rootData);
 }
 
 
 SchedulerModel::~SchedulerModel() {
-	
-	delete _item;
+	delete _rootItem;
 }
 
 
@@ -22,9 +27,8 @@ QVariant SchedulerModel::data(const QModelIndex &index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 	
-//! \todo zvolit spravne role..
-	if (role != Qt::DisplayRole && role != Qt::EditRole)
-         return QVariant();
+	if (role != Qt::DisplayRole && role != Qt::EditRole)	
+		return QVariant();
 	
 	
 	Schedule* item = getItem(index);
@@ -33,48 +37,156 @@ QVariant SchedulerModel::data(const QModelIndex &index, int role) const {
 }
 
 
-int SchedulerModel::columnCount(const QModelIndex &/*parent = QModelIndex()*/) const {
+QVariant SchedulerModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	
-	return _item->columnCount();
+	if (role != Qt::DisplayRole)
+		return QVariant();
+   
+	if (orientation == Qt::Horizontal) {
+		/*switch (section) {
+			case 0:
+				return "DBID";
+				
+			case 1:
+				return tr("Title");
+   
+			case 2:
+				return tr("Text");
+				
+			case 3:
+				return tr("Expiration");
+   
+			default:
+				return QVariant();
+			}
+			*/
+		return _rootItem->data(section);
+	}
+	
+	return QVariant();
+}
+
+
+bool SchedulerModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role) {
+	
+	if (role != Qt::EditRole || orientation != Qt::Horizontal)
+		return false;
+	
+	bool result = _rootItem->setData(section, value);
+	
+	if (result)
+		emit headerDataChanged(orientation, section, section);
+		
+	return result;	
+}
+
+
+bool SchedulerModel::insertRows(int position, int rows, const QModelIndex &parent) {
+	
+	Schedule* parentItem = getItem(parent);
+	bool success/* = false*/;
+	
+	//Q_UNUSED(index);
+	beginInsertRows(parent, position, position + rows - 1);    
+	success = parentItem->insertChildren(position, rows, _rootItem->columnCount());
+    endInsertRows();
+     
+	return success;
+}
+
+/*
+bool SchedulerModel::insertColumns(int position, int columns, const QModelIndex &parent) {
+	
+	bool success = false;
+	
+	beginInsertColumns(parent, position, position + columns - 1);
+	success = _rootItem->insertColumns(position, columns);
+	endInsertColumns();
+
+	return success;
+}
+*/
+
+bool SchedulerModel::removeRows(int position, int rows, const QModelIndex &parent) {
+	
+	Schedule* parentItem = getItem(parent);
+	bool success = true;	
+    
+	beginRemoveRows(parent, position, position + rows - 1);    
+	success = parentItem->removeChildren(position, rows);
+    endRemoveRows();
+	
+    return success;
+}
+
+/*
+bool SchedulerModel::removeColumns(int position, int columns, const QModelIndex &parent) {
+	bool success;
+
+	beginRemoveColumns(parent, position, position + columns - 1);
+	success = _rootItem->removeColumns(position, columns);
+	endRemoveColumns();
+	
+	if (rootItem->columnCount() == 0)
+		removeRows(0, rowCount());
+	
+	return success;	
+}
+*/
+
+bool SchedulerModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+	
+	if (index.isValid() && role == Qt::EditRole) {
+		Schedule* item = getItem(index);
+		bool result = item->setData(index.column(), value);
+		
+		if (result)
+			emit dataChanged(index, index);
+
+        return result;
+    }
+
+    return false;
+}
+
+
+Qt::ItemFlags SchedulerModel::flags(const QModelIndex &index) const {
+	
+    if (!index.isValid())
+        return Qt::ItemIsEnabled;
+
+	//! \todo upravit return!
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;    
+}
+
+
+int SchedulerModel::columnCount(const QModelIndex &/*parent*/) const {
+	
+	return _rootItem->columnCount();
 }
 
 
 int SchedulerModel::rowCount(const QModelIndex &parent) const {
 	
-	Schedule* item = getItem(parent);
-	
-	//return item;
-	return item->rowCount();
+	Schedule* parentItem = getItem(parent);
+
+	return parentItem->childCount();
 }
 
 
-Schedule *SchedulerModel::getItem(const QModelIndex &index) const {
-    
-	if (index.isValid()) {
-		Schedule *item = static_cast<Schedule*>(index.internalPointer());
-		
-		if (item)
-			return item;
-	}
-
-	return _item;
-}
-
-
-QModelIndex SchedulerModel::parent(const QModelIndex &child) const {
+QModelIndex SchedulerModel::parent(const QModelIndex &index) const {
 	
-	if (!child.isValid())
+	if (!index.isValid())
 		return QModelIndex();
 	
-	Schedule* childItem = getItem(child);
+	Schedule* childItem = getItem(index);
 	Schedule* parentItem = childItem->parent();
 	
-	if (parentItem == _item)
-		return QModelIndex();
+	if (parentItem == _rootItem)
+		return QModelIndex();	
+
 	
-	QModelIndex i = createIndex(0, 0, parentItem);
-	
-	return i;
+	return createIndex(parentItem->childNumber(), 0, parentItem);	
 }
 
 
@@ -84,10 +196,24 @@ QModelIndex SchedulerModel::index(int row, int column, const QModelIndex &parent
 			 return QModelIndex();
 	
 	Schedule* parentItem = getItem(parent);
-	Schedule* childItem = NULL;//parentItem->child(row);
+	Schedule* childItem = parentItem->child(row);
 	
-		if (childItem)
-			return createIndex(row, column, childItem);
-		else
-			return QModelIndex();
+	if (childItem)
+		return createIndex(row, column, childItem);
+	
+	return QModelIndex();
 }
+
+
+Schedule* SchedulerModel::getItem(const QModelIndex &index) const {
+	
+	if (index.isValid()) {
+		Schedule* item = static_cast<Schedule*>(index.internalPointer());
+		
+		if (item)
+			return item;
+	}
+	
+	return _rootItem;
+}
+

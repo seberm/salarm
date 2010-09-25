@@ -1,23 +1,33 @@
 #ifndef SCHEDULE_H
 #define SCHEDULE_H
 
-#include <QStandardItem>
+#include <QList>
+#include <QVector>
+#include <QVariant>
 
-class Schedule : public QStandardItem {
+class Schedule {
 	
 public:
-    Schedule(const QVector<QVariant> &data, Schedule* parent = 0);
-	
-	int childCount() const;
+    /*explicit */Schedule(const QVector<QVariant> &data, Schedule* parent = 0);
+	~Schedule();
+				 
 	Schedule* child(int number);
-	
-	Schedule *parent();
+	int childCount() const;
+	int columnCount() const;
+	QVariant data(int column) const;
+	bool insertChildren(int position, int count, int columns);
+	bool insertColumns(int position, int columns);
+	Schedule* parent();
+	bool removeChildren(int position, int count);
+	bool removeColumns(int position, int columns);
+	int childNumber() const;
+	bool setData(int column, const QVariant &value);
 	
 private:
-	QVector<QVariant> itemData;
+	QList<Schedule*> _childItems;
+	QVector<QVariant> _itemData;
+	Schedule* _parentItem;
 	
-	QList<Schedule*> childItems;
-	Schedule *_parent;
 };
 
 #endif // SCHEDULE_H

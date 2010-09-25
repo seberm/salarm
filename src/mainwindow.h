@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QStatusBar>
 
-#include "schedulermodel.h"
+#include "scheduler.h"
 
 namespace Ui {
     class MainWindow;
@@ -40,14 +40,14 @@ class MainWindow : public QMainWindow {
 
 public:
 	
-	explicit MainWindow(QWidget *parent = 0);
+	explicit MainWindow(QWidget* parent = 0);
 	~MainWindow();
 
 	
 protected:
 	
-	void changeEvent(QEvent *e);
-	void closeEvent(QCloseEvent *e);
+	void changeEvent(QEvent* e);
+	void closeEvent(QCloseEvent* e);
 
 	
 private:
@@ -80,8 +80,7 @@ void writeSettings();
 	QSettings* _settings;	
 	QSystemTrayIcon* _trayIcon;	
 	QStatusBar* _statusBar;
-//	QWorkspace *_workspace;
-	SchedulerModel* _schedulerModel;
+	Scheduler* _scheduler;
 			
 	
 private slots:
@@ -94,7 +93,7 @@ private slots:
 	
 	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
 	void addSchedule();
-	//void editSchedule(QTreeWidgetItem *i, int n);
+	//void editSchedule(QTreeWidgetItem* i, int n);
 	
 
 };

@@ -56,11 +56,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	_trayIcon->setVisible(true);
 	
-	
-	QStringList headers;
-	headers << tr("Title") << tr("Text") << tr("Datetime");
-	SchedulerModel *_schedulerModel = new SchedulerModel(headers, this);
-	ui->scheduler->setModel(_schedulerModel);
+	_scheduler = new Scheduler(this);
+	setCentralWidget(_scheduler);
 	
 	createStatusBar();
 	createToolsBar();

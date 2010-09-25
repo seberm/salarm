@@ -29,19 +29,16 @@
 
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
-	
-/*	
-	// Set the column names
-	QStringList columnLabels;
-	columnLabels << "DBID" 
-				 << tr("Title")
-				 << tr("Text")
-				 << tr("Date");
+	QStringList headers;
+	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration");
+	_model = new SchedulerModel(headers, this);
+	setModel(_model);
+	//for (int column = 0; column < _model->columnCount(QModelIndex()); ++column)
+		//resizeColumnToContents(column);
 
-	setHeaderLabels(columnLabels);
+	
 	// Hide the first column that holds DBID
 	setColumnHidden(0, true);
-	
 	
 	_db = new Database ("Schedules");
 	
@@ -52,10 +49,8 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 		return;
 	}
 	
-		
 	// We need to update the list of schedules
 	refreshSchedules();
-*/
 }
 
 /*
@@ -82,20 +77,18 @@ void Scheduler::removeSchedule(QTreeWidgetItem *i) {
 	
 	takeTopLevelItem(indexOfTopLevelItem(i));
 }
-
+*/
 
 void Scheduler::refreshSchedules() {
 
-	// Removes all schedules from list
-	clear();
-	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-        QString sql("SELECT id,title, text, datetime FROM Schedules;");
+	
+	QString sql("SELECT id,title, text, datetime FROM Schedules;");
 	QSqlQuery query(sql, sqlConnection);
 	
-	QList<QTreeWidgetItem*> items;
+	
 	while (query.next()) {
-		QStringList strs;
+		/*QStringList strs;
                 strs << query.value(0).toString()
 			 << query.value(1).toString()
                          << query.value(2).toString()
@@ -103,10 +96,34 @@ void Scheduler::refreshSchedules() {
 		
 		QTreeWidgetItem *item = new QTreeWidgetItem(this, strs);
 		items.append(item);
+		*/
+		
+		QModelIndex index = selectionModel()->currentIndex();
+		if (!_model->insertRow(index.row() + 1, index.parent()))
+			return;
+			
+		/*
+		for (int column = 0; column < _model->columnCount(index.parent()); ++column) {
+			QModelIndex child = _model->index(index.row() + 1, column, index.parent());
+			_model->setData(child, query.value(column).toByteArray(), Qt::EditRole);
+		}
+		*/
+		
+		QModelIndex child = _model->index(index.row() + 1, 0, index.parent());
+		_model->setData(child, query.value(0).toInt());
+		
+		child = _model->index(index.row() + 1, 1, index.parent());
+		_model->setData(child, query.value(1).toString());
+		
+		child = _model->index(index.row() + 1, 2, index.parent());
+		_model->setData(child, query.value(2).toString());
+		
+		child = _model->index(index.row() + 1, 3, index.parent());
+		_model->setData(child, query.value(3).toDateTime());
+		
 	}
 	
-	insertTopLevelItems(0, items);
 }
-*/
+
 
 

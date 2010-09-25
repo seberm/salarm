@@ -19,11 +19,7 @@
     <normaloff>:/icons/alarmIcon</normaloff>:/icons/alarmIcon</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="Scheduler" name="scheduler"/>
-    </item>
-   </layout>
+   <layout class="QVBoxLayout" name="verticalLayout_2"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -55,7 +51,6 @@
     <property name="title">
      <string>&amp;Schedules</string>
     </property>
-    <addaction name="actionOpenSchedulesList"/>
    </widget>
    <addaction name="menu_Main"/>
    <addaction name="menuSchedule"/>
@@ -153,13 +148,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Scheduler</class>
-   <extends>QListView</extends>
-   <header>scheduler.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../icons.qrc"/>
  </resources>

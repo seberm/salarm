@@ -24,6 +24,7 @@
 
 
 #include "database.h"
+#include "schedulermodel.h"
 
 #include <QTreeWidget>
 #include <QDateEdit>
@@ -57,12 +58,13 @@ public:
 	
 public slots:	
 	//! Updates a list of schedules
-	//void refreshSchedules();
+	void refreshSchedules();
 	
 	
 private:
 	//! The database class pointer
-	//Database *_db;
+	Database* _db;
+	SchedulerModel* _model;
 
 };
 
