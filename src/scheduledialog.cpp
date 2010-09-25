@@ -34,7 +34,7 @@ ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Sc
 	
     ui->setupUi(this);
 	
-	ui->lineEditTitle->setInputMask("");
+	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
 	
 	makeConnections();
 }

@@ -48,8 +48,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	readSettings();
 	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
 	restoreState(_settings->value("Window/State", saveState()).toByteArray());
-	
-//	ui->dateTimeEditEndDateTime->setDateTime(QDateTime::currentDateTime());
 
 	_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
 	QMenu *trayMenu = new QMenu;
@@ -57,11 +55,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setContextMenu(trayMenu);
 	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	_trayIcon->setVisible(true);
+	
 
-	
-	
-	//_workspace = new QWorkspace(this);
-	//setCentralWidget(_workspace);
 	_scheduler = new Scheduler(this);
 	setCentralWidget(_scheduler);
 	
@@ -256,12 +251,14 @@ void MainWindow::addSchedule() {
 	
 	ScheduleDialog *d = new ScheduleDialog(this);
 	
+	// We need to refresh the schedule list every time the schedules change
 	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
 	
+	// Opens the ScheduleDialog
 	d->exec();
 }
 
 
 void MainWindow::editSchedule(QTreeWidgetItem *i, int n) {
-	
+	i->
 }
