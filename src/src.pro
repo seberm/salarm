@@ -3,12 +3,14 @@ CONFIG += qt
 
 # Name of final binary file
 TARGET = salarm
+
 TEMPLATE = app
 DESTDIR = ../build/bin
 OBJECTS_DIR = ../build/obj
 MOC_DIR = ../build/moc
 
 # include ../dirs.pri
+
 # Header files definition
 HEADERS += mainwindow.h \
     optionsdialog.h \
@@ -33,7 +35,7 @@ SOURCES += main.cpp \
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
     ui/optionsdialog.ui \
-    scheduledialog.ui
+    ui/scheduledialog.ui
 
 # App resources
 RESOURCES += ../icons.qrc

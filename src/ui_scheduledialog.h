@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'scheduledialog.ui'
 **
-** Created: Sat Sep 25 20:57:02 2010
+** Created: Sat Sep 25 22:45:57 2010
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

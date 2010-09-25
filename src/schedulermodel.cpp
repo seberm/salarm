@@ -1,6 +1,25 @@
-#include <QtGui>
-//// -> proc tam musi byt qtGui?
+/*
+ * sAlarm - Scheduler
+ * http://seberm.homelinux.org/project/salarm
+ *
+ * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 3 as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 
+
+#include <QtGui>
 
 #include "schedulermodel.h"
 #include "schedule.h"
@@ -18,6 +37,7 @@ SchedulerModel::SchedulerModel(const QStringList &headers, QObject *parent) : QA
 
 
 SchedulerModel::~SchedulerModel() {
+	
 	delete _rootItem;
 }
 
@@ -86,7 +106,6 @@ bool SchedulerModel::insertRows(int position, int rows, const QModelIndex &paren
 	Schedule* parentItem = getItem(parent);
 	bool success/* = false*/;
 	
-	//Q_UNUSED(index);
 	beginInsertRows(parent, position, position + rows - 1);    
 	success = parentItem->insertChildren(position, rows, _rootItem->columnCount());
     endInsertRows();
