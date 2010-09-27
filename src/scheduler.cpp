@@ -32,13 +32,20 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	QStringList headers;
 	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration");
 	_model = new SchedulerModel(headers, this);
-	setModel(_model);
-
+	
+	_proxyModel = new SchedulerProxyModel(this);
+	_proxyModel->setSourceModel(_model);
+	
+	setModel(_proxyModel);
 	
 	// Hide the first column that holds DBID
-//	setColumnHidden(0, true);
+	setColumnHidden(0, true);
 	
+	// Allows the sorting in QListView
+	setSortingEnabled(true);
 	
+	setRootIsDecorated(false);	
+	setAlternatingRowColors(true);	
 	
 	// We need to update the list of schedules
 	refreshSchedules();

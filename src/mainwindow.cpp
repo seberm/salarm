@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 
-void MainWindow::makeConnections() {
+void MainWindow::makeConnections() const {
 	
 	connect (_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
 	
@@ -106,7 +106,7 @@ MainWindow::~MainWindow() {
 }
 
 
-void MainWindow::writeSettings() {
+void MainWindow::writeSettings() const {
 	
 	_settings->beginGroup("Window");
 		_settings->setValue("Geometry", saveGeometry());
@@ -223,8 +223,8 @@ void MainWindow::about() {
 	QString message = QString(tr("<h2>%2</h2>"\
 							 "<i><b>Version:</b> %1</i><br>"\
 							 "<b>Author:</b> Sabart Otto (Seberm)<br>"\
-							 "<b>Contact:</b> seberm@gmail.com<br>"\
-							 "<b>Homepage:</b> www.seberm.homelinux.org<br><br>"\
+							 "<b>Contact:</b> <a href=mailto:seberm@gmail.com>seberm@gmail.com</a><br>"\
+							 "<b>Homepage:</b> <a href=http://www.seberm.homelinux.org/project/salarm>seberm.homelinux.org</a><br><br>"\
 							 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.")).arg(QString(qApp->applicationVersion()), QString(qApp->applicationName()));	
 	
 	QMessageBox::about(this, tr("About ").append(qApp->applicationName()), message.toAscii());
@@ -234,7 +234,7 @@ void MainWindow::about() {
 void MainWindow::reportBug() {
 	
 	// Opens page of the project
-	QDesktopServices::openUrl(QUrl("http://www.seberm.homelinux.org/salarm", QUrl::TolerantMode));
+	QDesktopServices::openUrl(QUrl("http://www.seberm.homelinux.org/project/salarm", QUrl::TolerantMode));
 }
 
 

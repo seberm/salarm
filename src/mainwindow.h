@@ -60,10 +60,10 @@ private:
 	void createToolsBar();
 	
 	//! Makes the connections between objects
-	void makeConnections();
+	void makeConnections() const;
 	
 void readSettings();
-void writeSettings();
+void writeSettings() const;
 	
 	//! Opens a confirmation messageBox
 	/*!

@@ -24,6 +24,7 @@
 
 
 #include "schedulermodel.h"
+#include "schedulerproxymodel.h"
 
 #include <QTreeWidget>
 #include <QDateEdit>
@@ -62,6 +63,7 @@ public slots:
 	
 private:
 	SchedulerModel* _model;
+	SchedulerProxyModel* _proxyModel;
 
 };
 
