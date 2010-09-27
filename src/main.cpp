@@ -41,13 +41,14 @@ int main(int argc, char *argv[]) {
 	salarm.setApplicationName(NAME);
 	salarm.setApplicationVersion(VERSION);
 
+	
 	// Initiating a application global translator
 	QTranslator translator;
 	{
 		QString locale = QLocale::system().name();
 		qDebug() << "Current locale" << locale;
-		QString localeDir = qApp->applicationDirPath() + QDir::separator() + "src" + QDir::separator() + "locale";
-		translator.load(locale, localeDir);
+		QString localeDir = qApp->applicationDirPath() + QDir::separator() + "locale";
+		translator.load(UNIX_NAME + "_" + locale, localeDir);
 		salarm.installTranslator(&translator);
 	}
 	
