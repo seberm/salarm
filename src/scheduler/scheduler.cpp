@@ -39,7 +39,7 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setModel(_proxyModel);
 	
 	// Hide the first column that holds DBID
-	setColumnHidden(0, true);
+//	setColumnHidden(0, true);
 	
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
@@ -57,8 +57,8 @@ void Scheduler::removeSchedule() {
 	QModelIndex index = selectionModel()->currentIndex();
 	
 	// Read DBID from the hidden first column
-	int dbID = _model->data(index, Qt::EditRole).toInt();
-	
+	int dbID = index.sibling(index.row(), 0).data().toInt();
+
 	QMessageBox msg(this);
 		msg.setWindowTitle(tr("Remove schedule"));
 		msg.setText(tr("Really want to remove schedule?"));
@@ -75,8 +75,8 @@ void Scheduler::removeSchedule() {
 	if (!query.exec())
 		qDebug() << query.lastError();
 	
-	// Take the item off from the scheduler
-	_model->removeRow(index.row());
+	// And we refresh the schedules list
+	refreshSchedules();
 }
 
 

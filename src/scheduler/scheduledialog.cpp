@@ -84,8 +84,8 @@ void ScheduleDialog::addSchedule() {
 	query.prepare("INSERT INTO Schedules (title, text, datetime)" \
 				  "VALUES(:title, :text, :datetime)");
 	
-	query.bindValue(0, ui->lineEditTitle->text());
-	query.bindValue(1, ui->plainTextEditText->toPlainText());
+	query.bindValue(0, ui->lineEditTitle->text().simplified());
+	query.bindValue(1, ui->plainTextEditText->toPlainText().simplified());
 	query.bindValue(2, ui->dateTimeEditExpiration->dateTime());
 	
 	if (!query.exec())
