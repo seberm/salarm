@@ -29,6 +29,7 @@
 
 class Database : public QObject {
 	Q_OBJECT
+	
 	Q_ENUMS(DriverTypes)
 	
 	public:
@@ -38,7 +39,8 @@ class Database : public QObject {
 		~Database();
 		QSqlDatabase sqlDatabase;
 		bool dbConnect();
-		QString getConnectionName();
+		
+		inline QString getConnectionName() const { return _name; }
 		
 	private:
 		// Name of connection

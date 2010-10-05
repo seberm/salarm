@@ -108,12 +108,13 @@ void Database::dbInit(Database::DriverTypes dbType) {
 	switch (dbType) {
 		case MySQL: {
 			sql = QString(
-					"CREATE TABLE IF NOT EXISTS `Schedules` (" \
-					" `id` int(11) unsigned NOT NULL AUTO_INCREMENT," \
-					" `title` varchar(200) NOT NULL," \
-					" `text` text DEFAULT NULL," \
-					" `datetime` datetime NOT NULL," \
-					"KEY `id` (`id`)" \
+					"CREATE TABLE IF NOT EXISTS Schedules (" \
+					" id int(11) unsigned NOT NULL AUTO_INCREMENT," \
+					" title varchar(200) NOT NULL," \
+					" text text DEFAULT NULL," \
+					" datetime datetime NOT NULL," \
+					
+					"KEY id (id)" \
 					") ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 			
 			QSqlQuery query(sql, sqlDatabase);
@@ -121,11 +122,11 @@ void Database::dbInit(Database::DriverTypes dbType) {
 		
 		case SQLite: {
 			sql = QString (
-					"CREATE TABLE `Schedules` (" \
-                                        " `id` INTEGER PRIMARY KEY AUTOINCREMENT," \
-					" `title` CHAR(150) NOT NULL," \
-					" `text` TEXT NOT NULL," \
-                                        " `datetime` DATETIME NOT NULL);");
+					"CREATE TABLE Schedules (" \
+					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
+					" title CHAR(150) NOT NULL," \
+					" text TEXT NOT NULL," \
+					" `datetime` DATETIME NOT NULL);");
                         
 			QSqlQuery query(sql, sqlDatabase);
                         qDebug() << query.lastError();
@@ -133,7 +134,8 @@ void Database::dbInit(Database::DriverTypes dbType) {
 	}
 }
 
-
-QString Database::getConnectionName() {
+/*
+inline QString Database::getConnectionName() {
 	return _name;
 }
+*/

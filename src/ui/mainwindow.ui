@@ -30,14 +30,14 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Main">
+   <widget class="QMenu" name="menuMain">
     <property name="title">
      <string>&amp;Main</string>
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menu_Help">
+   <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -50,14 +50,14 @@
     <property name="title">
      <string>&amp;Schedule</string>
     </property>
-    <addaction name="actionNewSchedule"/>
+    <addaction name="actionNew"/>
     <addaction name="separator"/>
-    <addaction name="actionEditSchedule"/>
-    <addaction name="actionRemoveSchedule"/>
+    <addaction name="actionEdit"/>
+    <addaction name="actionRemove"/>
    </widget>
-   <addaction name="menu_Main"/>
+   <addaction name="menuMain"/>
    <addaction name="menuSchedule"/>
-   <addaction name="menu_Help"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionQuit">
    <property name="icon">
@@ -110,34 +110,34 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionNewSchedule">
+  <action name="actionNew">
    <property name="icon">
     <iconset resource="../../icons.qrc">
      <normaloff>:/icons/loadIcon</normaloff>:/icons/loadIcon</iconset>
    </property>
    <property name="text">
-    <string>&amp;New schedule</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionEditSchedule">
+  <action name="actionEdit">
    <property name="icon">
     <iconset resource="../../icons.qrc">
      <normaloff>:/icons/editIcon</normaloff>:/icons/editIcon</iconset>
    </property>
    <property name="text">
-    <string>&amp;Edit schedule</string>
+    <string>&amp;Edit</string>
    </property>
   </action>
-  <action name="actionRemoveSchedule">
+  <action name="actionRemove">
    <property name="icon">
     <iconset resource="../../icons.qrc">
      <normaloff>:/icons/deleteIcon</normaloff>:/icons/deleteIcon</iconset>
    </property>
    <property name="text">
-    <string>&amp;Remove schedule</string>
+    <string>&amp;Remove</string>
    </property>
   </action>
  </widget>

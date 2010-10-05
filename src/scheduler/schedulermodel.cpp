@@ -113,18 +113,6 @@ bool SchedulerModel::insertRows(int position, int rows, const QModelIndex &paren
 	return success;
 }
 
-/*
-bool SchedulerModel::insertColumns(int position, int columns, const QModelIndex &parent) {
-	
-	bool success = false;
-	
-	beginInsertColumns(parent, position, position + columns - 1);
-	success = _rootItem->insertColumns(position, columns);
-	endInsertColumns();
-
-	return success;
-}
-*/
 
 bool SchedulerModel::removeRows(int position, int rows, const QModelIndex &parent) {
 	
@@ -138,20 +126,6 @@ bool SchedulerModel::removeRows(int position, int rows, const QModelIndex &paren
     return success;
 }
 
-/*
-bool SchedulerModel::removeColumns(int position, int columns, const QModelIndex &parent) {
-	bool success;
-
-	beginRemoveColumns(parent, position, position + columns - 1);
-	success = _rootItem->removeColumns(position, columns);
-	endRemoveColumns();
-	
-	if (rootItem->columnCount() == 0)
-		removeRows(0, rowCount());
-	
-	return success;	
-}
-*/
 
 bool SchedulerModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	
