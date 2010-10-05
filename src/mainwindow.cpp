@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_trayIcon->setVisible(true);
 	
 	_scheduler = new Scheduler(this);
-	_scheduler->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+	_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
 	setCentralWidget(_scheduler);
 	
 	createStatusBar();
@@ -95,7 +95,7 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(addSchedule()));
 	connect (ui->actionRemove, SIGNAL(triggered()), this, SLOT(removeSchedule()));
 	
-	connect (_scheduler->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+	connect (_scheduler, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
 	
 	//connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
 }
@@ -272,8 +272,9 @@ void MainWindow::removeSchedule() {
 
 void MainWindow::showContextMenu(const QPoint &p) {
 
-	ui->menuSchedule->popup(_scheduler->header()->mapToGlobal(p));
-	//ui->menuSchedule->exec(_scheduler->viewport()->mapToGlobal(p));
+	//ui->menuSchedule->popup(_scheduler->header()->mapToGlobal(p));
+	
+	ui->menuSchedule->popup(_scheduler->viewport()->mapToGlobal(p));
 }
 
 
