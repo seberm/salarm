@@ -10,7 +10,7 @@ SchedulerProxyModel::SchedulerProxyModel(QObject *parent) : QSortFilterProxyMode
 
 bool SchedulerProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
 
-	for (int col = 1; col <= 3; col++) {
+	for (int col = 1; col <= 4; col++) {
 		QModelIndex index = sourceModel()->index(sourceRow, col, sourceParent);
 		
 		if (sourceModel()->data(index).toString().contains(filterRegExp()))

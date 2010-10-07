@@ -34,6 +34,16 @@ ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Sc
 	
     ui->setupUi(this);
 	
+	// Add schedule categories to combo box
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	QSqlQuery query(sqlConnection);
+	
+	QString sql = "SELECT id, name FROM ScheduleCategory;";
+	query.exec(sql);
+	while (query.next())
+		ui->comboBoxCategory->addItem(query.value(1).toString(), query.value(0));
+	
+	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
 	
 	makeConnections();
@@ -81,12 +91,14 @@ void ScheduleDialog::addSchedule() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
-	query.prepare("INSERT INTO Schedules (title, text, datetime)" \
-				  "VALUES(:title, :text, :datetime)");
+	query.prepare("INSERT INTO Schedule (title, text, datetime, categoryID)" \
+				  "VALUES(:title, :text, :datetime, :categoryID)");
 	
 	query.bindValue(0, ui->lineEditTitle->text().simplified());
 	query.bindValue(1, ui->plainTextEditText->toPlainText().simplified());
 	query.bindValue(2, ui->dateTimeEditExpiration->dateTime());
+	query.bindValue(3, ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()));
+	
 	
 	if (!query.exec())
 		qDebug() << query.lastError();

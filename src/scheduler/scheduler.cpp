@@ -30,7 +30,7 @@
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	QStringList headers;
-	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration");
+	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration") << tr("Category");
 	_model = new SchedulerModel(headers, this);
 	
 	_proxyModel = new SchedulerProxyModel(this);
@@ -39,7 +39,7 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setModel(_proxyModel);
 	
 	// Hide the first column that holds DBID
-//	setColumnHidden(0, true);
+	setColumnHidden(0, true);
 	
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
@@ -69,7 +69,7 @@ void Scheduler::removeSchedule() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
-	QString sql("DELETE FROM Schedules WHERE id = %1;");
+	QString sql("DELETE FROM Schedule WHERE id = %1;");
 
 	query.prepare(sql.arg(dbID));
 	if (!query.exec())
@@ -87,7 +87,14 @@ void Scheduler::refreshSchedules() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql("SELECT id,title, text, datetime FROM Schedules;");
+	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name" \
+				" FROM Schedule" \
+				" LEFT JOIN ScheduleCategory" \
+				" ON ScheduleCategory.id = Schedule.categoryID" \
+				" ORDER BY Schedule.datetime DESC;" \
+				
+				);
+
 	QSqlQuery query(sql, sqlConnection);
 	
 	
@@ -111,6 +118,14 @@ void Scheduler::refreshSchedules() {
 		// Expiration
 		child = _model->index(index.row() + 1, 3, index.parent());
 		_model->setData(child, query.value(3).toDateTime());
+		
+		// Category
+		child = _model->index(index.row() + 1, 4, index.parent());
+		
+		if (query.value(4).toString().length() == 0)
+			_model->setData(child, tr("No category"));
+		else 
+			_model->setData(child, query.value(4).toString());
 	}
 }
 

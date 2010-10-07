@@ -108,25 +108,44 @@ void Database::dbInit(Database::DriverTypes dbType) {
 	switch (dbType) {
 		case MySQL: {
 			sql = QString(
-					"CREATE TABLE IF NOT EXISTS Schedules (" \
+					"CREATE TABLE IF NOT EXISTS Schedule (" \
 					" id int(11) unsigned NOT NULL AUTO_INCREMENT," \
+					" categoryID int(11) unsigned DEFAULT 0," \
 					" title varchar(200) NOT NULL," \
 					" text text DEFAULT NULL," \
 					" datetime datetime NOT NULL," \
 					
 					"KEY id (id)" \
-					") ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
+					
+					
+					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
+					" id int(11) unsigned NOT NULL AUTO_INCREMENT," \
+					" name varchar(100) NOT NULL," \
+					
+					"KEY id (id)" \
+					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
+					
+					);
 			
 			QSqlQuery query(sql, sqlDatabase);
 		} break;
 		
 		case SQLite: {
 			sql = QString (
-					"CREATE TABLE Schedules (" \
+					"CREATE TABLE Schedule (" \
 					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
-					" title CHAR(150) NOT NULL," \
+					" categoryID INTEGER," \
+					" title CHAR(200) NOT NULL," \
 					" text TEXT NOT NULL," \
-					" `datetime` DATETIME NOT NULL);");
+					" datetime DATETIME NOT NULL);" \
+					
+					
+					"CREATE TABLE ScheduleCategory (" \
+					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
+					" name CHAR(100) NOT NULL);" \
+					
+					);
                         
 			QSqlQuery query(sql, sqlDatabase);
                         qDebug() << query.lastError();
