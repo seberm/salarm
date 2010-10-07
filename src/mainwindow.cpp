@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 		qDebug() << "Successfuly connected - " << _db->getConnectionName();
 	else {
 		qDebug() << "Error in connection - " << _db->getConnectionName();
-		return;
+		QMessageBox::critical(this, tr("Database connection"), tr("Error in database connection..."));
 	}
 	
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	restoreState(_settings->value("Window/State", saveState()).toByteArray());
 
 	_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
+	
 	QMenu *trayMenu = new QMenu;
 	trayMenu->addAction(ui->actionQuit);
 	_trayIcon->setContextMenu(trayMenu);
@@ -103,12 +104,13 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionAboutThisApplication, SIGNAL(triggered()), this, SLOT(about()));
 	connect (ui->actionReportBug, SIGNAL(triggered()), this, SLOT(reportBug()));
 	connect (ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect (ui->actionEdit, SIGNAL(triggered()), this, SLOT(editSchedule()));
 	connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(addSchedule()));
 	connect (ui->actionRemove, SIGNAL(triggered()), this, SLOT(removeSchedule()));
 	
-	connect (_scheduler, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+	connect (_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	
-	//connect (_scheduler, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(editSchedule(QTreeWidgetItem*, int)));
+	connect (_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
 }
 
 
@@ -296,8 +298,19 @@ void MainWindow::showContextMenu(const QPoint &p) {
 }
 
 
-/*
+void MainWindow::editSchedule(const QModelIndex &i) {
+	
+	ScheduleDialog *d = new ScheduleDialog(i, this);
+	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+	
+	d->exec();
+}
+
+
+// Overloaded function
 void MainWindow::editSchedule() {
 	
+	QModelIndex i(_scheduler->currentIndex());
+	editSchedule(i);
 }
-*/
+

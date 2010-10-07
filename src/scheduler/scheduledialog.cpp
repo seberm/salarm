@@ -25,6 +25,7 @@
 #include <QDebug>
 
 #include <QMessageBox>
+#include <QSqlDriver>
 
 #include "scheduledialog.h"
 #include "ui_scheduledialog.h"
@@ -33,6 +34,40 @@
 ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
 	
     ui->setupUi(this);
+	
+	dialogAction = ScheduleDialog::Add;
+	
+	initialize();
+	
+	makeConnections();
+}
+
+
+ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
+	
+	ui->setupUi(this);
+	
+	dialogAction = ScheduleDialog::Edit;
+	
+	initialize();
+	
+	makeConnections();
+	
+	_scheduleID = index.sibling(index.row(), 0).data().toInt();
+
+	QString title = index.sibling(index.row(), 1).data().toString();
+	QString text = index.sibling(index.row(), 2).data().toString();
+	QDateTime expiration = index.sibling(index.row(), 3).data().toDateTime();
+	int categoryID = index.sibling(index.row(), 5).data().toInt();
+	
+	ui->lineEditTitle->setText(title);
+	ui->plainTextEditText->setPlainText(text);
+	ui->dateTimeEditExpiration->setDateTime(expiration);
+	ui->comboBoxCategory->setCurrentIndex(categoryID);
+}
+
+
+void ScheduleDialog::initialize() {
 	
 	// Add schedule categories to combo box
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
@@ -45,19 +80,6 @@ ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Sc
 	
 	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
-	
-	makeConnections();
-}
-
-
-ScheduleDialog::ScheduleDialog(const QString &title, const QString &text, const QDateTime &expiration, QWidget *parent) : QDialog(parent) {
-	
-	// Call the explicit constructor because of creation of object connections
-	ScheduleDialog();
-	
-	ui->lblTitle->setText(title);
-	ui->plainTextEditText->setPlainText(text);
-	ui->dateTimeEditExpiration->setDateTime(expiration);
 }
 
 
@@ -78,27 +100,50 @@ void ScheduleDialog::changeEvent(QEvent *e) {
 	
     QDialog::changeEvent(e);
     switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
+		case QEvent::LanguageChange:
+			ui->retranslateUi(this);
+			break;
+			
+		default:
+			break;
     }
 }
 
 
-void ScheduleDialog::addSchedule() {
+void ScheduleDialog::doSchedule() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
-	query.prepare("INSERT INTO Schedule (title, text, datetime, categoryID)" \
-				  "VALUES(:title, :text, :datetime, :categoryID)");
+	
+	QString sql;
+	
+	switch (dialogAction)	{
+		default:
+		case ScheduleDialog::Add:
+			sql = "INSERT INTO Schedule (title, text, datetime, categoryID)" \
+				  " VALUES(:title, :text, :datetime, :categoryID)";
+			
+			break;
+			
+		case ScheduleDialog::Edit:
+			
+			sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID" \
+				  " WHERE id = ?;";
+			
+		
+			
+			break;
+	}
+
+	query.prepare(sql);
 	
 	query.bindValue(0, ui->lineEditTitle->text().simplified());
 	query.bindValue(1, ui->plainTextEditText->toPlainText().simplified());
 	query.bindValue(2, ui->dateTimeEditExpiration->dateTime());
-	query.bindValue(3, ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()));
+	query.bindValue(3, ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
 	
+	if(dialogAction == ScheduleDialog::Edit)
+		query.bindValue(4, _scheduleID);
 	
 	if (!query.exec())
 		qDebug() << query.lastError();
@@ -108,6 +153,7 @@ void ScheduleDialog::addSchedule() {
 
 
 void ScheduleDialog::scheduleAccepted() {
+	
 	QString str = ui->lineEditTitle->text();
 	
 	if (str.isEmpty()) {
@@ -115,7 +161,7 @@ void ScheduleDialog::scheduleAccepted() {
 		return;
 	}
 	
-	addSchedule();
+	doSchedule();
 	
 	close();
 }

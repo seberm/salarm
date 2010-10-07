@@ -104,7 +104,9 @@ private slots:
 	void addSchedule();
 	void removeSchedule();
 	void showContextMenu(const QPoint &);
-	//void editSchedule(QTreeWidgetItem* i, int n);
+	
+	void editSchedule(const QModelIndex &);
+	void editSchedule();
 	
 
 };

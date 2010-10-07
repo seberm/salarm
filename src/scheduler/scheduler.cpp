@@ -30,7 +30,7 @@
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	QStringList headers;
-	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration") << tr("Category");
+	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration") << tr("Category") << "CategoryID";
 	_model = new SchedulerModel(headers, this);
 	
 	_proxyModel = new SchedulerProxyModel(this);
@@ -40,6 +40,9 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	// Hide the first column that holds DBID
 	setColumnHidden(0, true);
+	
+	// Hide the column with schedule category ID
+	setColumnHidden(5, true);
 	
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
@@ -87,7 +90,7 @@ void Scheduler::refreshSchedules() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name" \
+	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id" \
 				" FROM Schedule" \
 				" LEFT JOIN ScheduleCategory" \
 				" ON ScheduleCategory.id = Schedule.categoryID" \
@@ -105,19 +108,19 @@ void Scheduler::refreshSchedules() {
 		
 		// DBID
 		QModelIndex child = _model->index(index.row() + 1, 0, index.parent());
-		_model->setData(child, query.value(0).toInt());
+		_model->setData(child, query.value(0));
 		
 		// Title
 		child = _model->index(index.row() + 1, 1, index.parent());
-		_model->setData(child, query.value(1).toString());
+		_model->setData(child, query.value(1));
 		
 		// Text
 		child = _model->index(index.row() + 1, 2, index.parent());
-		_model->setData(child, query.value(2).toString());
+		_model->setData(child, query.value(2));
 		
 		// Expiration
 		child = _model->index(index.row() + 1, 3, index.parent());
-		_model->setData(child, query.value(3).toDateTime());
+		_model->setData(child, query.value(3));
 		
 		// Category
 		child = _model->index(index.row() + 1, 4, index.parent());
@@ -126,6 +129,10 @@ void Scheduler::refreshSchedules() {
 			_model->setData(child, tr("No category"));
 		else 
 			_model->setData(child, query.value(4).toString());
+		
+		// Schedule category ID
+		child = _model->index(index.row() +1, 5, index.parent());
+		_model->setData(child, query.value(5));
 	}
 }
 

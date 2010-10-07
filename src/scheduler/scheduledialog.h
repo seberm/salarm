@@ -24,6 +24,8 @@
 
 #include <QDialog>
 #include <QDateTime>
+#include <QModelIndex>
+
 
 namespace Ui {
     class ScheduleDialog;
@@ -31,19 +33,27 @@ namespace Ui {
 
 class ScheduleDialog : public QDialog {
     Q_OBJECT
+	
+	Q_ENUMS(ScheduleActions)
+			
 public:
 	explicit ScheduleDialog(QWidget *parent = 0);
-	ScheduleDialog(const QString &title, const QString &text, const QDateTime &expiration, QWidget *parent = 0);
+	ScheduleDialog(const QModelIndex &, QWidget *parent = 0);
     ~ScheduleDialog();
+	
+	enum ScheduleActions { Add, Edit };
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
-    Ui::ScheduleDialog *ui;
-	
-	void addSchedule();
+	void initialize();
+	void doSchedule();
 	void makeConnections();
+	
+	Ui::ScheduleDialog *ui;
+	ScheduleDialog::ScheduleActions dialogAction;
+	int _scheduleID;
 	
 signals:
 	//! Is emitted when is the update of schedules needed
