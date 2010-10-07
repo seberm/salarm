@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QSplashScreen>
 
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 	
@@ -72,8 +73,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
 	setCentralWidget(_scheduler);
 	
+	// Label which shows the realtime
+	_lblCurrentDateTime = new QLabel;
+	
 	createStatusBar();
-	createToolsBar();
+	
+	// StatusBar is updated every 500ms (0.5 second)
+	_timer = new QTimer;
+	_timer->setInterval(1000);
+	connect (_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
+	_timer->start();
+	
+createToolsBar();
 	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();
@@ -144,16 +155,23 @@ void MainWindow::readSettings() {
 void MainWindow::createStatusBar() {
 	
 	QLabel *lblVersion = new QLabel(tr("Version: ") + qApp->applicationVersion());
-	lblVersion->setAlignment(Qt::AlignRight);
 	lblVersion->setMinimumSize(lblVersion->sizeHint());
+	
+	_lblCurrentDateTime->setAlignment(Qt::AlignRight);
+	_lblCurrentDateTime->setMinimumSize(_lblCurrentDateTime->sizeHint());
 	
 	_statusBar = new QStatusBar(this);
 	
-	_statusBar->addWidget(lblVersion, 1);
+	_statusBar->addWidget(lblVersion, 20);
+	_statusBar->addWidget(_lblCurrentDateTime, 30);
 	
 	setStatusBar(_statusBar);
-	
+}
 
+
+void MainWindow::updateStatusBar() {
+	
+	_lblCurrentDateTime->setText(QDateTime::currentDateTime().toString());
 }
 
 

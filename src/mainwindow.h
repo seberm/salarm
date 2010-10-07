@@ -27,6 +27,7 @@
 #include <QSettings>
 
 #include <QLabel>
+#include <QTimer>
 #include <QStatusBar>
 
 #include "scheduler.h"
@@ -82,6 +83,8 @@ void writeSettings() const;
 	QSystemTrayIcon* _trayIcon;	
 	QStatusBar* _statusBar;
 	Scheduler* _scheduler;
+	QLabel *_lblCurrentDateTime;
+	QTimer *_timer;
 	
 	//! The database class pointer
 	Database* _db;
@@ -94,6 +97,8 @@ private slots:
 	void about();
 	void reportBug();
 	void openPreferences();
+	
+	void updateStatusBar();
 	
 	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
 	void addSchedule();
