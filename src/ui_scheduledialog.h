@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'scheduledialog.ui'
 **
-** Created: Mon Sep 27 23:34:13 2010
-**      by: Qt User Interface Compiler version 4.6.3
+** Created: Thu Oct 7 17:01:03 2010
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -14,6 +14,7 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QComboBox>
 #include <QtGui/QDateTimeEdit>
 #include <QtGui/QDialog>
 #include <QtGui/QDialogButtonBox>
@@ -39,6 +40,8 @@ public:
     QLabel *lblExpiration;
     QLineEdit *lineEditTitle;
     QLabel *lblTitle;
+    QComboBox *comboBoxCategory;
+    QLabel *lblCategory;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *ScheduleDialog)
@@ -55,22 +58,22 @@ public:
         plainTextEditText = new QPlainTextEdit(ScheduleDialog);
         plainTextEditText->setObjectName(QString::fromUtf8("plainTextEditText"));
 
-        gridLayout->addWidget(plainTextEditText, 1, 1, 1, 1);
+        gridLayout->addWidget(plainTextEditText, 2, 1, 1, 1);
 
         lblText = new QLabel(ScheduleDialog);
         lblText->setObjectName(QString::fromUtf8("lblText"));
 
-        gridLayout->addWidget(lblText, 1, 0, 1, 1);
+        gridLayout->addWidget(lblText, 2, 0, 1, 1);
 
         dateTimeEditExpiration = new QDateTimeEdit(ScheduleDialog);
         dateTimeEditExpiration->setObjectName(QString::fromUtf8("dateTimeEditExpiration"));
 
-        gridLayout->addWidget(dateTimeEditExpiration, 2, 1, 1, 1);
+        gridLayout->addWidget(dateTimeEditExpiration, 3, 1, 1, 1);
 
         lblExpiration = new QLabel(ScheduleDialog);
         lblExpiration->setObjectName(QString::fromUtf8("lblExpiration"));
 
-        gridLayout->addWidget(lblExpiration, 2, 0, 1, 1);
+        gridLayout->addWidget(lblExpiration, 3, 0, 1, 1);
 
         lineEditTitle = new QLineEdit(ScheduleDialog);
         lineEditTitle->setObjectName(QString::fromUtf8("lineEditTitle"));
@@ -81,6 +84,16 @@ public:
         lblTitle->setObjectName(QString::fromUtf8("lblTitle"));
 
         gridLayout->addWidget(lblTitle, 0, 0, 1, 1);
+
+        comboBoxCategory = new QComboBox(ScheduleDialog);
+        comboBoxCategory->setObjectName(QString::fromUtf8("comboBoxCategory"));
+
+        gridLayout->addWidget(comboBoxCategory, 1, 1, 1, 1);
+
+        lblCategory = new QLabel(ScheduleDialog);
+        lblCategory->setObjectName(QString::fromUtf8("lblCategory"));
+
+        gridLayout->addWidget(lblCategory, 1, 0, 1, 1);
 
 
         horizontalLayout->addLayout(gridLayout);
@@ -107,9 +120,14 @@ public:
     void retranslateUi(QDialog *ScheduleDialog)
     {
         ScheduleDialog->setWindowTitle(QApplication::translate("ScheduleDialog", "Dialog", 0, QApplication::UnicodeUTF8));
-        lblText->setText(QApplication::translate("ScheduleDialog", "Text", 0, QApplication::UnicodeUTF8));
-        lblExpiration->setText(QApplication::translate("ScheduleDialog", "Expiration", 0, QApplication::UnicodeUTF8));
+        lblText->setText(QApplication::translate("ScheduleDialog", "Text:", 0, QApplication::UnicodeUTF8));
+        lblExpiration->setText(QApplication::translate("ScheduleDialog", "Expiration:", 0, QApplication::UnicodeUTF8));
         lblTitle->setText(QApplication::translate("ScheduleDialog", "Title:", 0, QApplication::UnicodeUTF8));
+        comboBoxCategory->clear();
+        comboBoxCategory->insertItems(0, QStringList()
+         << QApplication::translate("ScheduleDialog", "No category", 0, QApplication::UnicodeUTF8)
+        );
+        lblCategory->setText(QApplication::translate("ScheduleDialog", "Category:", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
