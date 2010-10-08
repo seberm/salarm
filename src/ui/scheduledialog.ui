@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>350</height>
+    <height>376</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,7 +89,10 @@
  </widget>
  <tabstops>
   <tabstop>lineEditTitle</tabstop>
+  <tabstop>comboBoxCategory</tabstop>
   <tabstop>plainTextEditText</tabstop>
+  <tabstop>calendar</tabstop>
+  <tabstop>dateTimeEditExpiration</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
