@@ -57,12 +57,14 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 
 	QString title = index.sibling(index.row(), 1).data().toString();
 	QString text = index.sibling(index.row(), 2).data().toString();
-	QDateTime expiration = index.sibling(index.row(), 3).data().toDateTime();
+	QDateTime expirationDateTime = index.sibling(index.row(), 3).data().toDateTime();
+	QDate expirationDate = index.sibling(index.row(), 3).data().toDate();
 	int categoryID = index.sibling(index.row(), 5).data().toInt();
 	
 	ui->lineEditTitle->setText(title);
 	ui->plainTextEditText->setPlainText(text);
-	ui->dateTimeEditExpiration->setDateTime(expiration);
+	ui->dateTimeEditExpiration->setDateTime(expirationDateTime);
+	ui->calendar->setSelectedDate(expirationDate);
 	ui->comboBoxCategory->setCurrentIndex(categoryID);
 }
 
@@ -80,6 +82,7 @@ void ScheduleDialog::initialize() {
 	
 	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
+	ui->calendar->setSelectedDate(QDate::currentDate());
 }
 
 
@@ -93,6 +96,9 @@ void ScheduleDialog::makeConnections() {
 	
 	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(scheduleAccepted()));
 	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+	
+	connect(ui->calendar, SIGNAL(clicked(QDate)), ui->dateTimeEditExpiration, SLOT(setDate(QDate)));
+	connect(ui->dateTimeEditExpiration, SIGNAL(dateChanged(QDate)), ui->calendar, SLOT(setSelectedDate(QDate)));
 }
 
 
@@ -165,6 +171,4 @@ void ScheduleDialog::scheduleAccepted() {
 	
 	close();
 }
-
-
 
