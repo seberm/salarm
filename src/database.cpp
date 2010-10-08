@@ -109,21 +109,22 @@ void Database::dbInit(Database::DriverTypes dbType) {
 		case MySQL: {
 			sql = QString(
 					"CREATE TABLE IF NOT EXISTS Schedule (" \
-					" id int(11) unsigned NOT NULL AUTO_INCREMENT," \
-					" categoryID int(11) unsigned DEFAULT 0," \
-					" title varchar(200) NOT NULL," \
-					" text text DEFAULT NULL," \
-					" datetime datetime NOT NULL," \
+					" id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
+					" categoryID INT(11) UNSIGNED DEFAULT FALSE," \
+					" title VARCHAR(200) NOT NULL," \
+					" text TEXT DEFAULT NULL," \
+					" datetime DATETIME NOT NULL," \
+					" timeouted BOOL NOT NULL DEFAULT FALSE," \
 					
-					"KEY id (id)" \
+					" KEY id (id)" \
 					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
 					
 					
 					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
-					" id int(11) unsigned NOT NULL AUTO_INCREMENT," \
-					" name varchar(100) NOT NULL," \
+					" id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
+					" name VARCHAR(100) NOT NULL," \
 					
-					"KEY id (id)" \
+					" KEY id (id)" \
 					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
 					
 					);
@@ -138,7 +139,10 @@ void Database::dbInit(Database::DriverTypes dbType) {
 					" categoryID INTEGER," \
 					" title CHAR(200) NOT NULL," \
 					" text TEXT NOT NULL," \
-					" datetime DATETIME NOT NULL);" \
+					" datetime DATETIME NOT NULL," \
+					" timeouted TINYBOOLEAN NOT NULL DEFAULT FALSE" \
+					
+					");" \
 					
 					
 					"CREATE TABLE ScheduleCategory (" \

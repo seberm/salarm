@@ -21,6 +21,7 @@
 
 #include "schedule.h"
 
+
 Schedule::Schedule(const QVector<QVariant> &data, Schedule* parent) {
 
 	_itemData = data;

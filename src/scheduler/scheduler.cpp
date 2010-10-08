@@ -19,12 +19,12 @@
  */
 
 
+#include "scheduler.h"
+
 #include <QDebug>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 #include <QMessageBox>
-
-#include "scheduler.h"
 
 
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
@@ -47,11 +47,16 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
 	
-	setRootIsDecorated(false);	
+	setRootIsDecorated(false);
 	setAlternatingRowColors(true);	
 	
 	// We need to update the list of schedules
 	refreshSchedules();
+	
+	_scheduleTimer = new QTimer(this);
+	_scheduleTimer->setInterval(1000);
+	connect (_scheduleTimer, SIGNAL(timeout()), this, SLOT(checkSchedules()));
+	_scheduleTimer->start();
 }
 
 
@@ -84,18 +89,18 @@ void Scheduler::removeSchedule() {
 
 
 void Scheduler::refreshSchedules() {
-	
+
 	// Fist we need to remove all schedules from scheduler
 	_model->removeRows(0, _model->rowCount(QModelIndex()));
+	_schedules.clear();
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id" \
+	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id, Schedule.timeouted" \
 				" FROM Schedule" \
 				" LEFT JOIN ScheduleCategory" \
 				" ON ScheduleCategory.id = Schedule.categoryID" \
-				" ORDER BY Schedule.datetime DESC;" \
-				
+				" ORDER BY Schedule.datetime ASC;" \
 				);
 
 	QSqlQuery query(sql, sqlConnection);
@@ -127,14 +132,60 @@ void Scheduler::refreshSchedules() {
 		
 		if (query.value(4).toString().length() == 0)
 			_model->setData(child, tr("No category"));
-		else 
-			_model->setData(child, query.value(4).toString());
+		else
+			_model->setData(child, query.value(4));
 		
 		// Schedule category ID
-		child = _model->index(index.row() +1, 5, index.parent());
+		child = _model->index(index.row() + 1, 5, index.parent());
 		_model->setData(child, query.value(5));
+		
+		// We want only oncoming schedules
+		if (!query.value(6).toBool())
+			_schedules.append(index);
 	}
 }
 
 
+void Scheduler::checkSchedules() {
+	
+	for (int i = 0; i < _schedules.length(); i++) {
+		
+		QModelIndex parentIndex = _schedules.at(i);
+		
+		QModelIndex childIndex = _model->index(parentIndex.row() + 1, 1, parentIndex.parent());
+		
+		QDateTime d = childIndex.data().toDateTime();
 
+		if (d < QDateTime::currentDateTime())
+			scheduleTimeouted(parentIndex);
+	}
+	
+	_schedules.clear();
+}
+
+
+void Scheduler::scheduleTimeouted(const QModelIndex &i) {
+	
+	QModelIndex childIndex;
+	
+	childIndex = _model->index(i.row() + 1, 0, i.parent());
+	int scheduleID = childIndex.data().toInt();
+	
+	childIndex = _model->index(i.row() + 1, 1, i.parent());
+	QString title = childIndex.data().toString();
+	
+	
+	QMessageBox::information(this, tr("Timeouted"), tr("Schedule \"%1\" timeouted!").arg(title));
+	
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
+	QString sql = "UPDATE Schedule SET timeouted = true" \
+				  " WHERE id = ?;";
+	
+	QSqlQuery query(sqlConnection);
+	
+	query.prepare(sql);
+	query.addBindValue(scheduleID);
+	
+	query.exec();
+}

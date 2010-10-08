@@ -28,6 +28,8 @@
 
 #include <QTreeWidget>
 #include <QDateEdit>
+#include <QTimer>
+#include <QModelIndexList>
 
 
 class Scheduler : public QTreeView {
@@ -47,7 +49,6 @@ public:
 	  \param text the schedule's text
 	  \param expiration tells when the schedule expirate
 	*/
-	//void addSchedule(const QString &title, const QString &text, const QDateTime &expiration);
 			
 	//! Removes schedule
 	/*!
@@ -59,12 +60,17 @@ public:
 public slots:	
 	//! Updates a list of schedules
 	void refreshSchedules();
+	void checkSchedules();
 	
 	
 private:
+	void scheduleTimeouted (const QModelIndex &);
+	
 	SchedulerModel* _model;
 	SchedulerProxyModel* _proxyModel;
-
+	
+	QTimer *_scheduleTimer;
+	QModelIndexList _schedules;
 };
 
 #endif // SCHEDULER_H

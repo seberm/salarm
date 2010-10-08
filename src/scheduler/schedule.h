@@ -26,7 +26,10 @@
 #include <QVector>
 #include <QVariant>
 
-class Schedule {
+#include <QStandardItem>
+
+
+class Schedule : public QStandardItem {
 	
 public:
     explicit Schedule(const QVector<QVariant> &data, Schedule* parent = 0);
