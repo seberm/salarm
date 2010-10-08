@@ -82,7 +82,10 @@ void ScheduleDialog::initialize() {
 	
 	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
+	ui->dateTimeEditExpiration->setMinimumDateTime(QDateTime::currentDateTime());
+	
 	ui->calendar->setSelectedDate(QDate::currentDate());
+	ui->calendar->setMinimumDate(QDate::currentDate());
 }
 
 
