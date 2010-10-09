@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	createStatusBar();
 	
 	// StatusBar is updated every 500ms (0.5 second)
-	_timer = new QTimer;
+	_timer = new QTimer(this);
 	_timer->setInterval(1000);
 	connect (_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
 	_timer->start();

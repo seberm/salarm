@@ -209,4 +209,3 @@ Schedule* SchedulerModel::getItem(const QModelIndex &index) const {
 	
 	return _rootItem;
 }
-

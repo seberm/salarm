@@ -56,7 +56,6 @@ public:
 	bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
 	//bool removeColumns(int position, int columns, const QModelIndex &parent);
 	
-	
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	QModelIndex parent(const QModelIndex &child) const;
 	
@@ -65,6 +64,7 @@ private:
 	Schedule* _rootItem;
 	
 	Schedule* getItem(const QModelIndex &index) const;
+	
 	
 signals:
 
