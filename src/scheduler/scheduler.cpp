@@ -141,7 +141,8 @@ void Scheduler::refreshSchedules() {
 		
 		// We want only oncoming schedules
 		if (!query.value(6).toBool())
-			_schedules.append(index);
+			_schedules.append(qMakePair(query.value(0).toInt(), query.value(3).toDateTime()));
+
 	}
 }
 
@@ -150,32 +151,20 @@ void Scheduler::checkSchedules() {
 	
 	for (int i = 0; i < _schedules.length(); i++) {
 		
-		QModelIndex parentIndex = _schedules.at(i);
+		int scheduleID = _schedules.at(i).first;
+		QDateTime d = _schedules.at(i).second;
 		
-		QModelIndex childIndex = _model->index(parentIndex.row() + 1, 1, parentIndex.parent());
-		
-		QDateTime d = childIndex.data().toDateTime();
+//qDebug() << "ID: " << scheduleID << "(" << (d < QDateTime::currentDateTime()) << ")";
 
 		if (d < QDateTime::currentDateTime())
-			scheduleTimeouted(parentIndex);
+			scheduleTimeouted(scheduleID);
 	}
-	
-	_schedules.clear();
 }
 
 
-void Scheduler::scheduleTimeouted(const QModelIndex &i) {
+void Scheduler::scheduleTimeouted(int ID) {
 	
-	QModelIndex childIndex;
-	
-	childIndex = _model->index(i.row() + 1, 0, i.parent());
-	int scheduleID = childIndex.data().toInt();
-	
-	childIndex = _model->index(i.row() + 1, 1, i.parent());
-	QString title = childIndex.data().toString();
-	
-	
-	QMessageBox::information(this, tr("Timeouted"), tr("Schedule \"%1\" timeouted!").arg(title));
+	QMessageBox::information(this, tr("Timeouted"), tr("Schedule \"%1\" timeouted!").arg(QString::number(ID)));
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
@@ -185,7 +174,9 @@ void Scheduler::scheduleTimeouted(const QModelIndex &i) {
 	QSqlQuery query(sqlConnection);
 	
 	query.prepare(sql);
-	query.addBindValue(scheduleID);
+	query.addBindValue(ID);
 	
 	query.exec();
+		
+	refreshSchedules();
 }

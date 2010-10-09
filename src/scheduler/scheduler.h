@@ -29,7 +29,7 @@
 #include <QTreeWidget>
 #include <QDateEdit>
 #include <QTimer>
-#include <QModelIndexList>
+#include <QList>
 
 
 class Scheduler : public QTreeView {
@@ -64,13 +64,13 @@ public slots:
 	
 	
 private:
-	void scheduleTimeouted (const QModelIndex &);
+	void scheduleTimeouted (int);
 	
 	SchedulerModel* _model;
 	SchedulerProxyModel* _proxyModel;
 	
 	QTimer *_scheduleTimer;
-	QModelIndexList _schedules;
+	QList<QPair<int, QDateTime> > _schedules;
 };
 
 #endif // SCHEDULER_H
