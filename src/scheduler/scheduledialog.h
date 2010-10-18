@@ -31,6 +31,7 @@ namespace Ui {
     class ScheduleDialog;
 }
 
+
 class ScheduleDialog : public QDialog {
     Q_OBJECT
 	
@@ -43,9 +44,11 @@ public:
 	
 	enum ScheduleActions { Add, Edit };
 
+	
 protected:
     void changeEvent(QEvent *e);
 
+	
 private:
 	void initialize();
 	void doSchedule();
@@ -55,12 +58,15 @@ private:
 	ScheduleDialog::ScheduleActions dialogAction;
 	int _scheduleID;
 	
+	
 signals:
 	//! Is emitted when is the update of schedules needed
 	void changed();
 	
+	
 private slots:
 	void scheduleAccepted();
+	void addCategoryDialog();
 	
 };
 

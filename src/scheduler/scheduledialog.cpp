@@ -27,6 +27,8 @@
 #include <QMessageBox>
 #include <QSqlDriver>
 
+#include <QInputDialog>
+
 #include "scheduledialog.h"
 #include "ui_scheduledialog.h"
 
@@ -102,6 +104,8 @@ void ScheduleDialog::makeConnections() {
 	
 	connect(ui->calendar, SIGNAL(clicked(QDate)), ui->dateTimeEditExpiration, SLOT(setDate(QDate)));
 	connect(ui->dateTimeEditExpiration, SIGNAL(dateChanged(QDate)), ui->calendar, SLOT(setSelectedDate(QDate)));
+	
+	connect(ui->pushButtonAddCategory, SIGNAL(pressed()), this, SLOT(addCategoryDialog()));
 }
 
 
@@ -173,5 +177,34 @@ void ScheduleDialog::scheduleAccepted() {
 	doSchedule();
 	
 	close();
+}
+
+
+void ScheduleDialog::addCategoryDialog() {
+	
+	bool ok;
+	QString category = QInputDialog::getText(this, tr("Category name"), tr("Insert the category name:"),QLineEdit::Normal, tr("Category"), &ok);
+	
+	if (ok && !category.isEmpty()) {
+		
+		QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+		
+		QString sql = "INSERT INTO ScheduleCategory (name)" \
+					  "VALUES (:name);";
+		
+		QSqlQuery query(sqlConnection);
+		query.prepare(sql);
+		query.addBindValue(category);
+		
+		if (!query.exec()) {
+			qDebug() << query.lastError();
+			return;
+		}
+		
+		int insertID = query.lastInsertId().toInt();
+
+		ui->comboBoxCategory->addItem(category, insertID);
+		ui->comboBoxCategory->setCurrentIndex(insertID - 1);
+	}
 }
 
