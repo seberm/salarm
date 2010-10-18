@@ -22,32 +22,34 @@
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 
-OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) :
-    QDialog(parent),
-    _ui(new Ui::OptionsDialog)
-{
+OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(parent), _ui(new Ui::OptionsDialog) {
+	
     _ui->setupUi(this);
 	_settings = settings;
 	
-	_ui->checkBoxCanClose->setChecked(!(_settings->value("App/CanClose", false).toBool()));
+	_settings->beginGroup("App");
+		_ui->checkBoxCanClose->setChecked(!(_settings->value("CanClose", false).toBool()));
+		_ui->comboBox->setCurrentIndex(_settings->value("DatabaseDriver", 0).toInt());
+	_settings->endGroup();
 	
 	_settings->beginGroup("MySQL");
-		_ui->lineEditMySQLHostname->setText(_settings->value("HostName", "127.0.0.1").toString());
+		_ui->lineEditMySQLHostname->setText(_settings->value("HostName", "localhost").toString());
 		_ui->lineEditMySQLUsername->setText(_settings->value("UserName", QString()).toString());
 		_ui->lineEditMySQLPassword->setText(_settings->value("Password", QString()).toString());
 		_ui->lineEditMySQLDatabase->setText(_settings->value("Database", "salarm").toString());
 	_settings->endGroup();
-	
-	_ui->comboBox->setCurrentIndex(_settings->value("App/DatabaseDriver", 0).toInt());
+
 }
 
 
 OptionsDialog::~OptionsDialog() {
+	
     delete _ui;
 }
 
 
 void OptionsDialog::changeEvent(QEvent *e) {
+	
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
@@ -60,6 +62,7 @@ void OptionsDialog::changeEvent(QEvent *e) {
 
 
 void OptionsDialog::on_buttonBox_accepted() {
+	
 	_settings->beginGroup("MySQL");
 		_settings->setValue("HostName", _ui->lineEditMySQLHostname->text());
 		_settings->setValue("UserName", _ui->lineEditMySQLUsername->text());
@@ -67,15 +70,19 @@ void OptionsDialog::on_buttonBox_accepted() {
 		_settings->setValue("Database", _ui->lineEditMySQLDatabase->text());
 	_settings->endGroup();
 	
-	_settings->setValue("App/DatabaseDriver", _ui->comboBox->currentIndex());
+	_settings->beginGroup("App");
+		_settings->setValue("DatabaseDriver", _ui->comboBox->currentIndex());
+		_settings->setValue("CanClose", !(_ui->checkBoxCanClose->isChecked()));
+	_settings->endGroup();
 	
 	// Send the signals
-	_settings->setValue("App/CanClose", !(_ui->checkBoxCanClose->isChecked()));
 	emit canCloseChanged();
+	
 	close();
 }
 
 void OptionsDialog::on_comboBox_currentIndexChanged(QString index) {
+	
     if (index == "MySQL")
 		_ui->groupBoxMySQL->setEnabled(true);
 	else _ui->groupBoxMySQL->setDisabled(true);

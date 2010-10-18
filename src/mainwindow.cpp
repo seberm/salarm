@@ -57,10 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	}
 	
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
-	
 	readSettings();
-	restoreGeometry(_settings->value("Window/Geometry", this->saveGeometry()).toByteArray());
-	restoreState(_settings->value("Window/State", saveState()).toByteArray());
 
 	_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
 	
@@ -128,11 +125,6 @@ void MainWindow::writeSettings() const {
 	_settings->beginGroup("Window");
 		_settings->setValue("Geometry", saveGeometry());
 		_settings->setValue("State", saveState());
-	
-	_settings->endGroup();
-	
-	_settings->beginGroup("App");
-		_settings->setValue("CanClose", _canClose);
 	_settings->endGroup();
 }
 
@@ -143,8 +135,8 @@ void MainWindow::readSettings() {
 	_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
 	
 	_settings->beginGroup("Window");
-		this->restoreGeometry(_settings->value("Geometry", QRect(200, 200, 370, 450)).toByteArray());
-		restoreState(_settings->value("State", Qt::WindowFullScreen).toByteArray());
+		restoreGeometry(_settings->value("Geometry", saveGeometry()).toByteArray());
+		restoreState(_settings->value("State", saveState()).toByteArray());
 	_settings->endGroup();
 	
 	
