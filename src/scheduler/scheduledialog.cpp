@@ -25,7 +25,6 @@
 #include <QDebug>
 
 #include <QMessageBox>
-#include <QSqlDriver>
 
 #include <QInputDialog>
 
@@ -142,7 +141,6 @@ void ScheduleDialog::doSchedule() {
 			
 			sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID" \
 				  " WHERE id = ?;";
-			
 		
 			
 			break;
@@ -204,7 +202,10 @@ void ScheduleDialog::addCategoryDialog() {
 		int insertID = query.lastInsertId().toInt();
 
 		ui->comboBoxCategory->addItem(category, insertID);
-		ui->comboBoxCategory->setCurrentIndex(insertID - 1);
+		
+		if (sqlConnection.driverName() == "QMYSQL")
+			ui->comboBoxCategory->setCurrentIndex(insertID - 1);
+		else ui->comboBoxCategory->setCurrentIndex(insertID);
 	}
 }
 

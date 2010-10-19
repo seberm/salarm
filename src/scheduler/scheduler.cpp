@@ -64,6 +64,9 @@ void Scheduler::removeSchedule() {
 	
 	QModelIndex index = selectionModel()->currentIndex();
 	
+	if (!index.isValid())
+		return;
+	
 	// Read DBID from the hidden first column
 	int dbID = index.sibling(index.row(), 0).data().toInt();
 
@@ -110,7 +113,7 @@ void Scheduler::refreshSchedules() {
 		QModelIndex index = selectionModel()->currentIndex();
 		if (!_model->insertRow(index.row() + 1, index.parent()))
 			return;
-		
+
 		// DBID
 		QModelIndex child = _model->index(index.row() + 1, 0, index.parent());
 		_model->setData(child, query.value(0));
@@ -153,8 +156,6 @@ void Scheduler::checkSchedules() {
 		
 		int scheduleID = _schedules.at(i).first;
 		QDateTime d = _schedules.at(i).second;
-		
-//qDebug() << "ID: " << scheduleID << "(" << (d < QDateTime::currentDateTime()) << ")";
 
 		if (d < QDateTime::currentDateTime())
 			scheduleTimeouted(scheduleID);
@@ -168,15 +169,16 @@ void Scheduler::scheduleTimeouted(int ID) {
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql = "UPDATE Schedule SET timeouted = true" \
+	QString sql = "UPDATE Schedule SET timeouted = 1" \
 				  " WHERE id = ?;";
-	
+
 	QSqlQuery query(sqlConnection);
 	
 	query.prepare(sql);
 	query.addBindValue(ID);
 	
-	query.exec();
+	if (!query.exec())
+		qDebug() << query.lastError();
 		
 	refreshSchedules();
 }
