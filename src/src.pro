@@ -42,7 +42,8 @@ FORMS += ui/mainwindow.ui \
     ui/scheduledialog.ui
 
 # App resources
-RESOURCES += ../icons.qrc
+RESOURCES += ../icons.qrc \
+    ../sounds.qrc
 
 
 # List of translations
