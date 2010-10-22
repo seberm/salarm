@@ -104,9 +104,12 @@ bool Database::dbConnect() {
 void Database::dbInit(Database::DriverTypes dbType) {
 	qDebug() << "Initializing database...";
 	
-	QString sql;
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
 	switch (dbType) {
 		case MySQL: {
+			
+			QString sql;
 			sql = QString(
 					"CREATE TABLE IF NOT EXISTS Schedule (" \
 					" id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
@@ -129,36 +132,48 @@ void Database::dbInit(Database::DriverTypes dbType) {
 					
 					);
 			
-			QSqlQuery query(sql, sqlDatabase);
+			QSqlQuery query(sql, sqlConnection);
+			
+			if (!query.exec())
+				qDebug() << query.lastError();
+			
 		} break;
 		
 		case SQLite: {
-			sql = QString (
-					"CREATE TABLE Schedule (" \
+			
+//! \todo Make this part of code more simpler - it's the mess!
+				
+			QString sql1;
+			sql1 = QString (
+					"CREATE TABLE IF NOT EXISTS Schedule (" \
 					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
 					" categoryID INTEGER," \
 					" title CHAR(200) NOT NULL," \
-					" text TEXT NOT NULL," \
+					" text TEXT DEFAULT NULL," \
 					" datetime DATETIME NOT NULL," \
-					" timeouted TINYBOOLEAN NOT NULL DEFAULT FALSE" \
+					" timeouted TINYBOOLEAN NOT NULL DEFAULT 0" \
 					
 					");" \
-					
-					
-					"CREATE TABLE ScheduleCategory (" \
-					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
-					" name CHAR(100) NOT NULL);" \
-					
 					);
-                        
-			QSqlQuery query(sql, sqlDatabase);
-                        qDebug() << query.lastError();
+			
+			QString sql2;
+			sql2 = QString(
+					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
+					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
+					" name CHAR(100) NOT NULL" \
+					
+					");" \
+					);
+	
+			QSqlQuery query1(sql1, sqlConnection);
+			QSqlQuery query2(sql2, sqlConnection);
+
+			if (!query1.exec())
+				qDebug() << query1.lastError();
+			
+			if (!query2.exec())
+				qDebug() << query2.lastError();
+			
 		} break;
 	}
 }
-
-/*
-inline QString Database::getConnectionName() {
-	return _name;
-}
-*/
