@@ -66,7 +66,9 @@ signals:
 	
 private slots:
 	void scheduleAccepted();
-	void addCategoryDialog();
+	
+	void addCategory();
+	void removeCategory();
 	
 };
 

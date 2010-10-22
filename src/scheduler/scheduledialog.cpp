@@ -104,7 +104,8 @@ void ScheduleDialog::makeConnections() {
 	connect(ui->calendar, SIGNAL(clicked(QDate)), ui->dateTimeEditExpiration, SLOT(setDate(QDate)));
 	connect(ui->dateTimeEditExpiration, SIGNAL(dateChanged(QDate)), ui->calendar, SLOT(setSelectedDate(QDate)));
 	
-	connect(ui->pushButtonAddCategory, SIGNAL(pressed()), this, SLOT(addCategoryDialog()));
+	connect(ui->pushButtonAddCategory, SIGNAL(pressed()), this, SLOT(addCategory()));
+	connect(ui->pushButtonRemoveCategory, SIGNAL(pressed()), this, SLOT(removeCategory()));
 }
 
 
@@ -178,7 +179,7 @@ void ScheduleDialog::scheduleAccepted() {
 }
 
 
-void ScheduleDialog::addCategoryDialog() {
+void ScheduleDialog::addCategory() {
 	
 	bool ok;
 	QString category = QInputDialog::getText(this, tr("Category name"), tr("Insert the category name:"),QLineEdit::Normal, tr("Category"), &ok);
@@ -202,10 +203,35 @@ void ScheduleDialog::addCategoryDialog() {
 		int insertID = query.lastInsertId().toInt();
 
 		ui->comboBoxCategory->addItem(category, insertID);
-		
-		if (sqlConnection.driverName() == "QMYSQL")
-			ui->comboBoxCategory->setCurrentIndex(insertID - 1);
-		else ui->comboBoxCategory->setCurrentIndex(insertID);
+		ui->comboBoxCategory->setCurrentIndex(ui->comboBoxCategory->count() - 1);
 	}
 }
 
+
+//! \todo
+void ScheduleDialog::removeCategory() {
+	
+	int index = ui->comboBoxCategory->currentIndex();
+	int id = ui->comboBoxCategory->itemData(index).toInt();
+	
+	// We cannot remove the default category
+	if (index == 0)
+		return;
+	
+	
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
+	QString sql = "DELETE FROM ScheduleCategory" \
+				  " WHERE id = :id;";
+
+	QSqlQuery query(sqlConnection);
+	query.prepare(sql);
+	query.addBindValue(id);
+	
+	if (!query.exec()) {
+		qDebug() << query.lastError();
+		return;
+	}
+	
+	ui->comboBoxCategory->removeItem(index);
+}

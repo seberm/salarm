@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>376</height>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,6 +57,29 @@
        </item>
        <item row="1" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="pushButtonRemoveCategory">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../icons.qrc">
+             <normaloff>:/icons/deleteIcon</normaloff>:/icons/deleteIcon</iconset>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QComboBox" name="comboBoxCategory">
            <property name="enabled">
