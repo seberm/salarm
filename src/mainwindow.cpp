@@ -36,6 +36,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+	
     ui->setupUi(this);
 	
 	// Start the splash screen
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 		qDebug() << "Error in connection - " << _db->getConnectionName();
 		QMessageBox::critical(this, tr("Database connection"), tr("Error in database connection..."));
 	}
+	
 	
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	readSettings();
@@ -257,10 +259,12 @@ void MainWindow::reportBug() {
 void MainWindow::openPreferences() {
 	
 	OptionsDialog *d = new OptionsDialog(_settings, this);
-	//connect (d, SIGNAL(canCloseChanged()), this, SLOT(readSettings()));
-			
-	//connect (d, SIGNAL(accepted()), this, );
-	d->exec();
+	
+	if (d->exec() == QDialog::Accepted) {
+		
+		// Reads new settings
+		readSettings();
+	}
 }
 
 

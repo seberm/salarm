@@ -38,7 +38,8 @@ OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(par
 		_ui->lineEditMySQLPassword->setText(_settings->value("Password", QString()).toString());
 		_ui->lineEditMySQLDatabase->setText(_settings->value("Database", "salarm").toString());
 	_settings->endGroup();
-
+	
+	_dbChanged = false;
 }
 
 
@@ -63,6 +64,11 @@ void OptionsDialog::changeEvent(QEvent *e) {
 
 void OptionsDialog::on_buttonBox_accepted() {
 	
+	if (_dbChanged) {
+		
+		QMessageBox::information(this, tr("Database changed"), tr("The changes of database will take effect after the application restart."));
+	}
+	
 	_settings->beginGroup("MySQL");
 		_settings->setValue("HostName", _ui->lineEditMySQLHostname->text());
 		_settings->setValue("UserName", _ui->lineEditMySQLUsername->text());
@@ -75,15 +81,15 @@ void OptionsDialog::on_buttonBox_accepted() {
 		_settings->setValue("CanClose", !(_ui->checkBoxCanClose->isChecked()));
 	_settings->endGroup();
 	
-	// Send the signals
-	emit canCloseChanged();
-	
 	close();
 }
+
 
 void OptionsDialog::on_comboBox_currentIndexChanged(QString index) {
 	
     if (index == "MySQL")
 		_ui->groupBoxMySQL->setEnabled(true);
 	else _ui->groupBoxMySQL->setDisabled(true);
+	
+	_dbChanged = true;
 }

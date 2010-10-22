@@ -24,6 +24,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QMessageBox>
 
 namespace Ui {
     class OptionsDialog;
@@ -37,7 +38,6 @@ class OptionsDialog : public QDialog {
 		~OptionsDialog();
 	
 	signals:
-		void canCloseChanged();
 		
 	protected:
 		void changeEvent(QEvent *e);
@@ -45,6 +45,8 @@ class OptionsDialog : public QDialog {
 	private:
 		Ui::OptionsDialog *_ui;
 		QSettings *_settings;
+		
+		bool _dbChanged;
 	
 	private slots:
 		void on_comboBox_currentIndexChanged(QString );
