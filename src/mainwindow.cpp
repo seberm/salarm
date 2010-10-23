@@ -23,7 +23,6 @@
 #include "ui_mainwindow.h"
 #include "optionsdialog.h"
 #include "scheduledialog.h"
-
 #include "constants.h"
 
 #include <QDir>
@@ -41,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	
 	// Start the splash screen
 	QSplashScreen *splash = new QSplashScreen;
-	splash->setPixmap(QPixmap(":/splashs/tuxSplash"));
+	splash->setPixmap(QPixmap(":/splashs/sAlarmIcon"));
 	splash->show();
 	
 	// The alignment of the splash notice text
@@ -80,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	
 	// StatusBar is updated every 500ms (0.5 second)
 	_timer = new QTimer(this);
-	_timer->setInterval(1000);
+	_timer->setInterval(500);
 	connect (_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
 	_timer->start();
 	

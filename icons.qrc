@@ -20,6 +20,6 @@
         <file alias="editIcon">img/icons/edit_icon.png</file>
     </qresource>
     <qresource prefix="/splashs">
-        <file alias="tuxSplash">img/splash/tux.png</file>
+        <file alias="sAlarmIcon">img/splash/salarm.png</file>
     </qresource>
 </RCC>
