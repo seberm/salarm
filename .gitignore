@@ -1,0 +1,19 @@
+# The KDE folder parameters file
+.directory
+
+
+*.pro.user
+Makefile
+
+build/
+doc/
+
+
+# PKGBUILD for Archlinux - AUR
+#PKGBUILD
+
+# The TODO file(s)
+TODO.*
+
+
+*.pro.user
