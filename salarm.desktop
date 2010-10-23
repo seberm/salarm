@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=sAlarm
+Categories=Application;Qt;Audio
+
+Comment=A simple scheduler
+Comment[en_US]=A simple scheduler
+Comment[cs_CZ]=Jednoduchý správce upomínek
+
+GenericName[en_US]=A simple scheduler
+GenericName[cs_CZ]=Jednoduchý správce upomínek
+GenericName=A simple scheduler
+
+Exec=salarm
+Icon=salarm
+
+StartupNotify=false
+Terminal=false
+Type=Application
