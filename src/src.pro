@@ -5,9 +5,11 @@ CONFIG += qt
 TARGET = salarm
 TEMPLATE = app
 DESTDIR = ../build/bin
+
 OBJECTS_DIR = ../build/obj
 MOC_DIR = ../build/moc
-
+UI_DIR = ../build/ui
+RCC_DIR = ../build/rcc
 
 INCLUDEPATH += . \
     scheduler \
