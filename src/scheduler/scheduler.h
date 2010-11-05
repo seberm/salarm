@@ -37,18 +37,12 @@ class Scheduler : public QTreeView {
 Q_OBJECT
 
 public:
+	
 	//! Constructor
 	/*!
 	  \param parent pointer to parent object
 	*/
     explicit Scheduler(QWidget *parent = 0);
-	
-	//! Adds a new schedule into the list and DB
-	/*!
-	  \param title the title of the schedule
-	  \param text the schedule's text
-	  \param expiration tells when the schedule expirate
-	*/
 			
 	//! Removes schedule
 	/*!
@@ -56,15 +50,30 @@ public:
 	*/
 	void removeSchedule();
 	
+	//! Makes the connections between objects
+	void makeConnections();
 	
-public slots:	
+	
+public slots:
+	
 	//! Updates a list of schedules
 	void refreshSchedules();
+	
+	//! Tells which schedules are timeouted
 	void checkSchedules();
+	
+	void markTimeouted(int);
+
+signals:
+	
+	//! This signal is emitted when the schedule timeouted
+	/*!
+	  \param int schedule database ID
+	*/
+	void scheduleTimeouted (int);
 	
 	
 private:
-	void scheduleTimeouted (int);
 	
 	SchedulerModel* _model;
 	SchedulerProxyModel* _proxyModel;

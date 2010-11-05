@@ -73,7 +73,7 @@ void writeSettings() const;
 	bool okToContinue();
 	
 	
-	//! The MainWindow variable
+	//! The MainWindow pointer
 	Ui::MainWindow *ui;
 	
 	//! Indicates if the user can close the MainWindow
@@ -108,7 +108,10 @@ private slots:
 	void editSchedule(const QModelIndex &);
 	void editSchedule();
 	
-
+	/*!
+	  \param int is the schedule database id
+	*/
+	void timeoutInformation(int);
 };
 
 #endif // MAINWINDOW_H

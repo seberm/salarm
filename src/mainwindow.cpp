@@ -32,6 +32,9 @@
 #include <QDesktopServices>
 #include <QtDebug>
 #include <QSplashScreen>
+#include <QMessageBox>
+
+#include <QtSql>
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -109,6 +112,8 @@ void MainWindow::makeConnections() const {
 	connect (_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	
 	connect (_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
+	
+	connect (_scheduler, SIGNAL(scheduleTimeouted(int)), this, SLOT(timeoutInformation(int)));
 }
 
 
@@ -307,5 +312,32 @@ void MainWindow::editSchedule() {
 	
 	QModelIndex i(_scheduler->currentIndex());
 	editSchedule(i);
+}
+
+
+void MainWindow::timeoutInformation(int ID) {
+	
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
+	QString sqlData = "SELECT title, text" \
+					  " FROM Schedule" \
+					  " WHERE id = ?;";
+	
+	QSqlQuery queryData(sqlConnection);
+	
+	queryData.prepare(sqlData);
+	queryData.addBindValue(ID);
+	
+	if (!queryData.exec())
+		qDebug() << queryData.lastError();
+	
+	QString title = queryData.value(0).toString();
+	QString text = queryData.value(1).toString();
+	
+	QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
+	QMessageBox::information(this, tr("Timeouted"), message);
+
+	_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
+	
 }
 

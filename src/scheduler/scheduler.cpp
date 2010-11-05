@@ -22,8 +22,7 @@
 #include "scheduler.h"
 
 #include <QDebug>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
+#include <QtSql>
 #include <QMessageBox>
 
 
@@ -53,10 +52,20 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	// We need to update the list of schedules
 	refreshSchedules();
 	
+	makeConnections();
+	
 	_scheduleTimer = new QTimer(this);
 	_scheduleTimer->setInterval(1000);
 	connect (_scheduleTimer, SIGNAL(timeout()), this, SLOT(checkSchedules()));
 	_scheduleTimer->start();
+}
+
+
+void Scheduler::makeConnections() {
+	
+	// If some schedule timeouted we need to refresh the schedule list
+	connect (this, SIGNAL(scheduleTimeouted(int)), this, SLOT(markTimeouted(int)));
+	connect (this, SIGNAL(scheduleTimeouted(int)), this, SLOT(refreshSchedules()));
 }
 
 
@@ -158,27 +167,23 @@ void Scheduler::checkSchedules() {
 		QDateTime d = _schedules.at(i).second;
 
 		if (d < QDateTime::currentDateTime())
-			scheduleTimeouted(scheduleID);
+			emit scheduleTimeouted(scheduleID);
 	}
 }
 
 
-void Scheduler::scheduleTimeouted(int ID) {
-	
-	QMessageBox::information(this, tr("Timeouted"), tr("Schedule \"%1\" timeouted!").arg(QString::number(ID)));
+void Scheduler::markTimeouted(int ID) {
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql = "UPDATE Schedule SET timeouted = 1" \
-				  " WHERE id = ?;";
+	QString sqlUpdate = "UPDATE Schedule SET timeouted = 1" \
+						" WHERE id = ?;";
 
-	QSqlQuery query(sqlConnection);
+	QSqlQuery queryUpdate(sqlConnection);
 	
-	query.prepare(sql);
-	query.addBindValue(ID);
+	queryUpdate.prepare(sqlUpdate);
+	queryUpdate.addBindValue(ID);
 	
-	if (!query.exec())
-		qDebug() << query.lastError();
-		
-	refreshSchedules();
+	if (!queryUpdate.exec())
+		qDebug() << queryUpdate.lastError();
 }
