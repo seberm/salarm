@@ -31,7 +31,6 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     optionsdialog.cpp \
     database.cpp \
-    constants.cpp \
     scheduler/scheduler.cpp \
     scheduler/scheduledialog.cpp \
     scheduler/schedulermodel.cpp \
