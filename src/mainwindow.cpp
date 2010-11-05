@@ -331,13 +331,16 @@ void MainWindow::timeoutInformation(int ID) {
 	if (!queryData.exec())
 		qDebug() << queryData.lastError();
 	
-	QString title = queryData.value(0).toString();
-	QString text = queryData.value(1).toString();
+	while (queryData.next()) {
+		
+		QString title = queryData.value(0).toString();
+		QString text = queryData.value(1).toString();
 	
-	QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
-	QMessageBox::information(this, tr("Timeouted"), message);
+		QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
+		QMessageBox::information(this, tr("Timeouted"), message);
 
-	m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
+		m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
+	}
 	
 }
 
