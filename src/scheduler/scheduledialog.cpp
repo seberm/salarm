@@ -138,11 +138,11 @@ void ScheduleDialog::doSchedule() {
 			
 			break;
 			
+			
 		case ScheduleDialog::Edit:
 			
-			sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID" \
+			sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID, timeouted = 0" \
 				  " WHERE id = ?;";
-		
 			
 			break;
 	}
