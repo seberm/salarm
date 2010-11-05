@@ -5,7 +5,7 @@
 #include <QDir>
 
 // Global CONSTANTS
-const QString VERSION = "0.30.0";
+const QString VERSION = "0.40.0";
 const QString NAME = "sAlarm Scheduler";
 const QString UNIX_NAME = "salarm";
 
