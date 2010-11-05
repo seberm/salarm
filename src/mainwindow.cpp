@@ -50,12 +50,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
 	
 	splash->showMessage(QObject::tr("Connecting the database ..."), topRight, Qt::white);
-	_db = new Database ("Schedules");
+	m_db = new Database ("Schedules");
 	
-	if (_db->dbConnect())
-		qDebug() << "Successfuly connected - " << _db->getConnectionName();
+	if (m_db->dbConnect())
+		qDebug() << "Successfuly connected - " << m_db->getConnectionName();
 	else {
-		qDebug() << "Error in connection - " << _db->getConnectionName();
+		qDebug() << "Error in connection - " << m_db->getConnectionName();
 		QMessageBox::critical(this, tr("Database connection"), tr("Error in database connection..."));
 	}
 	
@@ -63,28 +63,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	readSettings();
 
-	_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
+	m_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
 	
 	QMenu *trayMenu = new QMenu;
 	trayMenu->addAction(ui->actionQuit);
-	_trayIcon->setContextMenu(trayMenu);
-	_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
-	_trayIcon->setVisible(true);
+	m_trayIcon->setContextMenu(trayMenu);
+	m_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
+	m_trayIcon->setVisible(true);
 	
-	_scheduler = new Scheduler(this);
-	_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
-	setCentralWidget(_scheduler);
+	m_scheduler = new Scheduler(this);
+	m_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
+	setCentralWidget(m_scheduler);
 	
 	// Label which shows the realtime
-	_lblCurrentDateTime = new QLabel;
+	m_lblCurrentDateTime = new QLabel;
 	
 	createStatusBar();
 	
 	// StatusBar is updated every 500ms (0.5 second)
-	_timer = new QTimer(this);
-	_timer->setInterval(500);
-	connect (_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
-	_timer->start();
+	m_timer = new QTimer(this);
+	m_timer->setInterval(500);
+	connect (m_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
+	m_timer->start();
 	
 createToolsBar();
 	
@@ -98,7 +98,7 @@ createToolsBar();
 
 void MainWindow::makeConnections() const {
 	
-	connect (_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
+	connect (m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
 	
 	connect (ui->actionPreferences, SIGNAL(triggered()), SLOT(openPreferences()));
 	connect (ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -109,11 +109,11 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(addSchedule()));
 	connect (ui->actionRemove, SIGNAL(triggered()), this, SLOT(removeSchedule()));
 	
-	connect (_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
+	connect (m_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	
-	connect (_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
+	connect (m_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
 	
-	connect (_scheduler, SIGNAL(scheduleTimeouted(int)), this, SLOT(timeoutInformation(int)));
+	connect (m_scheduler, SIGNAL(scheduleTimeouted(int)), this, SLOT(timeoutInformation(int)));
 }
 
 
@@ -121,34 +121,34 @@ MainWindow::~MainWindow() {
 	
 	writeSettings();
 	
-	delete _db;
+	delete m_db;
     delete ui;
 }
 
 
 void MainWindow::writeSettings() const {
 	
-	_settings->beginGroup("Window");
-		_settings->setValue("Geometry", saveGeometry());
-		_settings->setValue("State", saveState());
-	_settings->endGroup();
+	m_settings->beginGroup("Window");
+		m_settings->setValue("Geometry", saveGeometry());
+		m_settings->setValue("State", saveState());
+	m_settings->endGroup();
 }
 
 
 void MainWindow::readSettings() {	
 	
 	// Load new settings
-	_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
+	m_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
 	
-	_settings->beginGroup("Window");
-		restoreGeometry(_settings->value("Geometry", saveGeometry()).toByteArray());
-		restoreState(_settings->value("State", saveState()).toByteArray());
-	_settings->endGroup();
+	m_settings->beginGroup("Window");
+		restoreGeometry(m_settings->value("Geometry", saveGeometry()).toByteArray());
+		restoreState(m_settings->value("State", saveState()).toByteArray());
+	m_settings->endGroup();
 	
 	
-	_settings->beginGroup("App");
-		_canClose = _settings->value("CanClose", false).toBool();
-	_settings->endGroup();
+	m_settings->beginGroup("App");
+		m_canClose = m_settings->value("CanClose", false).toBool();
+	m_settings->endGroup();
 }
 
 
@@ -157,21 +157,21 @@ void MainWindow::createStatusBar() {
 	QLabel *lblVersion = new QLabel(tr("Version: ") + qApp->applicationVersion());
 	lblVersion->setMinimumSize(lblVersion->sizeHint());
 	
-	_lblCurrentDateTime->setAlignment(Qt::AlignRight);
-	_lblCurrentDateTime->setMinimumSize(_lblCurrentDateTime->sizeHint());
+	m_lblCurrentDateTime->setAlignment(Qt::AlignRight);
+	m_lblCurrentDateTime->setMinimumSize(m_lblCurrentDateTime->sizeHint());
 	
-	_statusBar = new QStatusBar(this);
+	m_statusBar = new QStatusBar(this);
 	
-	_statusBar->addWidget(lblVersion, 20);
-	_statusBar->addWidget(_lblCurrentDateTime, 30);
+	m_statusBar->addWidget(lblVersion, 20);
+	m_statusBar->addWidget(m_lblCurrentDateTime, 30);
 	
-	setStatusBar(_statusBar);
+	setStatusBar(m_statusBar);
 }
 
 
 void MainWindow::updateStatusBar() {
 	
-	_lblCurrentDateTime->setText(QDateTime::currentDateTime().toString());
+	m_lblCurrentDateTime->setText(QDateTime::currentDateTime().toString());
 }
 
 
@@ -219,7 +219,7 @@ void MainWindow::changeEvent(QEvent *e) {
 void MainWindow::closeEvent(QCloseEvent *e) {
 	
 	if (isVisible()) {
-		if (_canClose) {
+		if (m_canClose) {
 			e->accept();
 			close();
 		} else {
@@ -262,7 +262,7 @@ void MainWindow::reportBug() {
 
 void MainWindow::openPreferences() {
 	
-	OptionsDialog *d = new OptionsDialog(_settings, this);
+	OptionsDialog *d = new OptionsDialog(m_settings, this);
 	
 	if (d->exec() == QDialog::Accepted) {
 		
@@ -277,7 +277,7 @@ void MainWindow::addSchedule() {
 	ScheduleDialog *d = new ScheduleDialog(this);
 	
 	// We need to refresh the schedule list every time the schedules change
-	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+	connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
 	// Opens the ScheduleDialog
 	d->exec();
@@ -286,22 +286,22 @@ void MainWindow::addSchedule() {
 
 void MainWindow::removeSchedule() {
 	
-	_scheduler->removeSchedule();
+	m_scheduler->removeSchedule();
 }
 
 
 void MainWindow::showContextMenu(const QPoint &p) {
 
-	//ui->menuSchedule->popup(_scheduler->header()->mapToGlobal(p));
+	//ui->menuSchedule->popup(m_scheduler->header()->mapToGlobal(p));
 	
-	ui->menuSchedule->popup(_scheduler->viewport()->mapToGlobal(p));
+	ui->menuSchedule->popup(m_scheduler->viewport()->mapToGlobal(p));
 }
 
 
 void MainWindow::editSchedule(const QModelIndex &i) {
 	
 	ScheduleDialog *d = new ScheduleDialog(i, this);
-	connect (d, SIGNAL(changed()), _scheduler, SLOT(refreshSchedules()));
+	connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
 	d->exec();
 }
@@ -310,7 +310,7 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 // Overloaded function
 void MainWindow::editSchedule() {
 	
-	QModelIndex i(_scheduler->currentIndex());
+	QModelIndex i(m_scheduler->currentIndex());
 	editSchedule(i);
 }
 
@@ -337,7 +337,7 @@ void MainWindow::timeoutInformation(int ID) {
 	QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
 	QMessageBox::information(this, tr("Timeouted"), message);
 
-	_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
+	m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
 	
 }
 

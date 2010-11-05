@@ -24,33 +24,33 @@
 
 Schedule::Schedule(const QVector<QVariant> &data, Schedule* parent) {
 
-	_itemData = data;
-	_parentItem = parent;
+	m_itemData = data;
+	m_parentItem = parent;
 }
 
 
 Schedule::~Schedule() {
 	
-	qDeleteAll(_childItems);	
+	qDeleteAll(m_childItems);	
 }
 
 
 Schedule* Schedule::child(int number) { 
 	
-	return _childItems.value(number);    
+	return m_childItems.value(number);    
 }
 
 
 int Schedule::childCount() const {
 	
-	return _childItems.count();
+	return m_childItems.count();
 }
 
 
 int Schedule::childNumber() const {
 	
-	if (_parentItem)
-		return _parentItem->_childItems.indexOf(const_cast<Schedule*>(this));
+	if (m_parentItem)
+		return m_parentItem->m_childItems.indexOf(const_cast<Schedule*>(this));
 
 	return 0;
 }
@@ -58,25 +58,25 @@ int Schedule::childNumber() const {
 
 int Schedule::columnCount() const {
 	
-	return _itemData.count();
+	return m_itemData.count();
 }
 
 
 QVariant Schedule::data(int column) const {
 	
-	return _itemData.value(column);
+	return m_itemData.value(column);
 }
 
 
 bool Schedule::insertChildren(int position, int count, int columns) {
 	
-	if (position < 0 || position > _childItems.size())
+	if (position < 0 || position > m_childItems.size())
 		return false;
 
 	for (int row = 0; row < count; ++row) {
 		QVector<QVariant> data(columns);
 		Schedule* item = new Schedule(data, this);
-		_childItems.insert(position, item);
+		m_childItems.insert(position, item);
 	}
 	
 	return true;
@@ -85,17 +85,17 @@ bool Schedule::insertChildren(int position, int count, int columns) {
 
 Schedule* Schedule::parent() {
 	
-     return _parentItem;
+     return m_parentItem;
 }
 
 
 bool Schedule::removeChildren(int position, int count) {
 	
-	if (position < 0 || position + count > _childItems.size())
+	if (position < 0 || position + count > m_childItems.size())
 		return false;
 
 	for (int row = 0; row < count; ++row)
-		delete _childItems.takeAt(position);
+		delete m_childItems.takeAt(position);
 
 	return true;
 }
@@ -103,13 +103,13 @@ bool Schedule::removeChildren(int position, int count) {
 
 bool Schedule::removeColumns(int position, int columns) {
 	
-	if (position < 0 || position + columns > _itemData.size())
+	if (position < 0 || position + columns > m_itemData.size())
 		return false;
 
 	for (int column = 0; column < columns; ++column)
-		_itemData.remove(position);
+		m_itemData.remove(position);
 
-	foreach (Schedule* child, _childItems)
+	foreach (Schedule* child, m_childItems)
 		child->removeColumns(position, columns);
 
 	return true;
@@ -118,10 +118,10 @@ bool Schedule::removeColumns(int position, int columns) {
 
 bool Schedule::setData(int column, const QVariant &value) {
 	
-	if (column < 0 || column >= _itemData.size())
+	if (column < 0 || column >= m_itemData.size())
 		return false;
 
-	_itemData[column] = value;
+	m_itemData[column] = value;
 	
 	return true;
 }

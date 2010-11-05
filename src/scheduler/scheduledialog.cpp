@@ -19,17 +19,15 @@
  */
 
 
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-
-#include <QDebug>
-
-#include <QMessageBox>
-
-#include <QInputDialog>
-
 #include "scheduledialog.h"
 #include "ui_scheduledialog.h"
+
+
+
+#include <QtSql>
+#include <QDebug>
+#include <QMessageBox>
+#include <QInputDialog>
 
 
 ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
@@ -41,6 +39,8 @@ ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Sc
 	initialize();
 	
 	makeConnections();
+	
+	m_scheduleID = 0;
 }
 
 
@@ -54,7 +54,7 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 	
 	makeConnections();
 	
-	_scheduleID = index.sibling(index.row(), 0).data().toInt();
+	m_scheduleID = index.sibling(index.row(), 0).data().toInt();
 
 	QString title = index.sibling(index.row(), 1).data().toString();
 	QString text = index.sibling(index.row(), 2).data().toString();
@@ -155,7 +155,7 @@ void ScheduleDialog::doSchedule() {
 	query.bindValue(3, ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
 	
 	if(dialogAction == ScheduleDialog::Edit)
-		query.bindValue(4, _scheduleID);
+		query.bindValue(4, m_scheduleID);
 	
 	if (!query.exec())
 		qDebug() << query.lastError();
@@ -208,7 +208,6 @@ void ScheduleDialog::addCategory() {
 }
 
 
-//! \todo
 void ScheduleDialog::removeCategory() {
 	
 	int index = ui->comboBoxCategory->currentIndex();

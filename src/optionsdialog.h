@@ -43,10 +43,10 @@ class OptionsDialog : public QDialog {
 		void changeEvent(QEvent *e);
 	
 	private:
-		Ui::OptionsDialog *_ui;
-		QSettings *_settings;
+		Ui::OptionsDialog *m_ui;
+		QSettings *m_settings;
 		
-		bool _dbChanged;
+		bool m_dbChanged;
 	
 	private slots:
 		void on_comboBox_currentIndexChanged(QString );

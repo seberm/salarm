@@ -77,17 +77,17 @@ void writeSettings() const;
 	Ui::MainWindow *ui;
 	
 	//! Indicates if the user can close the MainWindow
-	bool _canClose;
+	bool m_canClose;
 	
-	QSettings* _settings;	
-	QSystemTrayIcon* _trayIcon;	
-	QStatusBar* _statusBar;
-	Scheduler* _scheduler;
-	QLabel *_lblCurrentDateTime;
-	QTimer *_timer;
+	QSettings* m_settings;	
+	QSystemTrayIcon* m_trayIcon;	
+	QStatusBar* m_statusBar;
+	Scheduler* m_scheduler;
+	QLabel *m_lblCurrentDateTime;
+	QTimer *m_timer;
 	
 	//! The database class pointer
-	Database* _db;
+	Database* m_db;
 			
 	
 private slots:

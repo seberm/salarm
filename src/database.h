@@ -40,11 +40,11 @@ class Database : public QObject {
 		QSqlDatabase sqlDatabase;
 		bool dbConnect();
 		
-		inline QString getConnectionName() const { return _name; }
+		inline QString getConnectionName() const { return m_name; }
 		
 	private:
 		// Name of connection
-		QString _name;
+		QString m_name;
 		
 		void dbInit(Database::DriverTypes);
 };

@@ -22,30 +22,30 @@
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 
-OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(parent), _ui(new Ui::OptionsDialog) {
+OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
 	
-    _ui->setupUi(this);
-	_settings = settings;
+    m_ui->setupUi(this);
+	m_settings = settings;
 	
-	_settings->beginGroup("App");
-		_ui->checkBoxCanClose->setChecked(!(_settings->value("CanClose", false).toBool()));
-		_ui->comboBox->setCurrentIndex(_settings->value("DatabaseDriver", 0).toInt());
-	_settings->endGroup();
+	m_settings->beginGroup("App");
+		m_ui->checkBoxCanClose->setChecked(!(m_settings->value("CanClose", false).toBool()));
+		m_ui->comboBox->setCurrentIndex(m_settings->value("DatabaseDriver", 0).toInt());
+	m_settings->endGroup();
 	
-	_settings->beginGroup("MySQL");
-		_ui->lineEditMySQLHostname->setText(_settings->value("HostName", "localhost").toString());
-		_ui->lineEditMySQLUsername->setText(_settings->value("UserName", QString()).toString());
-		_ui->lineEditMySQLPassword->setText(_settings->value("Password", QString()).toString());
-		_ui->lineEditMySQLDatabase->setText(_settings->value("Database", "salarm").toString());
-	_settings->endGroup();
+	m_settings->beginGroup("MySQL");
+		m_ui->lineEditMySQLHostname->setText(m_settings->value("HostName", "localhost").toString());
+		m_ui->lineEditMySQLUsername->setText(m_settings->value("UserName", QString()).toString());
+		m_ui->lineEditMySQLPassword->setText(m_settings->value("Password", QString()).toString());
+		m_ui->lineEditMySQLDatabase->setText(m_settings->value("Database", "salarm").toString());
+	m_settings->endGroup();
 	
-	_dbChanged = false;
+	m_dbChanged = false;
 }
 
 
 OptionsDialog::~OptionsDialog() {
 	
-    delete _ui;
+    delete m_ui;
 }
 
 
@@ -54,7 +54,7 @@ void OptionsDialog::changeEvent(QEvent *e) {
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
-        _ui->retranslateUi(this);
+        m_ui->retranslateUi(this);
         break;
     default:
         break;
@@ -64,22 +64,22 @@ void OptionsDialog::changeEvent(QEvent *e) {
 
 void OptionsDialog::on_buttonBox_accepted() {
 	
-	if (_dbChanged) {
+	if (m_dbChanged) {
 		
 		QMessageBox::information(this, tr("Database changed"), tr("The changes of database will take effect after the application restart."));
 	}
 	
-	_settings->beginGroup("MySQL");
-		_settings->setValue("HostName", _ui->lineEditMySQLHostname->text());
-		_settings->setValue("UserName", _ui->lineEditMySQLUsername->text());
-		_settings->setValue("Password", _ui->lineEditMySQLPassword->text());
-		_settings->setValue("Database", _ui->lineEditMySQLDatabase->text());
-	_settings->endGroup();
+	m_settings->beginGroup("MySQL");
+		m_settings->setValue("HostName", m_ui->lineEditMySQLHostname->text());
+		m_settings->setValue("UserName", m_ui->lineEditMySQLUsername->text());
+		m_settings->setValue("Password", m_ui->lineEditMySQLPassword->text());
+		m_settings->setValue("Database", m_ui->lineEditMySQLDatabase->text());
+	m_settings->endGroup();
 	
-	_settings->beginGroup("App");
-		_settings->setValue("DatabaseDriver", _ui->comboBox->currentIndex());
-		_settings->setValue("CanClose", !(_ui->checkBoxCanClose->isChecked()));
-	_settings->endGroup();
+	m_settings->beginGroup("App");
+		m_settings->setValue("DatabaseDriver", m_ui->comboBox->currentIndex());
+		m_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
+	m_settings->endGroup();
 	
 	close();
 }
@@ -88,8 +88,8 @@ void OptionsDialog::on_buttonBox_accepted() {
 void OptionsDialog::on_comboBox_currentIndexChanged(QString index) {
 	
     if (index == "MySQL")
-		_ui->groupBoxMySQL->setEnabled(true);
-	else _ui->groupBoxMySQL->setDisabled(true);
+		m_ui->groupBoxMySQL->setEnabled(true);
+	else m_ui->groupBoxMySQL->setDisabled(true);
 	
-	_dbChanged = true;
+	m_dbChanged = true;
 }

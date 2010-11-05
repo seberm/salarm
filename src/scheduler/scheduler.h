@@ -75,11 +75,11 @@ signals:
 	
 private:
 	
-	SchedulerModel* _model;
-	SchedulerProxyModel* _proxyModel;
+	SchedulerModel* m_model;
+	SchedulerProxyModel* m_proxyModel;
 	
-	QTimer *_scheduleTimer;
-	QList<QPair<int, QDateTime> > _schedules;
+	QTimer *m_scheduleTimer;
+	QList<QPair<int, QDateTime> > m_schedules;
 };
 
 #endif // SCHEDULER_H

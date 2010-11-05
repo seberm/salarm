@@ -25,20 +25,17 @@
 
 #include <QtDebug>
 #include <QSettings>
-
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlDatabase>
+#include <QtSql>
 #include <QStringList>
 
-Database::Database(QString name): _name(name) {
+Database::Database(QString name): m_name(name) {
 	
 }
 
 
 Database::~Database() {
 	
-	qDebug() << "Closing database connection " << _name;
+	qDebug() << "Closing database connection " << m_name;
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	sqlConnection.close();
@@ -46,10 +43,10 @@ Database::~Database() {
 
 
 bool Database::dbConnect() {
-	qDebug() << "Connecting " << _name;
+	qDebug() << "Connecting " << m_name;
 	
-	if (QSqlDatabase::contains(_name)) {
-		qDebug() << "Connection " << _name << " already exists.";
+	if (QSqlDatabase::contains(m_name)) {
+		qDebug() << "Connection " << m_name << " already exists.";
 		return true;
 	}
 
@@ -68,7 +65,7 @@ bool Database::dbConnect() {
 	
 	switch (driver) {
 		case MySQL: {
-			sqlDatabase = QSqlDatabase::addDatabase("QMYSQL", _name);
+			sqlDatabase = QSqlDatabase::addDatabase("QMYSQL", m_name);
 				
 			settings.beginGroup("MySQL");
 				sqlDatabase.setHostName(settings.value("HostName", "localhost").toString()); // If "127.0.0.1" is configured, it can causes errors
@@ -79,7 +76,7 @@ bool Database::dbConnect() {
 		} break;
 		
 		case SQLite: {
-				sqlDatabase = QSqlDatabase::addDatabase("QSQLITE", _name);
+				sqlDatabase = QSqlDatabase::addDatabase("QSQLITE", m_name);
 				sqlDatabase.setDatabaseName(SQLITE_DB_FILE);
 		} break;
 	}

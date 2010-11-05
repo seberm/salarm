@@ -48,9 +48,9 @@ public:
 	bool setData(int column, const QVariant &value);
 	
 private:
-	QList<Schedule*> _childItems;
-	QVector<QVariant> _itemData;
-	Schedule* _parentItem;
+	QList<Schedule*> m_childItems;
+	QVector<QVariant> m_itemData;
+	Schedule* m_parentItem;
 	
 };
 

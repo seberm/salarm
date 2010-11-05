@@ -90,7 +90,7 @@ private:
 	ScheduleDialog::ScheduleActions dialogAction;
 	
 	//! Represents the ID of schedule which is modified; if the schedule is inserted, the value is 0
-	int _scheduleID;
+	int m_scheduleID;
 	
 	
 signals:

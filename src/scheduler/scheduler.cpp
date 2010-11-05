@@ -30,12 +30,12 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	QStringList headers;
 	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration") << tr("Category") << "CategoryID";
-	_model = new SchedulerModel(headers, this);
+	m_model = new SchedulerModel(headers, this);
 	
-	_proxyModel = new SchedulerProxyModel(this);
-	_proxyModel->setSourceModel(_model);
+	m_proxyModel = new SchedulerProxyModel(this);
+	m_proxyModel->setSourceModel(m_model);
 	
-	setModel(_proxyModel);
+	setModel(m_proxyModel);
 	
 	// Hide the first column that holds DBID
 	setColumnHidden(0, true);
@@ -54,10 +54,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	makeConnections();
 	
-	_scheduleTimer = new QTimer(this);
-	_scheduleTimer->setInterval(1000);
-	connect (_scheduleTimer, SIGNAL(timeout()), this, SLOT(checkSchedules()));
-	_scheduleTimer->start();
+	m_scheduleTimer = new QTimer(this);
+	m_scheduleTimer->setInterval(1000);
+	connect (m_scheduleTimer, SIGNAL(timeout()), this, SLOT(checkSchedules()));
+	m_scheduleTimer->start();
 }
 
 
@@ -103,8 +103,8 @@ void Scheduler::removeSchedule() {
 void Scheduler::refreshSchedules() {
 
 	// Fist we need to remove all schedules from scheduler
-	_model->removeRows(0, _model->rowCount(QModelIndex()));
-	_schedules.clear();
+	m_model->removeRows(0, m_model->rowCount(QModelIndex()));
+	m_schedules.clear();
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
@@ -120,40 +120,40 @@ void Scheduler::refreshSchedules() {
 	
 	while (query.next()) {
 		QModelIndex index = selectionModel()->currentIndex();
-		if (!_model->insertRow(index.row() + 1, index.parent()))
+		if (!m_model->insertRow(index.row() + 1, index.parent()))
 			return;
 
 		// DBID
-		QModelIndex child = _model->index(index.row() + 1, 0, index.parent());
-		_model->setData(child, query.value(0));
+		QModelIndex child = m_model->index(index.row() + 1, 0, index.parent());
+		m_model->setData(child, query.value(0));
 		
 		// Title
-		child = _model->index(index.row() + 1, 1, index.parent());
-		_model->setData(child, query.value(1));
+		child = m_model->index(index.row() + 1, 1, index.parent());
+		m_model->setData(child, query.value(1));
 		
 		// Text
-		child = _model->index(index.row() + 1, 2, index.parent());
-		_model->setData(child, query.value(2));
+		child = m_model->index(index.row() + 1, 2, index.parent());
+		m_model->setData(child, query.value(2));
 		
 		// Expiration
-		child = _model->index(index.row() + 1, 3, index.parent());
-		_model->setData(child, query.value(3));
+		child = m_model->index(index.row() + 1, 3, index.parent());
+		m_model->setData(child, query.value(3));
 		
 		// Category
-		child = _model->index(index.row() + 1, 4, index.parent());
+		child = m_model->index(index.row() + 1, 4, index.parent());
 		
 		if (query.value(4).toString().length() == 0)
-			_model->setData(child, tr("No category"));
+			m_model->setData(child, tr("No category"));
 		else
-			_model->setData(child, query.value(4));
+			m_model->setData(child, query.value(4));
 		
 		// Schedule category ID
-		child = _model->index(index.row() + 1, 5, index.parent());
-		_model->setData(child, query.value(5));
+		child = m_model->index(index.row() + 1, 5, index.parent());
+		m_model->setData(child, query.value(5));
 		
 		// We want only oncoming schedules
 		if (!query.value(6).toBool())
-			_schedules.append(qMakePair(query.value(0).toInt(), query.value(3).toDateTime()));
+			m_schedules.append(qMakePair(query.value(0).toInt(), query.value(3).toDateTime()));
 
 	}
 }
@@ -161,10 +161,10 @@ void Scheduler::refreshSchedules() {
 
 void Scheduler::checkSchedules() {
 	
-	for (int i = 0; i < _schedules.length(); i++) {
+	for (int i = 0; i < m_schedules.length(); i++) {
 		
-		int scheduleID = _schedules.at(i).first;
-		QDateTime d = _schedules.at(i).second;
+		int scheduleID = m_schedules.at(i).first;
+		QDateTime d = m_schedules.at(i).second;
 
 		if (d < QDateTime::currentDateTime())
 			emit scheduleTimeouted(scheduleID);

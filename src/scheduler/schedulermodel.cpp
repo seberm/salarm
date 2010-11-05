@@ -32,13 +32,13 @@ SchedulerModel::SchedulerModel(const QStringList &headers, QObject *parent) : QA
 	foreach (QString header, headers)
 		rootData << header;
 	
-	_rootItem = new Schedule(rootData);
+	m_rootItem = new Schedule(rootData);
 }
 
 
 SchedulerModel::~SchedulerModel() {
 	
-	delete _rootItem;
+	delete m_rootItem;
 }
 
 
@@ -80,7 +80,7 @@ QVariant SchedulerModel::headerData(int section, Qt::Orientation orientation, in
 				return QVariant();
 			}
 			*/
-		return _rootItem->data(section);
+		return m_rootItem->data(section);
 	}
 	
 	return QVariant();
@@ -92,7 +92,7 @@ bool SchedulerModel::setHeaderData(int section, Qt::Orientation orientation, con
 	if (role != Qt::EditRole || orientation != Qt::Horizontal)
 		return false;
 	
-	bool result = _rootItem->setData(section, value);
+	bool result = m_rootItem->setData(section, value);
 	
 	if (result)
 		emit headerDataChanged(orientation, section, section);
@@ -107,7 +107,7 @@ bool SchedulerModel::insertRows(int position, int rows, const QModelIndex &paren
 	bool success/* = false*/;
 	
 	beginInsertRows(parent, position, position + rows - 1);    
-	success = parentItem->insertChildren(position, rows, _rootItem->columnCount());
+	success = parentItem->insertChildren(position, rows, m_rootItem->columnCount());
     endInsertRows();
      
 	return success;
@@ -155,7 +155,7 @@ Qt::ItemFlags SchedulerModel::flags(const QModelIndex &index) const {
 
 int SchedulerModel::columnCount(const QModelIndex &/*parent*/) const {
 	
-	return _rootItem->columnCount();
+	return m_rootItem->columnCount();
 }
 
 
@@ -175,7 +175,7 @@ QModelIndex SchedulerModel::parent(const QModelIndex &index) const {
 	Schedule* childItem = getItem(index);
 	Schedule* parentItem = childItem->parent();
 	
-	if (parentItem == _rootItem)
+	if (parentItem == m_rootItem)
 		return QModelIndex();	
 
 	
@@ -207,5 +207,5 @@ Schedule* SchedulerModel::getItem(const QModelIndex &index) const {
 			return item;
 	}
 	
-	return _rootItem;
+	return m_rootItem;
 }

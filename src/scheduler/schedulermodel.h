@@ -61,7 +61,7 @@ public:
 	
 	
 private:
-	Schedule* _rootItem;
+	Schedule* m_rootItem;
 	
 	Schedule* getItem(const QModelIndex &index) const;
 	
