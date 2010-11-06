@@ -88,6 +88,7 @@ void Scheduler::removeSchedule() {
 		return;
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
 	QSqlQuery query(sqlConnection);
 	QString sql("DELETE FROM Schedule WHERE id = %1;");
 
@@ -95,8 +96,12 @@ void Scheduler::removeSchedule() {
 	if (!query.exec())
 		qDebug() << query.lastError();
 	
-	// And we refresh the schedules list
+	// We refresh the schedules list
 	refreshSchedules();
+	
+	// And set new current index
+	QModelIndex subIndex = m_model->index(index.row() - 1, index.column());
+	setCurrentIndex(subIndex);
 }
 
 
