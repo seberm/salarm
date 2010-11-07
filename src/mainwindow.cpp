@@ -138,6 +138,16 @@ void MainWindow::writeSettings() const {
 void MainWindow::readSettings() {	
 	
 	// Load new settings
+	if (!QFile::exists(CONF_DIR)) {
+		
+		QDir newDir;
+		if (!newDir.mkdir(CONF_DIR)) {
+			
+			qDebug() << tr("Unable to create directory: %1").arg(CONF_DIR);
+			return;
+		}
+	}
+	
 	m_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
 	
 	m_settings->beginGroup("Window");

@@ -47,7 +47,14 @@ int main(int argc, char *argv[]) {
 	{
 		QString locale = QLocale::system().name();
 		qDebug() << "Current locale" << locale;
-		QString localeDir = qApp->applicationDirPath() + QDir::separator() + "locale";
+		
+		QString pkgDataDir = QLibraryInfo::location(QLibraryInfo::PrefixPath).append(QDir::separator()).append("share");
+
+		QString localeDir = pkgDataDir + QDir::separator() + UNIX_NAME + QDir::separator() + "locale";
+		
+		if (!QFile::exists(localeDir))
+			QString localeDir = qApp->applicationDirPath() + QDir::separator() + "salarm" + QDir::separator() + "locale";
+		
 		translator.load(UNIX_NAME + "_" + locale, localeDir);
 		salarm.installTranslator(&translator);
 	}

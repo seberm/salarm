@@ -55,8 +55,9 @@ include(../locale.pri)
 
 unix {
     INSTALLS += target
-    target.path = $$BINDIR
+		target.path = $$BINDIR
+
     INSTALLS += translations
-    translations.path = $$PKGDATADIR/locale
-    translations.files += build/bin/locale
+		translations.path = $$PKGDATADIR/locale
+		translations.files += build/bin/locale
 }

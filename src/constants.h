@@ -10,8 +10,9 @@ const QString NAME = "sAlarm Scheduler";
 const QString UNIX_NAME = "salarm";
 
 // Default configuration file definition
-const QString CONFIG_FILE = QDir::homePath().append(QDir::separator()).append(".salarm").append(QDir::separator()).append("main.conf");
-const QString SQLITE_DB_FILE = QDir::homePath().append(QDir::separator()).append(".salarm").append(QDir::separator()).append("schedules.db");
+const QString CONF_DIR = QDir::homePath().append(QDir::separator()).append(".config");
+const QString CONFIG_FILE = QString(CONF_DIR).append(QDir::separator()).append("salarm").append(QDir::separator()).append("main.conf");
+const QString SQLITE_DB_FILE = QString(CONF_DIR).append(QDir::separator()).append("salarm").append(QDir::separator()).append("schedules.db");
 
 
 #endif // CONSTANTS_H
