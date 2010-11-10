@@ -32,17 +32,29 @@
 #include <QList>
 
 
+struct Column {
+	int columnID;
+	QString columnName;
+};
+
+
 class Scheduler : public QTreeView {
 	
-Q_OBJECT
+	Q_OBJECT
+	
+	Q_ENUMS(Columns)
 
 public:
 	
+			
 	//! Constructor
 	/*!
 	  \param parent pointer to parent object
 	*/
     explicit Scheduler(QWidget *parent = 0);
+	
+	//! Destructor
+	~Scheduler();
 			
 	//! Removes schedule
 	/*!
@@ -74,11 +86,15 @@ signals:
 	
 	
 private:
-	
+
 	SchedulerModel* m_model;
 	SchedulerProxyModel* m_proxyModel;
 	
+	Column *DBID, *Status, *Title, *Text, *Expiration, *Category, *CategoryID;	
+	
 	QTimer *m_scheduleTimer;
+	
+	//! Keeps the pairs of untimeouted schedules (<Database ID of schedule, Expiration datetime>)
 	QList<QPair<int, QDateTime> > m_schedules;
 };
 

@@ -25,11 +25,51 @@
 #include <QtSql>
 #include <QMessageBox>
 
+#include <QIcon>
+
 
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
+	// Columns definition
+	DBID = new Column;
+	DBID->columnID = 0;
+	DBID->columnName = "DBID";
+	
+	Status = new Column;
+	Status->columnID = 1;
+	Status->columnName = tr("Status");
+	
+	Title = new Column;
+	Title->columnID = 2;
+	Title->columnName = tr("Title");
+	
+	Text = new Column;
+	Text->columnID = 3;
+	Text->columnName = tr("Text");
+	
+	Expiration = new Column;
+	Expiration->columnID = 4;
+	Expiration->columnName = tr("Expiration");
+	
+	Category = new Column;
+	Category->columnID = 5;
+	Category->columnName = tr("Category");
+	
+	CategoryID = new Column;
+	CategoryID->columnID = 6;
+	CategoryID->columnName = "CategoryID";
+	//////////////////////////////////////////////////////////
+	
+	
 	QStringList headers;
-	headers << "DBID" << tr("Title") << tr("Text") << tr("Expiration") << tr("Category") << "CategoryID";
+	headers << DBID->columnName
+			<< Status->columnName
+			<< Title->columnName
+			<< Text->columnName
+			<< Expiration->columnName
+			<< Category->columnName
+			<< CategoryID->columnName;
+			
 	m_model = new SchedulerModel(headers, this);
 	
 	m_proxyModel = new SchedulerProxyModel(this);
@@ -38,10 +78,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setModel(m_proxyModel);
 	
 	// Hide the first column that holds DBID
-	setColumnHidden(0, true);
+	setColumnHidden(DBID->columnID, true);
 	
 	// Hide the column with schedule category ID
-	setColumnHidden(5, true);
+	setColumnHidden(CategoryID->columnID, true);
 	
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
@@ -61,6 +101,20 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 }
 
 
+Scheduler::~Scheduler() {
+	
+	// Remove the columns
+	delete DBID;
+	delete Status;
+	delete Title;
+	delete Text;
+	delete Expiration;
+	delete Category;
+	delete CategoryID;
+	
+}
+
+
 void Scheduler::makeConnections() {
 	
 	// If some schedule timeouted we need to refresh the schedule list
@@ -77,7 +131,7 @@ void Scheduler::removeSchedule() {
 		return;
 	
 	// Read DBID from the hidden first column
-	int dbID = index.sibling(index.row(), 0).data().toInt();
+	int dbID = index.sibling(index.row(), DBID->columnID).data().toInt();
 
 	QMessageBox msg(this);
 		msg.setWindowTitle(tr("Remove schedule"));
@@ -113,7 +167,7 @@ void Scheduler::refreshSchedules() {
 
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QString sql("SELECT Schedule.id, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id, Schedule.timeouted" \
+	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
 				" FROM Schedule" \
 				" LEFT JOIN ScheduleCategory" \
 				" ON ScheduleCategory.id = Schedule.categoryID" \
@@ -122,6 +176,13 @@ void Scheduler::refreshSchedules() {
 
 	QSqlQuery query(sql, sqlConnection);
 	
+	int dbDBID = query.record().indexOf("DBID");
+	int dbTitle = query.record().indexOf("title");
+	int dbText = query.record().indexOf("text");
+	int dbExpiration = query.record().indexOf("datetime");
+	int dbCategoryName = query.record().indexOf("name");
+	int dbCategoryID = query.record().indexOf("categoryID");
+	int dbTimeouted = query.record().indexOf("timeouted");
 	
 	while (query.next()) {
 		QModelIndex index = selectionModel()->currentIndex();
@@ -129,36 +190,42 @@ void Scheduler::refreshSchedules() {
 			return;
 
 		// DBID
-		QModelIndex child = m_model->index(index.row() + 1, 0, index.parent());
-		m_model->setData(child, query.value(0));
+		QModelIndex child = m_model->index(index.row() + 1, DBID->columnID, index.parent());
+		m_model->setData(child, query.value(dbDBID));
+		
+//! \todo dodelat ikonu u upominek		
+		// Status
+		//QIcon icon(":/statusIcons/checkIcon");
+		//child = m_model->index(index.row() + 1, Status->columnID, index.parent());
+		//m_model->setData(child, icon, Qt::DecorationRole);
 		
 		// Title
-		child = m_model->index(index.row() + 1, 1, index.parent());
-		m_model->setData(child, query.value(1));
+		child = m_model->index(index.row() + 1, Title->columnID, index.parent());
+		m_model->setData(child, query.value(dbTitle));
 		
 		// Text
-		child = m_model->index(index.row() + 1, 2, index.parent());
-		m_model->setData(child, query.value(2));
+		child = m_model->index(index.row() + 1, Text->columnID, index.parent());
+		m_model->setData(child, query.value(dbText));
 		
 		// Expiration
-		child = m_model->index(index.row() + 1, 3, index.parent());
-		m_model->setData(child, query.value(3));
+		child = m_model->index(index.row() + 1, Expiration->columnID, index.parent());
+		m_model->setData(child, query.value(dbExpiration));
 		
 		// Category
-		child = m_model->index(index.row() + 1, 4, index.parent());
+		child = m_model->index(index.row() + 1, Category->columnID, index.parent());
 		
 		if (query.value(4).toString().length() == 0)
 			m_model->setData(child, tr("No category"));
 		else
-			m_model->setData(child, query.value(4));
+			m_model->setData(child, query.value(dbCategoryName));
 		
 		// Schedule category ID
-		child = m_model->index(index.row() + 1, 5, index.parent());
-		m_model->setData(child, query.value(5));
+		child = m_model->index(index.row() + 1, CategoryID->columnID, index.parent());
+		m_model->setData(child, query.value(dbCategoryID));
 		
-		// We want only oncoming schedules
-		if (!query.value(6).toBool())
-			m_schedules.append(qMakePair(query.value(0).toInt(), query.value(3).toDateTime()));
+		// We want to have in m_schedules only oncoming schedules
+		if (!query.value(dbTimeouted).toBool())
+			m_schedules.append(qMakePair(query.value(dbTimeouted).toInt(), query.value(dbExpiration).toDateTime()));
 
 	}
 }
