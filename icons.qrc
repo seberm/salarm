@@ -22,4 +22,7 @@
     <qresource prefix="/splashs">
         <file alias="sAlarmIcon">img/splash/salarm.png</file>
     </qresource>
+    <qresource prefix="/statusIcons">
+        <file alias="checkIcon">img/icons/check_icon.png</file>
+    </qresource>
 </RCC>
