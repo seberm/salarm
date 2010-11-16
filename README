@@ -3,7 +3,7 @@
 > * Author: Sabart Otto <seberm[at]gmail[dot]com>
 > * Jabber: seberm[at]jabber[dot]cz
 > * Version: 0.5
-> * Contributors: Nobody
+> * Contributors: Nobody (only for a while I hope)
 > * Web: http://www.seberm.homelinux.org/project/salarm.php
 
 
@@ -27,13 +27,14 @@
 
 
 ### 2) COMPILING
+It's possible to add the INSTALL_PREFIX to qmake (EXAMPLE: qmake INSTALL_PREFIX=/usr)
 > qmake
 > make
 > make install
 
 
 ### 3) BUGS
-If you find somthing you think that is a bug, feel free to contact me.
+If you find something you think that is a bug, feel free to contact me (e-mail is at the top of this document).
 
 
 ### 4) CONTRIBUTING
