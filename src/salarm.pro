@@ -64,8 +64,8 @@ FORMS += ui/mainwindow.ui \
 RESOURCES += resources/icons.qrc
 
 # List of translations
-TRANSLATIONS += locales/salarm_cs_CZ.ts \
-	locales/salarm_en_US.ts
+TRANSLATIONS += translations/salarm_cs_CZ.ts \
+	translations/salarm_en_US.ts
 
 
 
@@ -84,8 +84,8 @@ CODECFORSRC = UTF-8
 
 	TSQM.name = lrelease ${QMAKE_FILE_IN}
 	TSQM.input = TRANSLATIONS
-	TSQM.output = ../build/bin/locales/${QMAKE_FILE_BASE}.qm
-	TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ../build/bin/locales/${QMAKE_FILE_BASE}.qm
+	TSQM.output = ../build/bin/translations/${QMAKE_FILE_BASE}.qm
+	TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ../build/bin/translations/${QMAKE_FILE_BASE}.qm
 	TSQM.CONFIG = no_link target_predeps
 	QMAKE_EXTRA_COMPILERS += TSQM
 	PRE_TARGETDEPS += compiler_TSQM_make_all
@@ -104,7 +104,7 @@ unix {
 	DEFINES += DATADIR=\"$$DATADIR\"
 	
 
-    INSTALLS += target \
+	INSTALLS += target \
 				desktop \
 				translations \
 				icon16 \
@@ -119,7 +119,7 @@ unix {
 	desktop.files += ../$${TARGET}.desktop
 
 	translations.path = $$DATADIR/$${TARGET}/locales
-	translations.files += ../build/bin/locales
+	translations.files += ../build/bin/translations
 
 	icon16.path = $$DATADIR/icons/hicolor/16x16/apps/$${TARGET}.png
 	icon16.files += ../img/desktopIcons/16x16/$${TARGET}.png
