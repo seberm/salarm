@@ -4,8 +4,10 @@ TEMPLATE = subdirs
 CONFIG += release \
 		debug
 
-
 SUBDIRS = src
 
-DISTFILES += LICENSE \
-	     README
+
+unix {
+	DISTFILES += LICENSE \
+			 README
+}
