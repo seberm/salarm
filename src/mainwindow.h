@@ -33,6 +33,7 @@
 #include "scheduler.h"
 #include "database.h"
 
+
 namespace Ui {
     class MainWindow;
 }
@@ -79,10 +80,10 @@ void writeSettings() const;
 	//! Indicates if the user can close the MainWindow
 	bool m_canClose;
 	
-	QSettings* m_settings;	
-	QSystemTrayIcon* m_trayIcon;	
-	QStatusBar* m_statusBar;
-	Scheduler* m_scheduler;
+	QSettings *m_settings;	
+	QSystemTrayIcon *m_trayIcon;	
+	QStatusBar *m_statusBar;
+	Scheduler *m_scheduler;
 	QLabel *m_lblCurrentDateTime;
 	QTimer *m_timer;
 	

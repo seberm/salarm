@@ -35,6 +35,12 @@
 #include <QMessageBox>
 
 #include <QtSql>
+ 
+
+#include <phonon/mediaobject.h>
+#include <phonon/mediasource.h>
+#include <phonon/audiooutput.h>
+using namespace Phonon;
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -338,8 +344,20 @@ void MainWindow::timeoutInformation(int ID) {
 	queryData.prepare(sqlData);
 	queryData.addBindValue(ID);
 	
-	if (!queryData.exec())
+	if (!queryData.exec()) {
 		qDebug() << queryData.lastError();
+		return;
+	}
+	
+	
+	MediaObject *player = new MediaObject(this);
+	AudioOutput *output = new AudioOutput(MusicCategory, this);
+	Phonon::createPath(player, output);
+	
+	QFile f(m_settings->value("App/AlarmSound").toString());
+	player->setCurrentSource(MediaSource(&f));
+	player->play();
+	
 	
 	while (queryData.next()) {
 		
@@ -348,9 +366,9 @@ void MainWindow::timeoutInformation(int ID) {
 	
 		QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
 		QMessageBox::information(this, tr("Timeouted"), message);
+		
 
-		m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
+//		m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
 	}
-	
 }
 
