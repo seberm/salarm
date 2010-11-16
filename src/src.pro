@@ -1,18 +1,28 @@
-QT += sql
-CONFIG += qt
-
+TEMPLATE = app
 # Name of final binary file
 TARGET = salarm
-TEMPLATE = app
-DESTDIR = ../build/bin
-
-OBJECTS_DIR = ../build/obj
-MOC_DIR = ../build/moc
-UI_DIR = ../build/ui
-RCC_DIR = ../build/rcc
-
+DEPENDPATH += .
 INCLUDEPATH += . \
     scheduler \
+
+QT += sql \
+	phonon \
+
+
+# Binary dir
+DESTDIR = ../build/bin
+
+# Objects dir
+OBJECTS_DIR = ../build/obj
+
+# Moc files dir
+MOC_DIR = ../build/moc
+
+# User-interface dir
+UI_DIR = ../build/ui
+
+# Resources dir
+RCC_DIR = ../build/rcc
 
 
 # Header files definition
@@ -24,7 +34,8 @@ HEADERS += mainwindow.h \
     scheduler/scheduledialog.h \
     scheduler/schedulermodel.h \
     scheduler/schedule.h \
-    scheduler/schedulerproxymodel.h
+    scheduler/schedulerproxymodel.h \
+    scheduledelegate.h
 
 # Sources definition
 SOURCES += main.cpp \
@@ -35,7 +46,9 @@ SOURCES += main.cpp \
     scheduler/scheduledialog.cpp \
     scheduler/schedulermodel.cpp \
     scheduler/schedule.cpp \
-    scheduler/schedulerproxymodel.cpp
+    scheduler/schedulerproxymodel.cpp \
+    scheduledelegate.cpp \
+    constants.cpp
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
@@ -43,9 +56,7 @@ FORMS += ui/mainwindow.ui \
     ui/scheduledialog.ui
 
 # App resources
-RESOURCES += ../icons.qrc \
-    ../sounds.qrc
-
+RESOURCES += ../icons.qrc
 
 # List of translations
 TRANSLATIONS += locale/salarm_cs_CZ.ts \
@@ -53,11 +64,27 @@ TRANSLATIONS += locale/salarm_cs_CZ.ts \
 
 include(../locale.pri)
 
-unix {
-    INSTALLS += target
-		target.path = $$BINDIR
 
-    INSTALLS += translations
-		translations.path = $$PKGDATADIR/locale
-		translations.files += build/bin/locale
+unix {
+	isEmpty(PREFIX):PREFIX = /usr
+	BINDIR = $$PREFIX/bin
+	DATADIR = $$PREFIX/share
+
+	# Preprocesor variables
+	DEFINES += DATADIR=\"$$DATADIR\"
+	
+
+    INSTALLS += target \
+				desktop \
+				icon \
+				translations
+
+	target.path = $$BINDIR
+	desktop.path = $$DATADIR/applications
+	desktop.files += ../$${TARGET}.desktop
+	icon.path = $$DATADIR/icons/256x256/apps/$${TARGET}.png
+	icon.fles += ../$${TARGET}.png
+
+	translations.path = $$DATADIR/locale
+	translations.files += ../build/bin/locale
 }
