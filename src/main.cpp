@@ -47,14 +47,21 @@ int main(int argc, char *argv[]) {
 	{
 		QString locale = QLocale::system().name();
 		qDebug() << "Current locale" << locale;
-		
-		QString pkgDataDir = QLibraryInfo::location(QLibraryInfo::PrefixPath).append(QDir::separator()).append("share");
+
+//! \todo dodelat preklad! nefunguje nacitani zkompilovanych locales s konecne instalace... co nam vrati umisteni /usr/share/APP/* ? jaka fce?		
+		QString pkgDataDir = "/usr/share";
 
 		QString localeDir = pkgDataDir + QDir::separator() + UNIX_NAME + QDir::separator() + "locale";
-		
+
+//! \todo 
+/* 
+* http://doc.qt.nokia.com/4.7/qmake-environment-reference.html
+* install-prefix
+*/ 
 		if (!QFile::exists(localeDir))
-			QString localeDir = qApp->applicationDirPath() + QDir::separator() + "salarm" + QDir::separator() + "locale";
+			localeDir = qApp->applicationDirPath() + QDir::separator() + "locale";
 		
+//qDebug() << localeDir;
 		translator.load(UNIX_NAME + "_" + locale, localeDir);
 		salarm.installTranslator(&translator);
 	}
