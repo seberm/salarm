@@ -84,8 +84,8 @@ CODECFORSRC = UTF-8
 
 	TSQM.name = lrelease ${QMAKE_FILE_IN}
 	TSQM.input = TRANSLATIONS
-	TSQM.output = ../build/bin/locale/${QMAKE_FILE_BASE}.qm
-	TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ../build/bin/locale/${QMAKE_FILE_BASE}.qm
+	TSQM.output = ../build/bin/locales/${QMAKE_FILE_BASE}.qm
+	TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ../build/bin/locales/${QMAKE_FILE_BASE}.qm
 	TSQM.CONFIG = no_link target_predeps
 	QMAKE_EXTRA_COMPILERS += TSQM
 	PRE_TARGETDEPS += compiler_TSQM_make_all
@@ -95,11 +95,8 @@ CODECFORSRC = UTF-8
 
 ### UNIX ###
 unix {
-
-	DISTFILES += ../LICENSE \
-			 ../README
 	
-	isEmpty(INSTALL_PREFIX):INSTALL_PREFIX = ./
+	isEmpty(INSTALL_PREFIX):INSTALL_PREFIX = ./installation
 	BINDIR = $$INSTALL_PREFIX/bin
 	DATADIR = $$INSTALL_PREFIX/share
 
@@ -109,15 +106,30 @@ unix {
 
     INSTALLS += target \
 				desktop \
-				icon \
-				translations
+				translations \
+				icon16 \
+				icon32 \
+				icon64 \
+				icon128 \
+				icon256
 
 	target.path = $$BINDIR
+
 	desktop.path = $$DATADIR/applications
 	desktop.files += ../$${TARGET}.desktop
-	icon.path = $$DATADIR/icons/256x256/apps/$${TARGET}.png
-	icon.fles += ../$${TARGET}.png
 
-	translations.path = $$DATADIR/$${TARGET}/locale
-	translations.files += ../build/bin/locale
+	translations.path = $$DATADIR/$${TARGET}/locales
+	translations.files += ../build/bin/locales
+
+	icon16.path = $$DATADIR/icons/hicolor/16x16/apps/$${TARGET}.png
+	icon16.files += ../img/desktopIcons/16x16/$${TARGET}.png
+	icon32.path = $$DATADIR/icons/hicolor/32x32/apps/$${TARGET}.png
+	icon32.files += ../img/desktopIcons/32x32/$${TARGET}.png
+	icon64.path = $$DATADIR/icons/hicolor/64x64/apps/$${TARGET}.png
+	icon64.files += ../img/desktopIcons/64x64/$${TARGET}.png
+	icon128.path = $$DATADIR/icons/hicolor/128x128/apps/$${TARGET}.png
+	icon128.files += ../img/desktopIcons/128x128/$${TARGET}.png
+	icon256.path = $$DATADIR/icons/hicolor/256x256/apps/$${TARGET}.png
+	icon256.files += ../img/desktopIcons/256x256/$${TARGET}.png
+
 }
