@@ -26,6 +26,7 @@
 #include <QSettings>
 #include <QMessageBox>
 
+
 namespace Ui {
     class OptionsDialog;
 }
@@ -49,8 +50,11 @@ class OptionsDialog : public QDialog {
 		bool m_dbChanged;
 	
 	private slots:
-		void on_comboBox_currentIndexChanged(QString );
-		void on_buttonBox_accepted();
+		void databaseChanged(QString);
+		void dialogAccepted();
+		
+		//! Opens the file dialog and inserts choosen sound into combo box
+		void addAlarmSound();
 	
 };
 

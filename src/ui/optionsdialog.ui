@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>240</height>
+    <width>383</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,15 +20,15 @@
    <item row="0" column="0">
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageApp">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>302</width>
-        <height>133</height>
+        <width>365</width>
+        <height>176</height>
        </rect>
       </property>
       <attribute name="label">
@@ -63,8 +63,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>302</width>
-        <height>133</height>
+        <width>365</width>
+        <height>176</height>
        </rect>
       </property>
       <attribute name="label">
@@ -72,7 +72,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="comboBoxDatabases">
          <item>
           <property name="text">
            <string>SQLite</string>
@@ -146,6 +146,34 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="pageAlarmWarming">
+      <attribute name="label">
+       <string>Alarm warming</string>
+      </attribute>
+      <widget class="QPushButton" name="pushButtonOpenFile">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>10</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Open file</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBoxSounds">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0">
@@ -161,7 +189,7 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>comboBox</tabstop>
+  <tabstop>comboBoxDatabases</tabstop>
   <tabstop>lineEditMySQLHostname</tabstop>
   <tabstop>lineEditMySQLDatabase</tabstop>
   <tabstop>lineEditMySQLUsername</tabstop>

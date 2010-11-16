@@ -22,6 +22,10 @@
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 
+#include <QFileDialog>
+#include <QtDebug>
+
+
 OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
 	
     m_ui->setupUi(this);
@@ -29,9 +33,14 @@ OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(par
 	
 	m_settings->beginGroup("App");
 		m_ui->checkBoxCanClose->setChecked(!(m_settings->value("CanClose", false).toBool()));
-		m_ui->comboBox->setCurrentIndex(m_settings->value("DatabaseDriver", 0).toInt());
+		m_ui->comboBoxDatabases->setCurrentIndex(m_settings->value("DatabaseDriver", 0).toInt());
+
+//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	
+m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(m_settings->value("AlarmSound").toString()));
+qDebug() << m_ui->comboBoxSounds->findText(m_settings->value("AlarmSound").toString());
+
 	m_settings->endGroup();
-	
+
 	m_settings->beginGroup("MySQL");
 		m_ui->lineEditMySQLHostname->setText(m_settings->value("HostName", "localhost").toString());
 		m_ui->lineEditMySQLUsername->setText(m_settings->value("UserName", QString()).toString());
@@ -39,7 +48,22 @@ OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(par
 		m_ui->lineEditMySQLDatabase->setText(m_settings->value("Database", "salarm").toString());
 	m_settings->endGroup();
 	
+	int size = m_settings->beginReadArray("Sounds");
+		for (int i = 0; i < size; i++) {
+			
+			m_settings->setArrayIndex(i);
+			QString filename = m_settings->value("sound").toString();
+			
+			QFileInfo f(filename);
+			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
+		}
+	m_settings->endArray();
+	
 	m_dbChanged = false;
+	
+	connect(m_ui->pushButtonOpenFile, SIGNAL(pressed()), this, SLOT(addAlarmSound()));
+	connect(m_ui->comboBoxDatabases, SIGNAL(currentIndexChanged(QString)), this, SLOT(databaseChanged(QString)));
+	connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 }
 
 
@@ -62,12 +86,10 @@ void OptionsDialog::changeEvent(QEvent *e) {
 }
 
 
-void OptionsDialog::on_buttonBox_accepted() {
+void OptionsDialog::dialogAccepted() {
 	
-	if (m_dbChanged) {
-		
+	if (m_dbChanged)
 		QMessageBox::information(this, tr("Database changed"), tr("The changes of database will take effect after the application restart."));
-	}
 	
 	m_settings->beginGroup("MySQL");
 		m_settings->setValue("HostName", m_ui->lineEditMySQLHostname->text());
@@ -77,15 +99,16 @@ void OptionsDialog::on_buttonBox_accepted() {
 	m_settings->endGroup();
 	
 	m_settings->beginGroup("App");
-		m_settings->setValue("DatabaseDriver", m_ui->comboBox->currentIndex());
+		m_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->currentIndex());
 		m_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
+		m_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
 	m_settings->endGroup();
 	
 	close();
 }
 
 
-void OptionsDialog::on_comboBox_currentIndexChanged(QString index) {
+void OptionsDialog::databaseChanged(QString index) {
 	
     if (index == "MySQL")
 		m_ui->groupBoxMySQL->setEnabled(true);
@@ -93,3 +116,32 @@ void OptionsDialog::on_comboBox_currentIndexChanged(QString index) {
 	
 	m_dbChanged = true;
 }
+
+
+void OptionsDialog::addAlarmSound() {
+
+	QStringList filenames = QFileDialog::getOpenFileNames(this,
+													tr("Open sound"),
+													QDir::homePath(),
+													tr("Supported files") + "(*.mp3 *.mp4 *.wav *.3gp *.ogg);; " + tr("All files") + " (*.*)");
+	
+	
+	if (filenames.isEmpty())
+		return;
+	
+	int size = m_ui->comboBoxSounds->count();
+	
+	m_settings->beginWriteArray("Sounds");
+		for (int i = size; i < filenames.size(); i++) {
+				
+			QFileInfo f(filenames.at(i));
+			m_ui->comboBoxSounds->addItem(f.fileName());
+				
+			m_settings->setArrayIndex(i);
+			m_settings->setValue("sound", f.absoluteFilePath());
+				
+		}
+	m_settings->endArray();
+}
+
+
