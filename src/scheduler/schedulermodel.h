@@ -50,7 +50,7 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role);
 	Qt::ItemFlags flags(const QModelIndex &index) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole);
 	bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
 	//bool insertColumns(int position, int columns, const QModelIndex &parent);
 	bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());

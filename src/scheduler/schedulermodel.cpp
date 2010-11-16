@@ -129,7 +129,10 @@ bool SchedulerModel::removeRows(int position, int rows, const QModelIndex &paren
 
 bool SchedulerModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	
-	if (index.isValid() && role == Qt::EditRole) {
+	if (!index.isValid())
+		return false;
+	
+	if (role == Qt::DisplayRole) {
 		Schedule* item = getItem(index);
 		bool result = item->setData(index.column(), value);
 		
