@@ -1,4 +1,6 @@
 [Desktop Entry]
+Version=1.0
+Encoding=UTF-8
 Name=sAlarm
 Categories=Application;Qt;Audio
 
@@ -10,7 +12,7 @@ GenericName[en_US]=A simple scheduler
 GenericName[cs_CZ]=Jednoduchý správce upomínek
 GenericName=A simple scheduler
 
-Exec=salarm
+Exec=mbarcode
 Icon=salarm
 
 StartupNotify=false
