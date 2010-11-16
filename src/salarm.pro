@@ -1,4 +1,5 @@
 TEMPLATE = app
+
 # Name of final binary file
 TARGET = salarm
 DEPENDPATH += .
@@ -7,6 +8,10 @@ INCLUDEPATH += . \
 
 QT += sql \
 	phonon \
+
+# Release option is ignored if debug is also specified
+CONFIG += release \
+		debug
 
 
 # Binary dir
@@ -56,19 +61,47 @@ FORMS += ui/mainwindow.ui \
     ui/scheduledialog.ui
 
 # App resources
-RESOURCES += ../icons.qrc
+RESOURCES += resources/icons.qrc
 
 # List of translations
-TRANSLATIONS += locale/salarm_cs_CZ.ts \
-	locale/salarm_en_US.ts
-
-include(../locale.pri)
+TRANSLATIONS += locales/salarm_cs_CZ.ts \
+	locales/salarm_en_US.ts
 
 
+
+
+###
+CODECFORTR = UTF-8 
+CODECFORSRC = UTF-8
+
+!isEmpty(TRANSLATIONS) {
+
+	isEmpty(QMAKE_LRELEASE) {
+
+		win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
+		else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
+	}
+
+	TSQM.name = lrelease ${QMAKE_FILE_IN}
+	TSQM.input = TRANSLATIONS
+	TSQM.output = ../build/bin/locale/${QMAKE_FILE_BASE}.qm
+	TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ../build/bin/locale/${QMAKE_FILE_BASE}.qm
+	TSQM.CONFIG = no_link target_predeps
+	QMAKE_EXTRA_COMPILERS += TSQM
+	PRE_TARGETDEPS += compiler_TSQM_make_all
+}
+
+
+
+### UNIX ###
 unix {
-	isEmpty(PREFIX):PREFIX = /usr
-	BINDIR = $$PREFIX/bin
-	DATADIR = $$PREFIX/share
+
+	DISTFILES += ../LICENSE \
+			 ../README
+	
+	isEmpty(INSTALL_PREFIX):INSTALL_PREFIX = ./
+	BINDIR = $$INSTALL_PREFIX/bin
+	DATADIR = $$INSTALL_PREFIX/share
 
 	# Preprocesor variables
 	DEFINES += DATADIR=\"$$DATADIR\"
@@ -85,6 +118,6 @@ unix {
 	icon.path = $$DATADIR/icons/256x256/apps/$${TARGET}.png
 	icon.fles += ../$${TARGET}.png
 
-	translations.path = $$DATADIR/locale
+	translations.path = $$DATADIR/$${TARGET}/locale
 	translations.files += ../build/bin/locale
 }
