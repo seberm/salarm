@@ -31,44 +31,37 @@
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	
 	// Columns definition
-	DBID = new Column;
-	DBID->columnID = 0;
-	DBID->columnName = "DBID";
+	DBID.columnID = 0;
+	DBID.columnName = "DBID";
 	
-	Status = new Column;
-	Status->columnID = 1;
-	Status->columnName = tr("Status");
+	CategoryID.columnID = 1;
+	CategoryID.columnName = "CategoryID";
 	
-	Title = new Column;
-	Title->columnID = 2;
-	Title->columnName = tr("Title");
+	Status.columnID = 2;
+	Status.columnName = tr("Status");
 	
-	Text = new Column;
-	Text->columnID = 3;
-	Text->columnName = tr("Text");
+	Title.columnID = 3;
+	Title.columnName = tr("Title");
 	
-	Expiration = new Column;
-	Expiration->columnID = 4;
-	Expiration->columnName = tr("Expiration");
+	Text.columnID = 4;
+	Text.columnName = tr("Text");
 	
-	Category = new Column;
-	Category->columnID = 5;
-	Category->columnName = tr("Category");
+	Expiration.columnID = 5;
+	Expiration.columnName = tr("Expiration");
 	
-	CategoryID = new Column;
-	CategoryID->columnID = 6;
-	CategoryID->columnName = "CategoryID";
+	Category.columnID = 6;
+	Category.columnName = tr("Category");
 	//////////////////////////////////////////////////////////
 	
 	
 	QStringList headers;
-	headers << DBID->columnName
-			<< Status->columnName
-			<< Title->columnName
-			<< Text->columnName
-			<< Expiration->columnName
-			<< Category->columnName
-			<< CategoryID->columnName;
+	headers << DBID.columnName
+			<< CategoryID.columnName
+			<< Status.columnName
+			<< Title.columnName
+			<< Text.columnName
+			<< Expiration.columnName
+			<< Category.columnName;
 			
 	m_model = new SchedulerModel(headers, this);
 	
@@ -78,16 +71,22 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setModel(m_proxyModel);
 	
 	// Hide the first column that holds DBID
-	setColumnHidden(DBID->columnID, true);
+	setColumnHidden(DBID.columnID, true);
 	
 	// Hide the column with schedule category ID
-	setColumnHidden(CategoryID->columnID, true);
+	setColumnHidden(CategoryID.columnID, true);
 	
 	// Allows the sorting in QListView
 	setSortingEnabled(true);
+
+	m_itemDelegate = new ScheduleDelegate(this, m_proxyModel, m_model);
+	setItemDelegate(m_itemDelegate);
 	
 	setRootIsDecorated(false);
 	setAlternatingRowColors(true);	
+	
+	// Sets the Status column width to 20px
+	setColumnWidth(Status.columnID, 20);
 	
 	// We need to update the list of schedules
 	refreshSchedules();
@@ -102,15 +101,6 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 
 
 Scheduler::~Scheduler() {
-	
-	// Remove the columns
-	delete DBID;
-	delete Status;
-	delete Title;
-	delete Text;
-	delete Expiration;
-	delete Category;
-	delete CategoryID;
 	
 }
 
@@ -131,7 +121,7 @@ void Scheduler::removeSchedule() {
 		return;
 	
 	// Read DBID from the hidden first column
-	int dbID = index.sibling(index.row(), DBID->columnID).data().toInt();
+	int dbID = index.sibling(index.row(), DBID.columnID).data().toInt();
 
 	QMessageBox msg(this);
 		msg.setWindowTitle(tr("Remove schedule"));
@@ -190,29 +180,30 @@ void Scheduler::refreshSchedules() {
 			return;
 
 		// DBID
-		QModelIndex child = m_model->index(index.row() + 1, DBID->columnID, index.parent());
+		QModelIndex child = m_model->index(index.row() + 1, DBID.columnID, index.parent());
 		m_model->setData(child, query.value(dbDBID));
 		
 //! \todo dodelat ikonu u upominek		
 		// Status
-		//QIcon icon(":/statusIcons/checkIcon");
-		//child = m_model->index(index.row() + 1, Status->columnID, index.parent());
-		//m_model->setData(child, icon, Qt::DecorationRole);
+		QImage image(":/statusIcons/checkIcon");
+		
+		child = m_model->index(index.row() + 1, Status.columnID, index.parent());
+		m_model->setData(child, image, Qt::DisplayRole);
 		
 		// Title
-		child = m_model->index(index.row() + 1, Title->columnID, index.parent());
+		child = m_model->index(index.row() + 1, Title.columnID, index.parent());
 		m_model->setData(child, query.value(dbTitle));
 		
 		// Text
-		child = m_model->index(index.row() + 1, Text->columnID, index.parent());
+		child = m_model->index(index.row() + 1, Text.columnID, index.parent());
 		m_model->setData(child, query.value(dbText));
 		
 		// Expiration
-		child = m_model->index(index.row() + 1, Expiration->columnID, index.parent());
+		child = m_model->index(index.row() + 1, Expiration.columnID, index.parent());
 		m_model->setData(child, query.value(dbExpiration));
 		
 		// Category
-		child = m_model->index(index.row() + 1, Category->columnID, index.parent());
+		child = m_model->index(index.row() + 1, Category.columnID, index.parent());
 		
 		if (query.value(4).toString().length() == 0)
 			m_model->setData(child, tr("No category"));
@@ -220,12 +211,12 @@ void Scheduler::refreshSchedules() {
 			m_model->setData(child, query.value(dbCategoryName));
 		
 		// Schedule category ID
-		child = m_model->index(index.row() + 1, CategoryID->columnID, index.parent());
+		child = m_model->index(index.row() + 1, CategoryID.columnID, index.parent());
 		m_model->setData(child, query.value(dbCategoryID));
 		
 		// We want to have in m_schedules only oncoming schedules
 		if (!query.value(dbTimeouted).toBool())
-			m_schedules.append(qMakePair(query.value(dbTimeouted).toInt(), query.value(dbExpiration).toDateTime()));
+			m_schedules.append(qMakePair(query.value(dbDBID).toInt(), query.value(dbExpiration).toDateTime()));
 
 	}
 }

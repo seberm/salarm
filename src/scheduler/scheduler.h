@@ -25,6 +25,7 @@
 
 #include "schedulermodel.h"
 #include "schedulerproxymodel.h"
+#include "scheduledelegate.h"
 
 #include <QTreeWidget>
 #include <QDateEdit>
@@ -87,10 +88,11 @@ signals:
 	
 private:
 
-	SchedulerModel* m_model;
-	SchedulerProxyModel* m_proxyModel;
+	SchedulerModel *m_model;
+	SchedulerProxyModel *m_proxyModel;
+	ScheduleDelegate *m_itemDelegate;
 	
-	Column *DBID, *Status, *Title, *Text, *Expiration, *Category, *CategoryID;	
+	Column DBID, Status, Title, Text, Expiration, Category, CategoryID;	
 	
 	QTimer *m_scheduleTimer;
 	
