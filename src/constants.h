@@ -32,6 +32,7 @@
 const QString VERSION = "0.40.0";
 const QString NAME = "sAlarm Scheduler";
 const QString UNIX_NAME = "salarm";
+const QString HOMEPAGE = "http://www.seberm.homelinux.org/project/salarm.php";
 
 // Default configuration file definition
 const QString CONF_DIR = QDir::homePath().append(QDir::separator()).append(".config");

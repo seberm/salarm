@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
 	salarm.setOrganizationName("Šabart Otto");
 	salarm.setApplicationName(NAME);
 	salarm.setApplicationVersion(VERSION);
+	salarm.setProperty("projectHomePage", HOMEPAGE);
 
 	
 	// Initiating a application global translator
@@ -50,7 +51,9 @@ int main(int argc, char *argv[]) {
 
 //! \todo dodelat preklad! nefunguje nacitani zkompilovanych locales s konecne instalace... co nam vrati umisteni /usr/share/APP/* ? jaka fce?		
 		QString pkgDataDir = "/usr/share";
-
+		
+//unsigned char x = DATADIR;
+//qDebug() << x;
 		QString localeDir = pkgDataDir + QDir::separator() + UNIX_NAME + QDir::separator() + "locale";
 
 //! \todo 
