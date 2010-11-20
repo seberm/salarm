@@ -85,8 +85,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setRootIsDecorated(false);
 	setAlternatingRowColors(true);	
 	
-	// Sets the Status column width to 20px
-	setColumnWidth(Status.columnID, 20);
+	// Resize columns to its content
+	resizeColumnToContents(Status.columnID);
+	resizeColumnToContents(Title.columnID);
+	resizeColumnToContents(Expiration.columnID);
 	
 	// We need to update the list of schedules
 	refreshSchedules();
