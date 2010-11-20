@@ -54,13 +54,14 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 	
 	makeConnections();
 	
+//! \todo The number of columns must be defined in some constants or structures (scheduler.cpp)
 	m_scheduleID = index.sibling(index.row(), 0).data().toInt();
-
-	QString title = index.sibling(index.row(), 1).data().toString();
-	QString text = index.sibling(index.row(), 2).data().toString();
-	QDateTime expirationDateTime = index.sibling(index.row(), 3).data().toDateTime();
-	QDate expirationDate = index.sibling(index.row(), 3).data().toDate();
-	int categoryID = index.sibling(index.row(), 5).data().toInt();
+	int categoryID = index.sibling(index.row(), 1).data().toInt();
+	
+	QString title = index.sibling(index.row(), 3).data().toString();
+	QString text = index.sibling(index.row(), 4).data().toString();
+	QDateTime expirationDateTime = index.sibling(index.row(), 5).data().toDateTime();
+	QDate expirationDate = index.sibling(index.row(), 6).data().toDate();
 	
 	ui->lineEditTitle->setText(title);
 	ui->plainTextEditText->setPlainText(text);
