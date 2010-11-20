@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QStatusBar>
+#include <QToolBar>
 
 #include "scheduler.h"
 #include "database.h"
@@ -59,13 +60,19 @@ private:
 	void createStatusBar();
 	
 	//! Creates the tools box
-	void createToolsBar();
+	void createToolBar();
+	
+	//! Creates the tray icon
+	void createTrayIcon();
 	
 	//! Makes the connections between objects
 	void makeConnections() const;
+
+	//! Reads the main application settings
+	void readSettings();
 	
-void readSettings();
-void writeSettings() const;
+	//! Saves application and window settings	
+	void writeSettings() const;
 	
 	//! Opens a confirmation messageBox
 	/*!
@@ -83,6 +90,7 @@ void writeSettings() const;
 	QSettings *m_settings;	
 	QSystemTrayIcon *m_trayIcon;	
 	QStatusBar *m_statusBar;
+	QToolBar *m_toolBar;
 	Scheduler *m_scheduler;
 	QLabel *m_lblCurrentDateTime;
 	QTimer *m_timer;
@@ -94,7 +102,10 @@ void writeSettings() const;
 private slots:
 	
 	//! Shows or hides the MainWindow
-	void showHide (QSystemTrayIcon::ActivationReason);
+	void showHide();
+	
+	//! Is called when tray icon is triggered
+	void trayActivation(QSystemTrayIcon::ActivationReason);
 	void about();
 	void reportBug();
 	void openPreferences();

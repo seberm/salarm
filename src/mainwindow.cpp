@@ -69,13 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	readSettings();
 
-	m_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
-	
-	QMenu *trayMenu = new QMenu;
-	trayMenu->addAction(ui->actionQuit);
-	m_trayIcon->setContextMenu(trayMenu);
-	m_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
-	m_trayIcon->setVisible(true);
+	createTrayIcon();
 	
 	m_scheduler = new Scheduler(this);
 	m_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -92,11 +86,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	connect (m_timer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
 	m_timer->start();
 	
-createToolsBar();
+	createToolBar();
 	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();
-	
+
 	splash->finish(this);
 	delete splash;
 }
@@ -104,7 +98,7 @@ createToolsBar();
 
 void MainWindow::makeConnections() const {
 	
-	connect (m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(showHide(QSystemTrayIcon::ActivationReason)));
+	connect (m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
 	
 	connect (ui->actionPreferences, SIGNAL(triggered()), SLOT(openPreferences()));
 	connect (ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -114,6 +108,7 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionEdit, SIGNAL(triggered()), this, SLOT(editSchedule()));
 	connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(addSchedule()));
 	connect (ui->actionRemove, SIGNAL(triggered()), this, SLOT(removeSchedule()));
+	connect (ui->actionShowHide, SIGNAL(triggered()), this, SLOT(showHide()));
 	
 	connect (m_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	
@@ -191,8 +186,33 @@ void MainWindow::updateStatusBar() {
 }
 
 
-void MainWindow::createToolsBar() {
+void MainWindow::createToolBar() {
 	
+	m_toolBar = addToolBar(tr("toolBar"));
+	
+	// We add some main actions into the tool bar
+	m_toolBar->addAction(ui->actionNew);
+	m_toolBar->addAction(ui->actionEdit);
+	m_toolBar->addAction(ui->actionRemove);
+	m_toolBar->addSeparator();
+	m_toolBar->addAction(ui->actionPreferences);
+}
+
+
+void MainWindow::createTrayIcon() {
+	
+	m_trayIcon = new QSystemTrayIcon(QIcon(":/icons/alarmIcon"), this);
+	
+	QMenu *trayMenu = new QMenu;
+	
+	trayMenu->addAction(ui->actionShowHide);
+	trayMenu->addSeparator();
+	trayMenu->addAction(ui->actionQuit);
+	
+	
+	m_trayIcon->setContextMenu(trayMenu);
+	m_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
+	m_trayIcon->setVisible(true);
 }
 
 
@@ -237,7 +257,7 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 	if (isVisible()) {
 		if (m_canClose) {
 			e->accept();
-			close();
+			qApp->quit();
 		} else {
 			e->ignore();
 			hide();
@@ -246,13 +266,21 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 }
 
 
-void MainWindow::showHide(QSystemTrayIcon::ActivationReason reason) {
+void MainWindow::trayActivation(QSystemTrayIcon::ActivationReason reason) {
 	
 	if (reason == QSystemTrayIcon::Trigger) {
-		if (this->isVisible())
+		if (isVisible())
 			hide();
 		else show();
 	}
+}
+
+
+void MainWindow::showHide() {
+	
+	if (isHidden())
+		show();
+	else hide();
 }
 
 
@@ -272,7 +300,7 @@ void MainWindow::about() {
 void MainWindow::reportBug() {
 	
 	// Opens page of the project
-	QDesktopServices::openUrl(QUrl("http://www.seberm.homelinux.org/project/salarm", QUrl::TolerantMode));
+	QDesktopServices::openUrl(QUrl(qApp->property("projectHomePage").toString(), QUrl::TolerantMode));
 }
 
 
@@ -350,13 +378,21 @@ void MainWindow::timeoutInformation(int ID) {
 	}
 	
 	
-	MediaObject *player = new MediaObject(this);
-	AudioOutput *output = new AudioOutput(MusicCategory, this);
-	Phonon::createPath(player, output);
-	
 	QFile f(m_settings->value("App/AlarmSound").toString());
-	player->setCurrentSource(MediaSource(&f));
-	player->play();
+//! \todo pisnicku to pri spravnem vstupu prehraje...ale xine ohlasuje ze nevi, kde je konec bufferu a prehravani se zastavi na neurcitem miste
+qDebug() << m_settings->value("App/AlarmSound").toString();	
+
+	if (f.exists()) {
+		
+		MediaObject *player = new MediaObject(this);
+		AudioOutput *output = new AudioOutput(MusicCategory, this);
+		Phonon::createPath(player, output);
+		
+		player->setCurrentSource(MediaSource(&f));
+		player->play();
+	} else {
+		qWarning() << tr("The sound file for schedule warning does not exists.");
+	}
 	
 	
 	while (queryData.next()) {
@@ -371,4 +407,3 @@ void MainWindow::timeoutInformation(int ID) {
 //		m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
 	}
 }
-
