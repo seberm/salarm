@@ -21,7 +21,7 @@
    <string>sAlarm Scheduler</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../icons.qrc">
+   <iconset resource="../resources/icons.qrc">
     <normaloff>:/icons/alarmIcon</normaloff>:/icons/alarmIcon</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -40,7 +40,10 @@
     <property name="title">
      <string>&amp;Main</string>
     </property>
+    <addaction name="actionShowHide"/>
+    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -67,7 +70,7 @@
   </widget>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/closeIcon</normaloff>:/icons/closeIcon</iconset>
    </property>
    <property name="text">
@@ -79,7 +82,7 @@
   </action>
   <action name="actionReportBug">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/bugIcon</normaloff>:/icons/bugIcon</iconset>
    </property>
    <property name="text">
@@ -88,7 +91,7 @@
   </action>
   <action name="actionAboutQt">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/qtIcon</normaloff>:/icons/qtIcon</iconset>
    </property>
    <property name="text">
@@ -97,7 +100,7 @@
   </action>
   <action name="actionAboutThisApplication">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/infoIcon</normaloff>:/icons/infoIcon</iconset>
    </property>
    <property name="text">
@@ -106,7 +109,7 @@
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/optionsIcon</normaloff>:/icons/optionsIcon</iconset>
    </property>
    <property name="text">
@@ -118,7 +121,7 @@
   </action>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/loadIcon</normaloff>:/icons/loadIcon</iconset>
    </property>
    <property name="text">
@@ -130,7 +133,7 @@
   </action>
   <action name="actionEdit">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/editIcon</normaloff>:/icons/editIcon</iconset>
    </property>
    <property name="text">
@@ -142,7 +145,7 @@
   </action>
   <action name="actionRemove">
    <property name="icon">
-    <iconset resource="../../icons.qrc">
+    <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/deleteIcon</normaloff>:/icons/deleteIcon</iconset>
    </property>
    <property name="text">
@@ -152,10 +155,22 @@
     <string>Del</string>
    </property>
   </action>
+  <action name="actionShowHide">
+   <property name="icon">
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/icons/showHideIcon</normaloff>:/icons/showHideIcon</iconset>
+   </property>
+   <property name="text">
+    <string>Show / &amp;Hide</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../../icons.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
