@@ -19,6 +19,7 @@
         <file alias="editIcon">../../img/icons/edit_icon.png</file>
         <file alias="alarmIcon">../../img/icons/alarm_icon_blue.png</file>
         <file alias="waitingIcon">../../img/icons/alarm_icon_red.png</file>
+        <file alias="showHideIcon">../../img/icons/show_hide_icon.png</file>
     </qresource>
     <qresource prefix="/splashs">
         <file alias="sAlarmIcon">../../img/splash/salarm.png</file>
