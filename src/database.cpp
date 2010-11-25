@@ -46,7 +46,7 @@ bool Database::dbConnect() {
 	qDebug() << "Connecting " << m_name;
 	
 	if (QSqlDatabase::contains(m_name)) {
-		qDebug() << "Connection " << m_name << " already exists.";
+		qWarning() << "Connection " << m_name << " already exists.";
 		return true;
 	}
 
@@ -82,8 +82,8 @@ bool Database::dbConnect() {
 	}
 	
 	if (!sqlDatabase.open()) {
-		qDebug() << "Cannot connect to database " << sqlDatabase.connectionName();
-		qDebug() << "Reason: " << sqlDatabase.lastError().text();
+		qCritical() << "Cannot connect to database " << sqlDatabase.connectionName();
+		qCritical() << "Reason: " << sqlDatabase.lastError().text();
 		return false;
 	}
 	
@@ -132,7 +132,7 @@ void Database::dbInit(Database::DriverTypes dbType) {
 			QSqlQuery query(sql, sqlConnection);
 			
 			if (!query.exec())
-				qDebug() << query.lastError();
+				qWarning() << query.lastError();
 			
 		} break;
 		
@@ -166,10 +166,10 @@ void Database::dbInit(Database::DriverTypes dbType) {
 			QSqlQuery query2(sql2, sqlConnection);
 
 			if (!query1.exec())
-				qDebug() << query1.lastError();
+				qWarning() << query1.lastError();
 			
 			if (!query2.exec())
-				qDebug() << query2.lastError();
+				qWarning() << query2.lastError();
 			
 		} break;
 	}
