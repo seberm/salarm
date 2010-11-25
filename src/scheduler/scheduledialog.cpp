@@ -159,7 +159,7 @@ void ScheduleDialog::doSchedule() {
 		query.bindValue(4, m_scheduleID);
 	
 	if (!query.exec())
-		qDebug() << query.lastError();
+		qWarning() << query.lastError();
 
 	emit (changed());
 }
@@ -197,7 +197,7 @@ void ScheduleDialog::addCategory() {
 		query.addBindValue(category);
 		
 		if (!query.exec()) {
-			qDebug() << query.lastError();
+			qWarning() << query.lastError();
 			return;
 		}
 		
@@ -229,7 +229,7 @@ void ScheduleDialog::removeCategory() {
 	query.addBindValue(id);
 	
 	if (!query.exec()) {
-		qDebug() << query.lastError();
+		qWarning() << query.lastError();
 		return;
 	}
 	

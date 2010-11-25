@@ -140,7 +140,7 @@ void Scheduler::removeSchedule() {
 
 	query.prepare(sql.arg(dbID));
 	if (!query.exec())
-		qDebug() << query.lastError();
+		qWarning() << query.lastError();
 	
 	// We refresh the schedules list
 	refreshSchedules();
@@ -153,6 +153,8 @@ void Scheduler::removeSchedule() {
 
 void Scheduler::refreshSchedules() {
 
+	qDebug() << "Refreshing schedules ...";
+	
 	// Fist we need to remove all schedules from scheduler
 	m_model->removeRows(0, m_model->rowCount(QModelIndex()));
 	m_schedules.clear();
@@ -177,6 +179,7 @@ void Scheduler::refreshSchedules() {
 	int dbTimeouted = query.record().indexOf("timeouted");
 	
 	while (query.next()) {
+		
 		QModelIndex index = selectionModel()->currentIndex();
 		if (!m_model->insertRow(index.row() + 1, index.parent()))
 			return;
@@ -250,5 +253,5 @@ void Scheduler::markTimeouted(int ID) {
 	queryUpdate.addBindValue(ID);
 	
 	if (!queryUpdate.exec())
-		qDebug() << queryUpdate.lastError();
+		qWarning() << queryUpdate.lastError();
 }
