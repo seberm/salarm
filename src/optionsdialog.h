@@ -23,7 +23,6 @@
 #define OPTIONSDIALOG_H
 
 #include <QDialog>
-#include <QSettings>
 #include <QMessageBox>
 
 
@@ -35,7 +34,7 @@ class OptionsDialog : public QDialog {
     Q_OBJECT
 	
 	public:
-		OptionsDialog(QSettings *, QWidget *parent = 0);
+		OptionsDialog(QWidget *parent = 0);
 		~OptionsDialog();
 	
 	signals:
@@ -45,7 +44,6 @@ class OptionsDialog : public QDialog {
 	
 	private:
 		Ui::OptionsDialog *m_ui;
-		QSettings *m_settings;
 		
 		bool m_dbChanged;
 	

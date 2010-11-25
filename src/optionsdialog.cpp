@@ -21,43 +21,50 @@
 
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
+#include "settings.h"
+extern QSettings *g_settings;
 
 #include <QFileDialog>
 #include <QtDebug>
 
 
-OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
+OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
 	
     m_ui->setupUi(this);
-	m_settings = settings;
 	
-	m_settings->beginGroup("App");
-		m_ui->checkBoxCanClose->setChecked(!(m_settings->value("CanClose", false).toBool()));
-		m_ui->comboBoxDatabases->setCurrentIndex(m_settings->value("DatabaseDriver", 0).toInt());
+	g_settings->beginGroup("App");
+		m_ui->checkBoxCanClose->setChecked(!(g_settings->value("CanClose", false).toBool()));
+		m_ui->comboBoxDatabases->setCurrentIndex(g_settings->value("DatabaseDriver", 0).toInt());
 
-//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	
-m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(m_settings->value("AlarmSound").toString()));
-qDebug() << m_ui->comboBoxSounds->findText(m_settings->value("AlarmSound").toString());
+//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla
+//m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(g_settings->value("AlarmSound").toString()));
+//qDebug() << m_ui->comboBoxSounds->findText(g_settings->value("AlarmSound").toString());
 
-	m_settings->endGroup();
+	g_settings->endGroup();
 
-	m_settings->beginGroup("MySQL");
-		m_ui->lineEditMySQLHostname->setText(m_settings->value("HostName", "localhost").toString());
-		m_ui->lineEditMySQLUsername->setText(m_settings->value("UserName", QString()).toString());
-		m_ui->lineEditMySQLPassword->setText(m_settings->value("Password", QString()).toString());
-		m_ui->lineEditMySQLDatabase->setText(m_settings->value("Database", "salarm").toString());
-	m_settings->endGroup();
+	g_settings->beginGroup("MySQL");
+		m_ui->lineEditMySQLHostname->setText(g_settings->value("HostName", "localhost").toString());
+		m_ui->lineEditMySQLUsername->setText(g_settings->value("UserName").toString());
+		m_ui->lineEditMySQLPassword->setText(g_settings->value("Password").toString());
+		m_ui->lineEditMySQLDatabase->setText(g_settings->value("Database", "salarm").toString());
+	g_settings->endGroup();
+
+	g_settings->beginGroup("SMTP");
+		m_ui->lineEditSMTPHostname->setText(g_settings->value("HostName").toString());
+		m_ui->lineEditSMTPUsername->setText(g_settings->value("UserName").toString());
+		m_ui->lineEditSMTPPassword->setText(g_settings->value("Password").toString());
+	g_settings->endGroup();
 	
-	int size = m_settings->beginReadArray("Sounds");
+	int size = g_settings->beginReadArray("Sounds");
 		for (int i = 0; i < size; i++) {
 			
-			m_settings->setArrayIndex(i);
-			QString filename = m_settings->value("sound").toString();
+			g_settings->setArrayIndex(i);
+			QString filename = g_settings->value("sound").toString();
 			
 			QFileInfo f(filename);
 			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
 		}
-	m_settings->endArray();
+	g_settings->endArray();
 	
 	m_dbChanged = false;
 	
@@ -91,18 +98,24 @@ void OptionsDialog::dialogAccepted() {
 	if (m_dbChanged)
 		QMessageBox::information(this, tr("Database changed"), tr("The changes of database will take effect after the application restart."));
 	
-	m_settings->beginGroup("MySQL");
-		m_settings->setValue("HostName", m_ui->lineEditMySQLHostname->text());
-		m_settings->setValue("UserName", m_ui->lineEditMySQLUsername->text());
-		m_settings->setValue("Password", m_ui->lineEditMySQLPassword->text());
-		m_settings->setValue("Database", m_ui->lineEditMySQLDatabase->text());
-	m_settings->endGroup();
+	g_settings->beginGroup("MySQL");
+		g_settings->setValue("HostName", m_ui->lineEditMySQLHostname->text());
+		g_settings->setValue("UserName", m_ui->lineEditMySQLUsername->text());
+		g_settings->setValue("Password", m_ui->lineEditMySQLPassword->text());
+		g_settings->setValue("Database", m_ui->lineEditMySQLDatabase->text());
+	g_settings->endGroup();
 	
-	m_settings->beginGroup("App");
-		m_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->currentIndex());
-		m_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
-		m_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
-	m_settings->endGroup();
+	g_settings->beginGroup("SMTP");
+		g_settings->setValue("HostName", m_ui->lineEditSMTPHostname->text());
+		g_settings->setValue("Password", m_ui->lineEditSMTPPassword->text());
+		g_settings->setValue("UserName", m_ui->lineEditSMTPUsername->text());
+	g_settings->endGroup();
+		
+	g_settings->beginGroup("App");
+		g_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->currentIndex());
+		g_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
+		g_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
+	g_settings->endGroup();
 	
 	close();
 }
@@ -131,17 +144,17 @@ void OptionsDialog::addAlarmSound() {
 	
 	int size = m_ui->comboBoxSounds->count();
 	
-	m_settings->beginWriteArray("Sounds");
-		for (int i = size; i < filenames.size(); i++) {
+	g_settings->beginWriteArray("Sounds");
+		for (int i = 0; i < filenames.size(); i++) {
 				
 			QFileInfo f(filenames.at(i));
 			m_ui->comboBoxSounds->addItem(f.fileName());
 				
-			m_settings->setArrayIndex(i);
-			m_settings->setValue("sound", f.absoluteFilePath());
+			g_settings->setArrayIndex(size + i);
+			g_settings->setValue("sound", f.absoluteFilePath());
 				
 		}
-	m_settings->endArray();
+	g_settings->endArray();
 }
 
 
