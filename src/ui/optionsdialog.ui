@@ -9,26 +9,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
-    <height>309</height>
+    <width>388</width>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="pageApp">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>365</width>
-        <height>176</height>
+        <width>370</width>
+        <height>140</height>
        </rect>
       </property>
       <attribute name="label">
@@ -63,8 +73,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>365</width>
-        <height>176</height>
+        <width>370</width>
+        <height>140</height>
        </rect>
       </property>
       <attribute name="label">
@@ -146,55 +156,111 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="pageSMTP">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>370</width>
+        <height>140</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>SMTP Warning configuration</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBoxSMTP">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelSMTPHostname">
+            <property name="text">
+             <string>Hostname</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QLineEdit" name="lineEditSMTPPassword">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="labelSMTPPassword">
+            <property name="text">
+             <string>Password:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="labelSMTPUsername">
+            <property name="text">
+             <string>Username:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="lineEditSMTPUsername"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEditSMTPHostname"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="pageAlarmWarming">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>370</width>
+        <height>140</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Alarm warming</string>
       </attribute>
-      <widget class="QPushButton" name="pushButtonOpenFile">
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>10</y>
-         <width>75</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Open file</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBoxSounds">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButtonOpenFile">
+         <property name="text">
+          <string>Open file</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QComboBox" name="comboBoxSounds"/>
+       </item>
+      </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>checkBoxCanClose</tabstop>
   <tabstop>comboBoxDatabases</tabstop>
   <tabstop>lineEditMySQLHostname</tabstop>
   <tabstop>lineEditMySQLDatabase</tabstop>
   <tabstop>lineEditMySQLUsername</tabstop>
   <tabstop>lineEditMySQLPassword</tabstop>
-  <tabstop>checkBoxCanClose</tabstop>
+  <tabstop>lineEditSMTPHostname</tabstop>
+  <tabstop>lineEditSMTPUsername</tabstop>
+  <tabstop>lineEditSMTPPassword</tabstop>
+  <tabstop>comboBoxSounds</tabstop>
+  <tabstop>pushButtonOpenFile</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
