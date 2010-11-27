@@ -24,7 +24,6 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-#include <QSettings>
 
 #include <QLabel>
 #include <QTimer>
@@ -36,10 +35,12 @@
 
 
 namespace Ui {
+	
     class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
+	
     Q_OBJECT
 
 public:
@@ -87,7 +88,6 @@ private:
 	//! Indicates if the user can close the MainWindow
 	bool m_canClose;
 	
-	QSettings *m_settings;	
 	QSystemTrayIcon *m_trayIcon;	
 	QStatusBar *m_statusBar;
 	QToolBar *m_toolBar;

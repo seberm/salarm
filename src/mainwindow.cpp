@@ -25,6 +25,14 @@
 #include "scheduledialog.h"
 #include "constants.h"
 
+#include <settings.h>
+extern QSettings *g_settings;
+
+#include <phonon/mediaobject.h>
+#include <phonon/mediasource.h>
+#include <phonon/audiooutput.h>
+using namespace Phonon;
+
 #include <QDir>
 #include <QUrl>
 #include <QCloseEvent>
@@ -35,18 +43,13 @@
 #include <QMessageBox>
 
 #include <QtSql>
- 
-
-#include <phonon/mediaobject.h>
-#include <phonon/mediasource.h>
-#include <phonon/audiooutput.h>
-using namespace Phonon;
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
 	
     ui->setupUi(this);
-	
+	initSettings();
+
 	// Start the splash screen
 	QSplashScreen *splash = new QSplashScreen;
 	splash->setPixmap(QPixmap(":/splashs/sAlarmIcon"));
@@ -61,8 +64,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	if (m_db->dbConnect())
 		qDebug() << "Successfuly connected - " << m_db->getConnectionName();
 	else {
-		qDebug() << "Error in connection - " << m_db->getConnectionName();
-		QMessageBox::critical(this, tr("Database connection"), tr("Error in database connection..."));
+		qWarning() << "Error in connection - " << m_db->getConnectionName();
+		QMessageBox::warning(this, tr("Database connection"), tr("Error in database connection..."));
 	}
 	
 	
@@ -119,9 +122,11 @@ void MainWindow::makeConnections() const {
 
 
 MainWindow::~MainWindow() {
-	
+
 	writeSettings();
-	
+
+	exitSettings();	
+
 	delete m_db;
     delete ui;
 }
@@ -129,10 +134,16 @@ MainWindow::~MainWindow() {
 
 void MainWindow::writeSettings() const {
 	
-	m_settings->beginGroup("Window");
-		m_settings->setValue("Geometry", saveGeometry());
-		m_settings->setValue("State", saveState());
-	m_settings->endGroup();
+	if (!g_settings) {
+		
+		qCritical() << "Cannot load settings";
+		return;
+	}
+
+	g_settings->beginGroup("Window");
+		g_settings->setValue("Geometry", saveGeometry());
+		g_settings->setValue("State", saveState());
+	g_settings->endGroup();
 }
 
 
@@ -144,22 +155,26 @@ void MainWindow::readSettings() {
 		QDir newDir;
 		if (!newDir.mkdir(CONF_DIR)) {
 			
-			qDebug() << tr("Unable to create directory: %1").arg(CONF_DIR);
+			qWarning() << tr("Unable to create directory: %1").arg(CONF_DIR);
 			return;
 		}
 	}
 	
-	m_settings = new QSettings(CONFIG_FILE, QSettings::IniFormat, this);
+	if (!g_settings) {
+		
+		qCritical() << "Cannot load settings";
+		return;
+	}
 	
-	m_settings->beginGroup("Window");
-		restoreGeometry(m_settings->value("Geometry", saveGeometry()).toByteArray());
-		restoreState(m_settings->value("State", saveState()).toByteArray());
-	m_settings->endGroup();
+	g_settings->beginGroup("Window");
+		restoreGeometry(g_settings->value("Geometry", saveGeometry()).toByteArray());
+		restoreState(g_settings->value("State", saveState()).toByteArray());
+	g_settings->endGroup();
 	
 	
-	m_settings->beginGroup("App");
-		m_canClose = m_settings->value("CanClose", false).toBool();
-	m_settings->endGroup();
+	g_settings->beginGroup("App");
+		m_canClose = g_settings->value("CanClose", false).toBool();
+	g_settings->endGroup();
 }
 
 
@@ -188,7 +203,8 @@ void MainWindow::updateStatusBar() {
 
 void MainWindow::createToolBar() {
 	
-	m_toolBar = addToolBar(tr("toolBar"));
+	m_toolBar = addToolBar(tr("Tool Bar"));
+	m_toolBar->setObjectName("mainToolBar");
 	
 	// We add some main actions into the tool bar
 	m_toolBar->addAction(ui->actionNew);
@@ -306,7 +322,10 @@ void MainWindow::reportBug() {
 
 void MainWindow::openPreferences() {
 	
-	OptionsDialog *d = new OptionsDialog(m_settings, this);
+	OptionsDialog *d = new OptionsDialog(this);
+	
+	// Saves current settings
+	writeSettings();
 	
 	if (d->exec() == QDialog::Accepted) {
 		
@@ -344,10 +363,12 @@ void MainWindow::showContextMenu(const QPoint &p) {
 
 void MainWindow::editSchedule(const QModelIndex &i) {
 	
-	ScheduleDialog *d = new ScheduleDialog(i, this);
-	connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
+	if (m_scheduler->model()->rowCount()) {
+		ScheduleDialog *d = new ScheduleDialog(i, this);
+		connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
-	d->exec();
+		d->exec();
+	}
 }
 
 
@@ -373,25 +394,21 @@ void MainWindow::timeoutInformation(int ID) {
 	queryData.addBindValue(ID);
 	
 	if (!queryData.exec()) {
-		qDebug() << queryData.lastError();
+		qWarning() << queryData.lastError();
 		return;
 	}
 	
 	
-	QFile f(m_settings->value("App/AlarmSound").toString());
+	QFileInfo fi(g_settings->value("App/AlarmSound").toString());
 //! \todo pisnicku to pri spravnem vstupu prehraje...ale xine ohlasuje ze nevi, kde je konec bufferu a prehravani se zastavi na neurcitem miste
-qDebug() << m_settings->value("App/AlarmSound").toString();	
 
-	if (f.exists()) {
-		
-		MediaObject *player = new MediaObject(this);
-		AudioOutput *output = new AudioOutput(MusicCategory, this);
-		Phonon::createPath(player, output);
-		
-		player->setCurrentSource(MediaSource(&f));
+	if (fi.exists()) {
+
+		MediaObject *player = Phonon::createPlayer(MusicCategory, MediaSource(fi.absoluteFilePath()));
 		player->play();
+		
 	} else {
-		qWarning() << tr("The sound file for schedule warning does not exists.");
+		qWarning() << tr("The sound file for schedule warning does not exists");
 	}
 	
 	
