@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>388</width>
-    <height>299</height>
+    <width>385</width>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,15 +30,15 @@
    <item row="1" column="0">
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>3</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="pageApp">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>370</width>
-        <height>140</height>
+        <width>359</width>
+        <height>106</height>
        </rect>
       </property>
       <attribute name="label">
@@ -73,8 +73,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>370</width>
-        <height>140</height>
+        <width>367</width>
+        <height>160</height>
        </rect>
       </property>
       <attribute name="label">
@@ -161,8 +161,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>370</width>
-        <height>140</height>
+        <width>367</width>
+        <height>160</height>
        </rect>
       </property>
       <attribute name="label">
@@ -225,8 +225,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>370</width>
-        <height>140</height>
+        <width>367</width>
+        <height>160</height>
        </rect>
       </property>
       <attribute name="label">
@@ -242,6 +242,41 @@
        </item>
        <item row="0" column="0">
         <widget class="QComboBox" name="comboBoxSounds"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageInterfaceColors">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>367</width>
+        <height>160</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Interface colors</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButtonSetExpiredScheduleColor">
+         <property name="text">
+          <string>Set expired schedules color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelExpiredScheduleColor">
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

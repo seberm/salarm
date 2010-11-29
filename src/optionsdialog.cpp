@@ -27,14 +27,21 @@ extern QSettings *g_settings;
 #include <QFileDialog>
 #include <QtDebug>
 
+#include <QColorDialog>
+
 
 OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
 	
+	// Setup UI
     m_ui->setupUi(this);
+	
+	m_ui->labelExpiredScheduleColor->setAutoFillBackground(true);
+	
 	
 	g_settings->beginGroup("App");
 		m_ui->checkBoxCanClose->setChecked(!(g_settings->value("CanClose", false).toBool()));
-		m_ui->comboBoxDatabases->setCurrentIndex(g_settings->value("DatabaseDriver", 0).toInt());
+		m_ui->comboBoxDatabases->setCurrentIndex(g_settings->value("DatabaseDriver").toInt());
+		if (g_settings->value("DatabaseDriver").toInt() == 1) m_ui->groupBoxMySQL->setEnabled(true); // MySQL
 
 //! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla
 //m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(g_settings->value("AlarmSound").toString()));
@@ -66,11 +73,19 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 		}
 	g_settings->endArray();
 	
+	
+	g_settings->beginGroup("GUI");
+		QPalette palette = m_ui->labelExpiredScheduleColor->palette();
+		palette.setColor(m_ui->labelExpiredScheduleColor->backgroundRole(), g_settings->value("ExpiredScheduleColor", Qt::white).value<QColor>());	
+		m_ui->labelExpiredScheduleColor->setPalette(palette);
+	g_settings->endGroup();
+	
 	m_dbChanged = false;
 	
 	connect(m_ui->pushButtonOpenFile, SIGNAL(pressed()), this, SLOT(addAlarmSound()));
 	connect(m_ui->comboBoxDatabases, SIGNAL(currentIndexChanged(QString)), this, SLOT(databaseChanged(QString)));
 	connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
+	connect(m_ui->pushButtonSetExpiredScheduleColor, SIGNAL(pressed()), this, SLOT(setExpiredScheduleColor()));
 }
 
 
@@ -117,12 +132,19 @@ void OptionsDialog::dialogAccepted() {
 		g_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
 	g_settings->endGroup();
 	
+	g_settings->beginGroup("GUI");
+		g_settings->setValue("ExpiredScheduleColor", m_ui->labelExpiredScheduleColor->palette().color(m_ui->labelExpiredScheduleColor->backgroundRole()));
+	g_settings->endGroup();
+	
 	close();
 }
 
 
 void OptionsDialog::databaseChanged(QString index) {
-	
+
+//! \todo meni se databaze.. kdyz se klikne na AddAlarmSound()... proc?
+qDebug() << "changed db - why? - " << index;
+
     if (index == "MySQL")
 		m_ui->groupBoxMySQL->setEnabled(true);
 	else m_ui->groupBoxMySQL->setDisabled(true);
@@ -158,3 +180,13 @@ void OptionsDialog::addAlarmSound() {
 }
 
 
+void OptionsDialog::setExpiredScheduleColor() {
+	
+	QColor color = QColorDialog::getColor(g_settings->value("ExpiredScheduleColor").value<QColor>(), this, tr("Expired schedule background"));
+	
+	{
+		QPalette palette = m_ui->labelExpiredScheduleColor->palette();
+		palette.setColor(m_ui->labelExpiredScheduleColor->backgroundRole(), color);	
+		m_ui->labelExpiredScheduleColor->setPalette(palette);
+	}
+}

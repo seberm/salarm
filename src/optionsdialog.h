@@ -51,6 +51,9 @@ class OptionsDialog : public QDialog {
 		void databaseChanged(QString);
 		void dialogAccepted();
 		
+		//! Opens the color dialog and sets color of expired schedule in scheduler
+		void setExpiredScheduleColor();
+		
 		//! Opens the file dialog and inserts choosen sound into combo box
 		void addAlarmSound();
 	
