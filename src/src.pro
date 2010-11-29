@@ -6,8 +6,10 @@ DEPENDPATH += .
 INCLUDEPATH += . \
     scheduler \
 
+# network, opengl, phonon, sql, svg, xml, webkit, qt3support
 QT += sql \
 	phonon \
+	network \
 
 # Release option is ignored if debug is also specified
 CONFIG += release \
@@ -40,7 +42,9 @@ HEADERS += mainwindow.h \
     scheduler/schedulermodel.h \
     scheduler/schedule.h \
     scheduler/schedulerproxymodel.h \
-    scheduledelegate.h
+    scheduledelegate.h \
+    smtp.h \
+    settings.h
 
 # Sources definition
 SOURCES += main.cpp \
@@ -53,7 +57,9 @@ SOURCES += main.cpp \
     scheduler/schedule.cpp \
     scheduler/schedulerproxymodel.cpp \
     scheduledelegate.cpp \
-    constants.cpp
+    constants.cpp \
+    smtp.cpp \
+    settings.cpp
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
@@ -102,8 +108,7 @@ unix {
 	DATADIR = $$INSTALL_PREFIX/share
 
 	# Preprocesor variables
-	DEFINES += DATADIR=\"$$DATADIR\"
-	
+	DEFINES += DATADIR="\"$$DATADIR\""
 
 	INSTALLS += target \
 				desktop \
