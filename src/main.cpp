@@ -33,16 +33,15 @@
 #include <QDir>
 
 int main(int argc, char *argv[]) {
-
+	
 	// Initiating the application
-    QApplication salarm(argc, argv);
+	QApplication salarm(argc, argv);
 	
 	salarm.setOrganizationName("Šabart Otto");
 	salarm.setApplicationName(NAME);
 	salarm.setApplicationVersion(VERSION);
 	salarm.setProperty("projectHomePage", HOMEPAGE);
 
-	
 	// Initiating a application global translator
 	QTranslator translator;
 	{
@@ -72,5 +71,7 @@ int main(int argc, char *argv[]) {
 	MainWindow w;
 	w.show();
 	
-    return salarm.exec();
+	int retVal = salarm.exec();
+	
+    return retVal;
 }

@@ -27,7 +27,8 @@
 
 
 ### 2) COMPILING
-It's possible to add the INSTALL_PREFIX to qmake (EXAMPLE: qmake INSTALL_PREFIX=/usr)
+It's possible to add the prefix INSTALL_PREFIX to qmake (EXAMPLE: qmake INSTALL_PREFIX=/usr)
+
 > qmake
 > make
 > make install
