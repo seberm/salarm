@@ -21,6 +21,8 @@
 
 #include "scheduledelegate.h"
 #include "scheduler.h"
+extern const Column Expiration;
+
 #include "schedulerproxymodel.h"
 #include "schedulermodel.h"
 #include "settings.h"
@@ -55,7 +57,7 @@ void ScheduleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //! \todo je toto overeni spravne?..jak je to se sloupci ve scheduler, kde se uklada integer?
 	if (qVariantCanConvert<QString>(index.data())) {
 		
-		QModelIndex expirationIndex = index.model()->index(index.row(), 5);
+		QModelIndex expirationIndex = index.model()->index(index.row(), Expiration.columnID);
 		QDateTime expiration = expirationIndex.data().toDateTime();
 		
 		if (expiration < QDateTime::currentDateTime()) {

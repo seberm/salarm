@@ -39,11 +39,10 @@ struct Column {
 };
 
 
+
 class Scheduler : public QTreeView {
 	
 	Q_OBJECT
-	
-	Q_ENUMS(Columns)
 
 public:
 	
@@ -91,8 +90,6 @@ private:
 	SchedulerModel *m_model;
 	SchedulerProxyModel *m_proxyModel;
 	ScheduleDelegate *m_itemDelegate;
-	
-	Column DBID, Status, Title, Text, Expiration, Category, CategoryID;	
 	
 	QTimer *m_scheduleTimer;
 	

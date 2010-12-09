@@ -1,4 +1,6 @@
 #include "schedulerproxymodel.h"
+#include "scheduler.h"
+
 
 SchedulerProxyModel::SchedulerProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 	
@@ -10,7 +12,9 @@ SchedulerProxyModel::SchedulerProxyModel(QObject *parent) : QSortFilterProxyMode
 
 bool SchedulerProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
 
-	for (int col = 0; col <= 6; col++) {
+	extern const int columnCount;
+	for (int col = 0; col < columnCount; col++) {
+		
 		QModelIndex index = sourceModel()->index(sourceRow, col, sourceParent);
 		
 		if (sourceModel()->data(index).toString().contains(filterRegExp()))

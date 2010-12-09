@@ -28,31 +28,21 @@
 #include <QIcon>
 
 
+// Columns definition
+extern const Column DBID =			{ 0, "DBID" };
+extern const Column CategoryID =	{ 1, "CategoryID" };
+extern const Column Status =		{ 2, QObject::tr("Status") };
+extern const Column Title =			{ 3, QObject::tr("Title") };
+extern const Column Text =			{ 4, QObject::tr("Text") };
+extern const Column Expiration =	{ 5, QObject::tr("Expiration") };
+extern const Column Category =		{ 6, QObject::tr("Category") };
+
+extern const int columnCount = 7;
+/////////////////////////////////////////////////////////////////////
+
+
+
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
-	
-	// Columns definition
-	DBID.columnID = 0;
-	DBID.columnName = "DBID";
-	
-	CategoryID.columnID = 1;
-	CategoryID.columnName = "CategoryID";
-	
-	Status.columnID = 2;
-	Status.columnName = tr("Status");
-	
-	Title.columnID = 3;
-	Title.columnName = tr("Title");
-	
-	Text.columnID = 4;
-	Text.columnName = tr("Text");
-	
-	Expiration.columnID = 5;
-	Expiration.columnName = tr("Expiration");
-	
-	Category.columnID = 6;
-	Category.columnName = tr("Category");
-	//////////////////////////////////////////////////////////
-	
 	
 	QStringList headers;
 	headers << DBID.columnName

@@ -21,7 +21,15 @@
 
 #include "scheduledialog.h"
 #include "ui_scheduledialog.h"
+#include "scheduler.h"
 
+extern const Column DBID;
+extern const Column CategoryID;
+extern const Column Status;
+extern const Column Title;
+extern const Column Text;
+extern const Column Expiration;
+extern const Column Category;
 
 
 #include <QtSql>
@@ -54,20 +62,20 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 	
 	makeConnections();
 	
-//! \todo The number of columns must be defined in some constants or structures (scheduler.cpp)
-	m_scheduleID = index.sibling(index.row(), 0).data().toInt();
-	int categoryID = index.sibling(index.row(), 1).data().toInt();
+	m_scheduleID = index.sibling(index.row(), DBID.columnID).data().toInt();
+	int categoryID = index.sibling(index.row(), CategoryID.columnID).data().toInt();
+
+	QString title = index.sibling(index.row(), Title.columnID).data().toString();
+	QString text = index.sibling(index.row(), Text.columnID).data().toString();
 	
-	QString title = index.sibling(index.row(), 3).data().toString();
-	QString text = index.sibling(index.row(), 4).data().toString();
-	QDateTime expirationDateTime = index.sibling(index.row(), 5).data().toDateTime();
-	QDate expirationDate = index.sibling(index.row(), 6).data().toDate();
+	QDateTime expirationDateTime = index.sibling(index.row(), Expiration.columnID).data().toDateTime();
+	QDate expirationDate = expirationDateTime.date();
 	
 	ui->lineEditTitle->setText(title);
 	ui->plainTextEditText->setPlainText(text);
 	ui->dateTimeEditExpiration->setDateTime(expirationDateTime);
 	ui->calendar->setSelectedDate(expirationDate);
-	ui->comboBoxCategory->setCurrentIndex(categoryID);
+	ui->comboBoxCategory->setCurrentIndex(ui->comboBoxCategory->findData(categoryID));
 }
 
 
@@ -114,6 +122,7 @@ void ScheduleDialog::changeEvent(QEvent *e) {
 	
     QDialog::changeEvent(e);
     switch (e->type()) {
+		
 		case QEvent::LanguageChange:
 			ui->retranslateUi(this);
 			break;
@@ -132,6 +141,7 @@ void ScheduleDialog::doSchedule() {
 	QString sql;
 	
 	switch (dialogAction)	{
+		
 		default:
 		case ScheduleDialog::Add:
 			sql = "INSERT INTO Schedule (title, text, datetime, categoryID)" \
@@ -170,6 +180,7 @@ void ScheduleDialog::scheduleAccepted() {
 	QString str = ui->lineEditTitle->text();
 	
 	if (str.isEmpty()) {
+		
 		QMessageBox::warning(this, tr("Fill the title"), tr("You must fill the title."));
 		return;
 	}
@@ -229,6 +240,7 @@ void ScheduleDialog::removeCategory() {
 	query.addBindValue(id);
 	
 	if (!query.exec()) {
+		
 		qWarning() << query.lastError();
 		return;
 	}
