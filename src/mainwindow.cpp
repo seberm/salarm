@@ -124,7 +124,8 @@ void MainWindow::makeConnections() const {
 MainWindow::~MainWindow() {
 
 	writeSettings();
-
+	
+	// Removes the settings variable from memory
 	exitSettings();	
 
 	delete m_db;
@@ -259,11 +260,13 @@ void MainWindow::changeEvent(QEvent *e) {
 	
     QMainWindow::changeEvent(e);
     switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
+		
+		case QEvent::LanguageChange:
+		    ui->retranslateUi(this);
+		    break;
+		
+		default:
+			break;
     }
 }
 
@@ -323,15 +326,7 @@ void MainWindow::reportBug() {
 void MainWindow::openPreferences() {
 	
 	OptionsDialog *d = new OptionsDialog(this);
-	
-	// Saves current settings
-	writeSettings();
-	
-	if (d->exec() == QDialog::Accepted) {
-		
-		// Reads new settings
-		readSettings();
-	}
+	d->exec();
 }
 
 
@@ -363,7 +358,11 @@ void MainWindow::showContextMenu(const QPoint &p) {
 
 void MainWindow::editSchedule(const QModelIndex &i) {
 	
+	if (!i.isValid())
+		return;
+	
 	if (m_scheduler->model()->rowCount()) {
+		
 		ScheduleDialog *d = new ScheduleDialog(i, this);
 		connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
@@ -394,6 +393,7 @@ void MainWindow::timeoutInformation(int ID) {
 	queryData.addBindValue(ID);
 	
 	if (!queryData.exec()) {
+		
 		qWarning() << queryData.lastError();
 		return;
 	}
@@ -407,9 +407,8 @@ void MainWindow::timeoutInformation(int ID) {
 		MediaObject *player = Phonon::createPlayer(MusicCategory, MediaSource(fi.absoluteFilePath()));
 		player->play();
 		
-	} else {
+	} else
 		qWarning() << tr("The sound file for schedule warning does not exists");
-	}
 	
 	
 	while (queryData.next()) {
