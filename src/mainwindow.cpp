@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	if (m_db->dbConnect())
 		qDebug() << "Successfuly connected - " << m_db->getConnectionName();
 	else {
+		
 		qWarning() << "Error in connection - " << m_db->getConnectionName();
 		QMessageBox::warning(this, tr("Database connection"), tr("Error in database connection..."));
 	}
@@ -91,6 +92,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	
 	createToolBar();
 	
+	// Set the key catcher widget
+	m_keyCatcher = new KeyCatcher(this);
+	m_scheduler->installEventFilter(m_keyCatcher);
+	
 	splash->showMessage(tr("Making object connections ..."), topRight, Qt::white);
 	makeConnections();
 
@@ -114,10 +119,10 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionShowHide, SIGNAL(triggered()), this, SLOT(showHide()));
 	
 	connect (m_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
-	
 	connect (m_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
-	
 	connect (m_scheduler, SIGNAL(scheduleTimeouted(int)), this, SLOT(timeoutInformation(int)));
+	
+	connect (m_keyCatcher, SIGNAL(keyPressed(int)), this, SLOT(keyPressed(int)));
 }
 
 
@@ -230,6 +235,23 @@ void MainWindow::createTrayIcon() {
 	m_trayIcon->setContextMenu(trayMenu);
 	m_trayIcon->setToolTip(qApp->applicationName().append(" - ").append(qApp->applicationVersion()));
 	m_trayIcon->setVisible(true);
+}
+
+
+void MainWindow::keyPressed(int key) {
+	
+	switch (key) {
+		
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+			
+			editSchedule();
+			break;
+			
+		default:
+			return;
+			break;
+	}
 }
 
 
@@ -371,7 +393,6 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 }
 
 
-// Overloaded function
 void MainWindow::editSchedule() {
 	
 	QModelIndex i(m_scheduler->currentIndex());
@@ -400,7 +421,6 @@ void MainWindow::timeoutInformation(int ID) {
 	
 	
 	QFileInfo fi(g_settings->value("App/AlarmSound").toString());
-//! \todo pisnicku to pri spravnem vstupu prehraje...ale xine ohlasuje ze nevi, kde je konec bufferu a prehravani se zastavi na neurcitem miste
 
 	if (fi.exists()) {
 
