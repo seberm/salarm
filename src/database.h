@@ -24,21 +24,20 @@
 #define DATABASE_H
 
 #include <QObject>
-#include <QSettings>
 #include <QtSql/QSqlDatabase>
 
+
 class Database : public QObject {
+	
 	Q_OBJECT
-	
 	Q_ENUMS(DriverTypes)
-	
+			
 	public:
-		enum DriverTypes { SQLite, MySQL };
-		
 		Database(QString name = "");
 		~Database();
 		QSqlDatabase sqlDatabase;
 		bool dbConnect();
+		enum DriverTypes { SQLite, MySQL };
 		
 		inline QString getConnectionName() const { return m_name; }
 		
@@ -46,7 +45,7 @@ class Database : public QObject {
 		// Name of connection
 		QString m_name;
 		
-		void dbInit(Database::DriverTypes);
+		void dbInit(int dbType);
 };
 
 #endif // DATABASE_H

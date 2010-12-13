@@ -19,12 +19,12 @@
  */
 
 
-
 #include "database.h"
 #include "constants.h"
+#include "settings.h"
+extern QSettings *g_settings;
 
 #include <QtDebug>
-#include <QSettings>
 #include <QtSql>
 #include <QStringList>
 
@@ -43,45 +43,39 @@ Database::~Database() {
 
 
 bool Database::dbConnect() {
+	
 	qDebug() << "Connecting " << m_name;
 	
 	if (QSqlDatabase::contains(m_name)) {
+		
 		qWarning() << "Connection " << m_name << " already exists.";
 		return true;
 	}
-
-	QSettings settings(CONFIG_FILE, QSettings::IniFormat, this);
 	
-	Database::DriverTypes driver;
-	switch (settings.value("App/DatabaseDriver", 0).toInt()) {
-		default:
-		case 0:
-			driver = SQLite;
-			break;
-		case 1:
-			driver = MySQL;
-			break;
-	}
-	
+	int driver = g_settings->value("App/DatabaseDriver", 0).toInt();	
 	switch (driver) {
+		
 		case MySQL: {
+				
 			sqlDatabase = QSqlDatabase::addDatabase("QMYSQL", m_name);
 				
-			settings.beginGroup("MySQL");
-				sqlDatabase.setHostName(settings.value("HostName", "localhost").toString()); // If "127.0.0.1" is configured, it can causes errors
-				sqlDatabase.setUserName(settings.value("UserName", QString()).toString());
-				sqlDatabase.setPassword(settings.value("Password", QString()).toString());
-				sqlDatabase.setDatabaseName(settings.value("Database", "salarm").toString());
-			settings.endGroup();
+			g_settings->beginGroup("MySQL");
+				sqlDatabase.setHostName(g_settings->value("HostName", "localhost").toString()); // If "127.0.0.1" is configured, it can causes errors
+				sqlDatabase.setUserName(g_settings->value("UserName", QString()).toString());
+				sqlDatabase.setPassword(g_settings->value("Password", QString()).toString());
+				sqlDatabase.setDatabaseName(g_settings->value("Database", "salarm").toString());
+			g_settings->endGroup();
 		} break;
 		
 		case SQLite: {
+				
 				sqlDatabase = QSqlDatabase::addDatabase("QSQLITE", m_name);
 				sqlDatabase.setDatabaseName(SQLITE_DB_FILE);
 		} break;
 	}
 	
 	if (!sqlDatabase.open()) {
+		
 		qCritical() << "Cannot connect to database " << sqlDatabase.connectionName();
 		qCritical() << "Reason: " << sqlDatabase.lastError().text();
 		return false;
@@ -98,12 +92,14 @@ bool Database::dbConnect() {
 }
 
 
-void Database::dbInit(Database::DriverTypes dbType) {
+void Database::dbInit(int dbType) {
+	
 	qDebug() << "Initializing database...";
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
 	switch (dbType) {
+		
 		case MySQL: {
 			
 			QString sql;
