@@ -43,9 +43,10 @@ HEADERS += mainwindow.h \
     scheduler/schedule.h \
     scheduler/schedulerproxymodel.h \
     scheduledelegate.h \
-#    smtp.h \
+   # smtp.h \
     settings.h \
-    keycatcher.h
+    keycatcher.h \
+    timeoutdialog.h
 
 # Sources definition
 SOURCES += main.cpp \
@@ -59,14 +60,16 @@ SOURCES += main.cpp \
     scheduler/schedulerproxymodel.cpp \
     scheduledelegate.cpp \
     constants.cpp \
- #   smtp.cpp \
+   # smtp.cpp \
     settings.cpp \
-    keycatcher.cpp
+    keycatcher.cpp \
+    timeoutdialog.cpp
 
 # Definition of application's forms
 FORMS += ui/mainwindow.ui \
     ui/optionsdialog.ui \
-    ui/scheduledialog.ui
+    ui/scheduledialog.ui \
+    timeoutdialog.ui
 
 # App resources
 RESOURCES += resources/icons.qrc

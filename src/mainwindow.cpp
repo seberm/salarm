@@ -19,20 +19,6 @@
  */
 
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "optionsdialog.h"
-#include "scheduledialog.h"
-#include "constants.h"
-
-#include <settings.h>
-extern QSettings *g_settings;
-
-#include <phonon/mediaobject.h>
-#include <phonon/mediasource.h>
-#include <phonon/audiooutput.h>
-using namespace Phonon;
-
 #include <QDir>
 #include <QUrl>
 #include <QCloseEvent>
@@ -40,9 +26,18 @@ using namespace Phonon;
 #include <QDesktopServices>
 #include <QtDebug>
 #include <QSplashScreen>
-#include <QMessageBox>
 
-#include <QtSql>
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "optionsdialog.h"
+#include "scheduledialog.h"
+#include "timeoutdialog.h"
+#include "constants.h"
+#include "settings.h"
+extern QSettings *g_settings;
+#include "scheduler.h"
+#include "database.h"
+#include "keycatcher.h"
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -62,10 +57,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	m_db = new Database ("Schedules");
 	
 	if (m_db->dbConnect())
-		qDebug() << "Successfuly connected - " << m_db->getConnectionName();
+		qDebug() << "successfuly connected - " << m_db->getConnectionName();
 	else {
 		
-		qWarning() << "Error in connection - " << m_db->getConnectionName();
+		qWarning() << "error in connection - " << m_db->getConnectionName();
 		QMessageBox::warning(this, tr("Database connection"), tr("Error in database connection..."));
 	}
 	
@@ -161,14 +156,14 @@ void MainWindow::readSettings() {
 		QDir newDir;
 		if (!newDir.mkdir(CONF_DIR)) {
 			
-			qWarning() << tr("Unable to create directory: %1").arg(CONF_DIR);
+			qWarning() << QString("unable to create directory: %1").arg(CONF_DIR);
 			return;
 		}
 	}
 	
 	if (!g_settings) {
 		
-		qCritical() << "Cannot load settings";
+		qCritical() << "cannot load settings";
 		return;
 	}
 	
@@ -400,46 +395,8 @@ void MainWindow::editSchedule() {
 }
 
 
-void MainWindow::timeoutInformation(int ID) {
+void MainWindow::timeoutInformation(int id) {
 	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	
-	QString sqlData = "SELECT title, text" \
-					  " FROM Schedule" \
-					  " WHERE id = ?;";
-	
-	QSqlQuery queryData(sqlConnection);
-	
-	queryData.prepare(sqlData);
-	queryData.addBindValue(ID);
-	
-	if (!queryData.exec()) {
-		
-		qWarning() << queryData.lastError();
-		return;
-	}
-	
-	
-	QFileInfo fi(g_settings->value("App/AlarmSound").toString());
-
-	if (fi.exists()) {
-
-		MediaObject *player = Phonon::createPlayer(MusicCategory, MediaSource(fi.absoluteFilePath()));
-		player->play();
-		
-	} else
-		qWarning() << tr("The sound file for schedule warning does not exists");
-	
-	
-	while (queryData.next()) {
-		
-		QString title = queryData.value(0).toString();
-		QString text = queryData.value(1).toString();
-	
-		QString message = tr("Schedule %1 timeouted!<br><br><br>%2").arg(title).arg(text);
-		QMessageBox::information(this, tr("Timeouted"), message);
-		
-
-//		m_trayIcon->showMessage(tr("Timeouted"), tr("Schedule %1 just timeouted.").arg(title));
-	}
+	TimeoutDialog *d = new TimeoutDialog(id, this);
+	d->exec();
 }
