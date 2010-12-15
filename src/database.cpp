@@ -19,14 +19,15 @@
  */
 
 
+#include <QtDebug>
+#include <QtSql>
+#include <QStringList>
+
 #include "database.h"
 #include "constants.h"
 #include "settings.h"
 extern QSettings *g_settings;
 
-#include <QtDebug>
-#include <QtSql>
-#include <QStringList>
 
 Database::Database(QString name): m_name(name) {
 	

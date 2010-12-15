@@ -25,12 +25,16 @@
 #include <QDialog>
 #include <QMessageBox>
 
+#include "database.h"
+
 
 namespace Ui {
+	
     class OptionsDialog;
 }
 
 class OptionsDialog : public QDialog {
+	
     Q_OBJECT
 	
 	public:
@@ -48,7 +52,7 @@ class OptionsDialog : public QDialog {
 		bool m_dbChanged;
 	
 	private slots:
-		void databaseChanged(QString);
+		void databaseChanged(int);
 		void dialogAccepted();
 		
 		//! Opens the color dialog and sets color of expired schedule in scheduler

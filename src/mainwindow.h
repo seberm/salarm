@@ -23,23 +23,24 @@
 #define MAINWINDOW_H
 
 
-#include "scheduler.h"
-#include "database.h"
-#include "keycatcher.h"
-
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-
 #include <QLabel>
 #include <QTimer>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QModelIndex>
 
+
+class Scheduler;
+class Database;
+class KeyCatcher;
 
 namespace Ui {
 	
     class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow {
 	
@@ -94,13 +95,14 @@ private:
 	QSystemTrayIcon *m_trayIcon;	
 	QStatusBar *m_statusBar;
 	QToolBar *m_toolBar;
-	Scheduler *m_scheduler;
-	KeyCatcher *m_keyCatcher;
 	QLabel *m_lblCurrentDateTime;
 	QTimer *m_timer;
 	
 	//! The database class pointer
 	Database* m_db;
+	
+	Scheduler *m_scheduler;
+	KeyCatcher *m_keyCatcher;
 			
 	
 private slots:

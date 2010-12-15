@@ -23,21 +23,21 @@
 #define SCHEDULER_H
 
 
-#include "schedulermodel.h"
-#include "schedulerproxymodel.h"
-#include "scheduledelegate.h"
-
-#include <QTreeWidget>
-#include <QDateEdit>
+#include <QTreeView>
+#include <QDateTime>
 #include <QTimer>
 #include <QList>
 
 
 struct Column {
+	
 	int columnID;
 	QString columnName;
 };
 
+class SchedulerModel;
+class SchedulerProxyModel;
+class ScheduleDelegate;
 
 
 class Scheduler : public QTreeView {

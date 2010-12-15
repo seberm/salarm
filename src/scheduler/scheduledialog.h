@@ -29,6 +29,7 @@
 
 
 namespace Ui {
+	
     class ScheduleDialog;
 }
 

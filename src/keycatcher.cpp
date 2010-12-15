@@ -19,9 +19,9 @@
  */
 
 
-#include "keycatcher.h"
-
 #include <QKeyEvent>
+
+#include "keycatcher.h"
 
 
 KeyCatcher::KeyCatcher(QObject *parent) : QObject(parent) {

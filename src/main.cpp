@@ -19,18 +19,16 @@
  */
 
 
-
-#include "constants.h"
-
-
-#include "mainwindow.h"
-
 #include <QtGui/QApplication>
 #include <QLocale>
 #include <QtDebug>
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QDir>
+
+#include "constants.h"
+#include "mainwindow.h"
+
 
 int main(int argc, char *argv[]) {
 	

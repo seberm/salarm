@@ -19,27 +19,26 @@
  */
 
 
-#include "scheduler.h"
-
 #include <QDebug>
 #include <QtSql>
 #include <QMessageBox>
 
-#include <QIcon>
-
+#include "scheduler.h"
+#include "schedulermodel.h"
+#include "schedulerproxymodel.h"
+#include "scheduledelegate.h"
 
 // Columns definition
-extern const Column DBID =			{ 0, "DBID" };
-extern const Column CategoryID =	{ 1, "CategoryID" };
-extern const Column Status =		{ 2, QObject::tr("Status") };
-extern const Column Title =			{ 3, QObject::tr("Title") };
-extern const Column Text =			{ 4, QObject::tr("Text") };
-extern const Column Expiration =	{ 5, QObject::tr("Expiration") };
-extern const Column Category =		{ 6, QObject::tr("Category") };
+Column DBID =		{ 0, "DBID" };
+Column CategoryID =	{ 1, "CategoryID" };
+Column Status =		{ 2, "" };
+Column Title =		{ 3, QObject::tr("Title") };
+Column Text =		{ 4, QObject::tr("Text") };
+Column Expiration =	{ 5, QObject::tr("Expiration") };
+Column Category =	{ 6, QObject::tr("Category") };
 
-extern const int columnCount = 7;
+int columnCount = 7;
 /////////////////////////////////////////////////////////////////////
-
 
 
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
@@ -66,9 +65,10 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	// Hide the column with schedule category ID
 	setColumnHidden(CategoryID.columnID, true);
 	
-	// Allows the sorting in QListView
+	// Allow the sorting in QTreeView
 	setSortingEnabled(true);
 
+	// Set the item delegate
 	m_itemDelegate = new ScheduleDelegate(this, m_proxyModel, m_model);
 	setItemDelegate(m_itemDelegate);
 	

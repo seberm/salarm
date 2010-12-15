@@ -19,15 +19,15 @@
  */
 
 
-#include "optionsdialog.h"
-#include "ui_optionsdialog.h"
-#include "settings.h"
-extern QSettings *g_settings;
-
 #include <QFileDialog>
+#include <QColorDialog>
 #include <QtDebug>
 
-#include <QColorDialog>
+#include "optionsdialog.h"
+#include "ui_optionsdialog.h"
+#include "database.h"
+#include "settings.h"
+extern QSettings *g_settings;
 
 
 OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
@@ -37,15 +37,21 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 	
 	m_ui->labelExpiredScheduleColor->setAutoFillBackground(true);
 	
+	m_dbChanged = false;
 	
 	g_settings->beginGroup("App");
 		m_ui->checkBoxCanClose->setChecked(!(g_settings->value("CanClose", false).toBool()));
-		m_ui->comboBoxDatabases->setCurrentIndex(g_settings->value("DatabaseDriver").toInt());
-		if (g_settings->value("DatabaseDriver").toInt() == 1) m_ui->groupBoxMySQL->setEnabled(true); // MySQL
+		
+		int currentDBDriver = g_settings->value("DatabaseDriver").toInt();
+		if (currentDBDriver == Database::MySQL) {
+			
+			m_ui->groupBoxMySQL->setEnabled(true);
+			m_ui->comboBoxDatabases->setCurrentIndex(currentDBDriver);
+		}
 
-//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla
-//m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(g_settings->value("AlarmSound").toString()));
-//qDebug() << m_ui->comboBoxSounds->findText(g_settings->value("AlarmSound").toString());
+//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla - musi se spravne nastavit jmeno a hodnota prvku v comboboxu.. a potom snad vyhledavat pujde
+//m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound")));
+//qDebug() << m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound").toString());
 
 	g_settings->endGroup();
 
@@ -80,12 +86,11 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 		m_ui->labelExpiredScheduleColor->setPalette(palette);
 	g_settings->endGroup();
 	
-	m_dbChanged = false;
 	
-	connect(m_ui->pushButtonOpenFile, SIGNAL(pressed()), this, SLOT(addAlarmSound()));
-	connect(m_ui->comboBoxDatabases, SIGNAL(currentIndexChanged(QString)), this, SLOT(databaseChanged(QString)));
+	connect(m_ui->comboBoxDatabases, SIGNAL(currentIndexChanged(int)), this, SLOT(databaseChanged(int)));
 	connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(m_ui->pushButtonSetExpiredScheduleColor, SIGNAL(pressed()), this, SLOT(setExpiredScheduleColor()));
+	connect(m_ui->pushButtonOpenFile, SIGNAL(pressed()), this, SLOT(addAlarmSound()));
 }
 
 
@@ -99,11 +104,13 @@ void OptionsDialog::changeEvent(QEvent *e) {
 	
     QDialog::changeEvent(e);
     switch (e->type()) {
-    case QEvent::LanguageChange:
-        m_ui->retranslateUi(this);
-        break;
-    default:
-        break;
+		
+		case QEvent::LanguageChange:
+		   m_ui->retranslateUi(this);
+		   break;
+		
+		default:
+			break;
     }
 }
 
@@ -140,16 +147,19 @@ void OptionsDialog::dialogAccepted() {
 }
 
 
-void OptionsDialog::databaseChanged(QString index) {
+void OptionsDialog::databaseChanged(int index) {
 
-//! \todo meni se databaze.. kdyz se klikne na AddAlarmSound()... proc?
-qDebug() << "changed db - why? - " << index;
+	if (index == -1)
+		return;
 
-    if (index == "MySQL")
+    if (index == 1)
 		m_ui->groupBoxMySQL->setEnabled(true);
-	else m_ui->groupBoxMySQL->setDisabled(true);
+	else
+		m_ui->groupBoxMySQL->setDisabled(true);
 	
 	m_dbChanged = true;
+//! \todo meni se databaze.. kdyz se klikne na AddAlarmSound()... proc?
+qDebug() << "changed db - why? - " << index;
 }
 
 
@@ -170,7 +180,7 @@ void OptionsDialog::addAlarmSound() {
 		for (int i = 0; i < filenames.size(); i++) {
 				
 			QFileInfo f(filenames.at(i));
-			m_ui->comboBoxSounds->addItem(f.fileName());
+			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
 				
 			g_settings->setArrayIndex(size + i);
 			g_settings->setValue("sound", f.absoluteFilePath());

@@ -3,6 +3,7 @@
 
 #include <QSortFilterProxyModel>
 
+
 class SchedulerProxyModel : public QSortFilterProxyModel {
 	
 Q_OBJECT
@@ -13,9 +14,6 @@ public:
 protected:
 	bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
-signals:
-
-public slots:
 
 };
 
