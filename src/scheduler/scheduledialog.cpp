@@ -75,6 +75,10 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 	ui->plainTextEditText->setPlainText(text);
 	ui->dateTimeEditExpiration->setDateTime(expirationDateTime);
 	ui->calendar->setSelectedDate(expirationDate);
+	
+	if (categoryID <= 0)
+		categoryID = 0;
+		
 	ui->comboBoxCategory->setCurrentIndex(ui->comboBoxCategory->findData(categoryID));
 }
 
@@ -82,14 +86,17 @@ ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDia
 void ScheduleDialog::initialize() {
 	
 	// Add schedule categories to combo box
+	// Default category
+	ui->comboBoxCategory->addItem(tr("No category"), 0);
+	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	QSqlQuery query(sqlConnection);
 	
 	QString sql = "SELECT id, name FROM ScheduleCategory;";
 	query.exec(sql);
-	while (query.next())
-		ui->comboBoxCategory->addItem(query.value(1).toString(), query.value(0));
-	
+	while (query.next()) {
+		ui->comboBoxCategory->addItem(query.value(1).toString(), query.value(0).toInt());
+	}
 	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
 	ui->dateTimeEditExpiration->setMinimumDateTime(QDateTime::currentDateTime());
