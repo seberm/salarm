@@ -60,6 +60,8 @@ TimeoutDialog::TimeoutDialog(int scheduleID, QWidget *parent) : QDialog(parent),
 		m_expiration = queryData.value(2).toDateTime();
 	}
 	
+	ui->labelTitle->setText(m_title);
+	ui->labelDateTime->setText(m_expiration.toString());
 	
 	makeConnections();
 	inform();
@@ -75,9 +77,7 @@ TimeoutDialog::~TimeoutDialog() {
 void TimeoutDialog::makeConnections() {
 	
 	connect(ui->pushButtonConfirm, SIGNAL(pressed()), this, SLOT(confirm()));
-	connect(ui->pushButtonDecline, SIGNAL(pressed()), this, SLOT(close()));
 	connect(ui->pushButtonPostpone, SIGNAL(pressed()), this, SLOT(postpone()));
-
 }
 
 
@@ -92,20 +92,21 @@ void TimeoutDialog::inform() {
 		
 	} else
 		qWarning() << tr("sound file for schedule warning does not exists");
-	
 
 }
 
 
 void TimeoutDialog::confirm() {
 	
-	
+	emit confirmed(m_scheduleID);
+	close();
 }
 
 
 void TimeoutDialog::postpone() {
 	
-	
+	emit postponed(m_scheduleID);
+	close();
 }
 
 
@@ -113,4 +114,6 @@ void TimeoutDialog::closeEvent(QCloseEvent *e) {
 	
 	if (m_player->state() == Phonon::PlayingState)
 		m_player->stop();
+	
+	e->accept();
 }

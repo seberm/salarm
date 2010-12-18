@@ -52,7 +52,10 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 //! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla - musi se spravne nastavit jmeno a hodnota prvku v comboboxu.. a potom snad vyhledavat pujde
 //m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound")));
 //qDebug() << m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound").toString());
-
+		g_settings->beginGroup("Postpone");
+			QTime time(g_settings->value("Hour").toInt(), g_settings->value("Minute").toInt(), g_settings->value("Second").toInt());
+			m_ui->timeEditPostpone->setTime(time);
+		g_settings->endGroup();
 	g_settings->endGroup();
 
 	g_settings->beginGroup("MySQL");
@@ -78,7 +81,6 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
 		}
 	g_settings->endArray();
-	
 	
 	g_settings->beginGroup("GUI");
 		QPalette palette = m_ui->labelExpiredScheduleColor->palette();
@@ -137,6 +139,11 @@ void OptionsDialog::dialogAccepted() {
 		g_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->currentIndex());
 		g_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
 		g_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
+		g_settings->beginGroup("Postpone");
+			g_settings->setValue("Hour", m_ui->timeEditPostpone->time().hour());
+			g_settings->setValue("Minute", m_ui->timeEditPostpone->time().minute());
+			g_settings->setValue("Second", m_ui->timeEditPostpone->time().second());
+		g_settings->endGroup();
 	g_settings->endGroup();
 	
 	g_settings->beginGroup("GUI");

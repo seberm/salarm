@@ -46,7 +46,6 @@ class Scheduler : public QTreeView {
 
 public:
 	
-			
 	//! Constructor
 	/*!
 	  \param parent pointer to parent object
@@ -74,7 +73,9 @@ public slots:
 	//! Tells which schedules are timeouted
 	void checkSchedules();
 	
-	void markTimeouted(int);
+	void postpone(int id);
+	
+	void markTimeouted(int id);
 
 signals:
 	

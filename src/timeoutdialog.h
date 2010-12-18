@@ -25,6 +25,7 @@
 
 #include <QDialog>
 #include <QDateTime>
+#include <QCloseEvent>
 
 
 namespace Ui {
@@ -83,6 +84,12 @@ private:
 	//! It plays schedule timeout sound
 	MediaObject *m_player;
 
+	
+signals:
+	
+	void postponed(int);
+	void confirmed(int);
+	
 	
 private slots:
 	

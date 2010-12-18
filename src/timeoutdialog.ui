@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>TimeoutDialog</class>
  <widget class="QDialog" name="TimeoutDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,14 +13,24 @@
     <height>310</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Schedule timeouted</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources/icons.qrc">
+    <normaloff>:/icons/alarmIcon</normaloff>:/icons/alarmIcon</iconset>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabBasicInfo">
       <attribute name="title">
@@ -25,7 +38,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="labelTitle">
          <property name="text">
           <string/>
          </property>
@@ -38,7 +51,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="labelImage">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -50,7 +63,7 @@
           </font>
          </property>
          <property name="text">
-          <string>The title</string>
+          <string/>
          </property>
          <property name="textFormat">
           <enum>Qt::AutoText</enum>
@@ -64,7 +77,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_2">
+        <spacer name="verticalSpacer2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -75,6 +88,16 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelDateTime">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

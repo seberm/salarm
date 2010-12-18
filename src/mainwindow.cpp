@@ -398,5 +398,9 @@ void MainWindow::editSchedule() {
 void MainWindow::timeoutInformation(int id) {
 	
 	TimeoutDialog *d = new TimeoutDialog(id, this);
+	
+	// When postpone button is pressed
+	connect(d, SIGNAL(postponed(int)), m_scheduler, SLOT(postpone(int)));
+	connect(d, SIGNAL(confirmed(int)), m_scheduler, SLOT(markTimeouted(int)));
 	d->exec();
 }

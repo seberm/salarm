@@ -23,6 +23,8 @@
 #include <QtSql>
 #include <QMessageBox>
 
+#include "settings.h"
+extern QSettings *g_settings;
 #include "scheduler.h"
 #include "schedulermodel.h"
 #include "schedulerproxymodel.h"
@@ -100,8 +102,7 @@ Scheduler::~Scheduler() {
 void Scheduler::makeConnections() {
 	
 	// If some schedule timeouted we need to refresh the schedule list
-	connect (this, SIGNAL(scheduleTimeouted(int)), this, SLOT(markTimeouted(int)));
-	connect (this, SIGNAL(scheduleTimeouted(int)), this, SLOT(refreshSchedules()));
+//	connect (this, SIGNAL(scheduleTimeouted(int)), this, SLOT(refreshSchedules()));
 }
 
 
@@ -230,7 +231,7 @@ void Scheduler::checkSchedules() {
 }
 
 
-void Scheduler::markTimeouted(int ID) {
+void Scheduler::markTimeouted(int id) {
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
@@ -240,8 +241,41 @@ void Scheduler::markTimeouted(int ID) {
 	QSqlQuery queryUpdate(sqlConnection);
 	
 	queryUpdate.prepare(sqlUpdate);
-	queryUpdate.addBindValue(ID);
+	queryUpdate.addBindValue(id);
 	
 	if (!queryUpdate.exec())
 		qWarning() << queryUpdate.lastError();
+	
+	refreshSchedules();
+}
+
+
+void Scheduler::postpone(int id) {
+
+	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	
+	g_settings->beginGroup("App");
+		g_settings->beginGroup("Postpone");
+			int hours = g_settings->value("Hour").toInt();
+			int minutes = g_settings->value("Minute").toInt();
+			int seconds = g_settings->value("Second").toInt();
+		g_settings->endGroup();
+	g_settings->endGroup();
+
+	QDateTime newDateTime = QDateTime::currentDateTime();
+	newDateTime = newDateTime.addSecs(hours*60*60 + minutes*60 + seconds);
+	
+	QString sqlUpdate = "UPDATE Schedule SET datetime = ?" \
+						" WHERE id = ?;";
+
+	QSqlQuery queryUpdate(sqlConnection);
+	
+	queryUpdate.prepare(sqlUpdate);
+	queryUpdate.addBindValue(newDateTime);
+	queryUpdate.addBindValue(id);
+	
+	if (!queryUpdate.exec())
+		qWarning() << queryUpdate.lastError();
+	
+	refreshSchedules();
 }
