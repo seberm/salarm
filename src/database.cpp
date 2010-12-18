@@ -135,38 +135,31 @@ void Database::dbInit(int dbType) {
 		
 		case SQLite: {
 			
-//! \todo Make this part of code more simpler - it's the mess!
-				
-			QString sql1;
-			sql1 = QString (
-					"CREATE TABLE IF NOT EXISTS Schedule (" \
+			QStringList tables;
+			tables
+				<<  "CREATE TABLE IF NOT EXISTS Schedule (" \
 					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
 					" categoryID INTEGER," \
 					" title CHAR(200) NOT NULL," \
 					" text TEXT DEFAULT NULL," \
 					" datetime DATETIME NOT NULL," \
 					" timeouted TINYBOOLEAN NOT NULL DEFAULT 0" \
-					
-					");" \
-					);
-			
-			QString sql2;
-			sql2 = QString(
+					");"
+				<<					
 					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
 					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
 					" name CHAR(100) NOT NULL" \
-					
-					");" \
-					);
-	
-			QSqlQuery query1(sql1, sqlConnection);
-			QSqlQuery query2(sql2, sqlConnection);
-
-			if (!query1.exec())
-				qWarning() << query1.lastError();
+					");"
+			;
 			
-			if (!query2.exec())
-				qWarning() << query2.lastError();
+			// The SQLite needs to create the database tables individually
+			for (int i = 0; i < tables.size(); i++) {
+	
+				QSqlQuery query(tables.at(i), sqlConnection);
+
+				if (!query.exec())
+					qWarning() << query.lastError();
+			}
 			
 		} break;
 	}
