@@ -29,6 +29,8 @@
 #include "settings.h"
 extern QSettings *g_settings;
 
+// Has database changed during the configuring?
+static bool dbChanged = false;
 
 OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::OptionsDialog) {
 	
@@ -37,21 +39,25 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 	
 	m_ui->labelExpiredScheduleColor->setAutoFillBackground(true);
 	
-	m_dbChanged = false;
+	// Adds combobox database items
+	m_ui->comboBoxDatabases->addItem("SQLite", Database::SQLite);
+	m_ui->comboBoxDatabases->addItem("MySQL", Database::MySQL);
 	
 	g_settings->beginGroup("App");
 		m_ui->checkBoxCanClose->setChecked(!(g_settings->value("CanClose", false).toBool()));
 		
 		int currentDBDriver = g_settings->value("DatabaseDriver").toInt();
-		if (currentDBDriver == Database::MySQL) {
+		if (m_ui->comboBoxDatabases->itemData(currentDBDriver).toInt() == Database::MySQL) {
 			
 			m_ui->groupBoxMySQL->setEnabled(true);
 			m_ui->comboBoxDatabases->setCurrentIndex(currentDBDriver);
 		}
 
-//! \todo findData nepracuje spravne...proc?, zacalo zlobit vyhazovani hlasky o zmene Db..pritom zadna nebyla..	 zatim qdebug vraci -1 protoze fce nic nenasla - musi se spravne nastavit jmeno a hodnota prvku v comboboxu.. a potom snad vyhledavat pujde
-//m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound")));
-//qDebug() << m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound").toString());
+//! \todo findData nepracuje spravne...proc? zatim qdebug vraci -1 protoze fce nic nenasla - musi se spravne nastavit jmeno a hodnota prvku v comboboxu.. a potom snad vyhledavat pujde
+m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound")));
+qDebug() << m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound").toString());
+qDebug() << "filename: " << g_settings->value("AlarmSound").toString();
+		
 		g_settings->beginGroup("Postpone");
 			QTime time(g_settings->value("Hour").toInt(), g_settings->value("Minute").toInt(), g_settings->value("Second").toInt());
 			m_ui->timeEditPostpone->setTime(time);
@@ -119,7 +125,7 @@ void OptionsDialog::changeEvent(QEvent *e) {
 
 void OptionsDialog::dialogAccepted() {
 	
-	if (m_dbChanged)
+	if (dbChanged)
 		QMessageBox::information(this, tr("Database changed"), tr("The changes of database will take effect after the application restart."));
 	
 	g_settings->beginGroup("MySQL");
@@ -136,7 +142,7 @@ void OptionsDialog::dialogAccepted() {
 	g_settings->endGroup();
 		
 	g_settings->beginGroup("App");
-		g_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->currentIndex());
+		g_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->itemData(m_ui->comboBoxDatabases->currentIndex()));
 		g_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
 		g_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
 		g_settings->beginGroup("Postpone");
@@ -154,19 +160,29 @@ void OptionsDialog::dialogAccepted() {
 }
 
 
-void OptionsDialog::databaseChanged(int index) {
+void OptionsDialog::databaseChanged(int itemIndex) {
 
-	if (index == -1)
+	if (itemIndex == -1)
 		return;
-
-    if (index == 1)
-		m_ui->groupBoxMySQL->setEnabled(true);
-	else
-		m_ui->groupBoxMySQL->setDisabled(true);
 	
-	m_dbChanged = true;
-//! \todo meni se databaze.. kdyz se klikne na AddAlarmSound()... proc?
-qDebug() << "changed db - why? - " << index;
+	int itemData = m_ui->comboBoxDatabases->itemData(itemIndex).toInt();
+	switch (itemData) {
+		
+		case Database::MySQL:
+			qDebug() << "changed database to: MySQL";
+			m_ui->groupBoxMySQL->setEnabled(true);
+			dbChanged = true;
+			break;
+		case Database::SQLite:
+			qDebug() << "changed database to: SQLite";
+			m_ui->groupBoxMySQL->setDisabled(true);
+			dbChanged = true;
+			break;
+		
+		default:
+			qWarning() << "bad database id: " << itemData;
+			break;
+	}
 }
 
 

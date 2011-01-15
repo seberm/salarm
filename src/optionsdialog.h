@@ -48,8 +48,6 @@ class OptionsDialog : public QDialog {
 	
 	private:
 		Ui::OptionsDialog *m_ui;
-		
-		bool m_dbChanged;
 	
 	private slots:
 		void databaseChanged(int);
