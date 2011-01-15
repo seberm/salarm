@@ -19,17 +19,18 @@
  */
 
 
+#include <QRect>
+#include <QtDebug>
+
 #include "scheduledelegate.h"
 #include "scheduler.h"
 extern const Column Expiration;
+extern const Column Status;
 
 #include "schedulerproxymodel.h"
 #include "schedulermodel.h"
 #include "settings.h"
 extern QSettings *g_settings;
-
-#include <QRect>
-#include <QtDebug>
 
 
 ScheduleDelegate::ScheduleDelegate(QObject *parent, SchedulerProxyModel *proxyModel, SchedulerModel *model) : QStyledItemDelegate(parent) {
@@ -53,18 +54,14 @@ void ScheduleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 		painter->setPen(option.palette.highlightedText().color());
 	}
 	
+	QModelIndex expirationIndex = index.model()->index(index.row(), Expiration.columnID);
+	QDateTime expiration = expirationIndex.data().toDateTime();
+	
 	// We draw the text into index which we can convert into String
-//! \todo je toto overeni spravne?..jak je to se sloupci ve scheduler, kde se uklada integer?
 	if (qVariantCanConvert<QString>(index.data())) {
 		
-		QModelIndex expirationIndex = index.model()->index(index.row(), Expiration.columnID);
-		QDateTime expiration = expirationIndex.data().toDateTime();
-		
-		if (expiration < QDateTime::currentDateTime()) {
-			
-			//painter->fillRect(rect, g_settings->value("GUI/ExpiredScheduleColor", Qt::white).value<QColor>());
+		if (expiration < QDateTime::currentDateTime())
 			painter->setPen(g_settings->value("GUI/ExpiredScheduleColor", Qt::white).value<QColor>());
-		}
 		
 		painter->drawText(rect,
 						  option.fontMetrics.elidedText(index.data().toString(),
@@ -72,11 +69,9 @@ void ScheduleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 														m_scheduler->columnWidth(index.column()))
 						 );
 		
-	} else {
-//! \todo dodelat..zobrazeni obrazku v indexu.. nevime jak prevest index.data() na Image..
-		//QImage image(index.data().toByteArray().toBase64());
-		//painter->drawImage(rect, image);
+	} else if (expiration < QDateTime::currentDateTime()) {
+		
+		QImage img = index.data().value<QImage>();
+		painter->drawImage(rect, img);
 	}
-	
-	
 }
