@@ -77,8 +77,8 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 	setRootIsDecorated(false);
 	setAlternatingRowColors(true);	
 	
-	// Resize columns to its content
-	resizeColumnToContents(Status.columnID);
+	// Resize columns to their content
+	setColumnWidth(Status.columnID, 20);
 	resizeColumnToContents(Title.columnID);
 	resizeColumnToContents(Expiration.columnID);
 	
