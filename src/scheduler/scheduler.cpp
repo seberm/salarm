@@ -27,6 +27,7 @@
 extern QSettings *g_settings;
 #include "scheduler.h"
 #include "schedulermodel.h"
+#include "constants.h"
 #include "schedulerproxymodel.h"
 #include "scheduledelegate.h"
 
@@ -44,6 +45,13 @@ int columnCount = 7;
 
 
 Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
+	
+	m_sqlDb = new Database("Schedules");
+	
+	if (m_sqlDb->connect())
+		qDebug() << "Successfuly connected - " << m_sqlDb->connectionName();
+	else qCritical() << "Error in database connection - " << m_sqlDb->connectionName();
+
 	
 	QStringList headers;
 	headers << DBID.columnName
@@ -96,6 +104,7 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 
 Scheduler::~Scheduler() {
 	
+	delete m_sqlDb;
 }
 
 
@@ -124,9 +133,8 @@ void Scheduler::removeSchedule() {
 	if (msg.exec() == QMessageBox::No)
 		return;
 
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
-	QSqlQuery query(sqlConnection);
+	QSqlQuery query(m_sqlDb->sqlDb());
 	QString sql("DELETE FROM Schedule WHERE id = %1;");
 
 	query.prepare(sql.arg(dbID));
@@ -149,8 +157,6 @@ void Scheduler::refreshSchedules() {
 	// Fist we need to remove all schedules from scheduler
 	m_model->removeRows(0, m_model->rowCount(QModelIndex()));
 	m_schedules.clear();
-
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
 	
 	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
 				" FROM Schedule" \
@@ -159,7 +165,7 @@ void Scheduler::refreshSchedules() {
 				" ORDER BY Schedule.datetime ASC;" \
 				);
 
-	QSqlQuery query(sql, sqlConnection);
+	QSqlQuery query(sql, m_sqlDb->sqlDb());
 	
 	int dbDBID = query.record().indexOf("DBID");
 	int dbTitle = query.record().indexOf("title");
@@ -233,12 +239,10 @@ void Scheduler::checkSchedules() {
 
 void Scheduler::markTimeouted(int id) {
 	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	
 	QString sqlUpdate = "UPDATE Schedule SET timeouted = 1" \
 						" WHERE id = ?;";
 
-	QSqlQuery queryUpdate(sqlConnection);
+	QSqlQuery queryUpdate(sqlUpdate, m_sqlDb->sqlDb());
 	
 	queryUpdate.prepare(sqlUpdate);
 	queryUpdate.addBindValue(id);
@@ -252,8 +256,6 @@ void Scheduler::markTimeouted(int id) {
 
 void Scheduler::postpone(int id) {
 
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	
 	g_settings->beginGroup("App");
 		g_settings->beginGroup("Postpone");
 			int hours = g_settings->value("Hour").toInt();
@@ -268,7 +270,7 @@ void Scheduler::postpone(int id) {
 	QString sqlUpdate = "UPDATE Schedule SET datetime = ?" \
 						" WHERE id = ?;";
 
-	QSqlQuery queryUpdate(sqlConnection);
+	QSqlQuery queryUpdate(sqlUpdate, m_sqlDb->sqlDb());
 	
 	queryUpdate.prepare(sqlUpdate);
 	queryUpdate.addBindValue(newDateTime);

@@ -25,6 +25,8 @@
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 
 
 class Database : public QObject {
@@ -33,19 +35,29 @@ class Database : public QObject {
 	Q_ENUMS(DriverTypes)
 			
 	public:
-		Database(QString name = "");
+		Database(QString connName = "");
 		~Database();
 		QSqlDatabase sqlDatabase;
-		bool dbConnect();
+		bool connect();
 		enum DriverTypes { SQLite, MySQL };
 		
-		inline QString getConnectionName() const { return m_name; }
+		inline QString connectionName() const { return m_dbName; }
+		inline DriverTypes driverType() const { return m_driverType; }
+		inline QSqlDatabase sqlDb() { return *m_sqlDb; }
 		
 	private:
 		// Name of connection
-		QString m_name;
+		QString m_dbName;
 		
-		void dbInit(int dbType);
+		QString m_hostname;
+		QString m_username;
+		QString m_password;
+		QString m_database;
+		DriverTypes m_driverType;
+		
+		QSqlDatabase *m_sqlDb;
+		
+		void dbInit();
 };
 
 #endif // DATABASE_H

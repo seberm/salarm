@@ -27,7 +27,9 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QList>
+#include <QSqlDatabase>
 
+#include "database.h"
 
 struct Column {
 	
@@ -92,6 +94,8 @@ private:
 	SchedulerProxyModel *m_proxyModel;
 	ScheduleDelegate *m_itemDelegate;
 	
+	//! The database class pointer
+	Database *m_sqlDb;
 	QTimer *m_scheduleTimer;
 	
 	//! Keeps the pairs of untimeouted schedules (<Database ID of schedule, Expiration datetime>)

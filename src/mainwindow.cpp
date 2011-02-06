@@ -36,7 +36,6 @@
 #include "settings.h"
 extern QSettings *g_settings;
 #include "scheduler.h"
-#include "database.h"
 #include "keycatcher.h"
 
 
@@ -52,18 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	
 	// The alignment of the splash notice text
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
-	
-	splash->showMessage(QObject::tr("Connecting the database ..."), topRight, Qt::white);
-	m_db = new Database ("Schedules");
-	
-	if (m_db->dbConnect())
-		qDebug() << "successfuly connected - " << m_db->getConnectionName();
-	else {
-		
-		qWarning() << "error in connection - " << m_db->getConnectionName();
-		QMessageBox::warning(this, tr("Database connection"), tr("Error in database connection..."));
-	}
-	
 	
 	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
 	readSettings();
@@ -127,8 +114,7 @@ MainWindow::~MainWindow() {
 	
 	// Removes the settings variable from memory
 	exitSettings();	
-
-	delete m_db;
+	
     delete ui;
 }
 
@@ -291,6 +277,7 @@ void MainWindow::changeEvent(QEvent *e) {
 void MainWindow::closeEvent(QCloseEvent *e) {
 	
 	if (isVisible()) {
+		
 		if (m_canClose) {
 			e->accept();
 			qApp->quit();
@@ -305,6 +292,7 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 void MainWindow::trayActivation(QSystemTrayIcon::ActivationReason reason) {
 	
 	if (reason == QSystemTrayIcon::Trigger) {
+		
 		if (isVisible())
 			hide();
 		else show();

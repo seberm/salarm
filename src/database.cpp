@@ -22,6 +22,7 @@
 #include <QtDebug>
 #include <QtSql>
 #include <QStringList>
+#include <QFile>
 
 #include "database.h"
 #include "constants.h"
@@ -29,137 +30,161 @@
 extern QSettings *g_settings;
 
 
-Database::Database(QString name): m_name(name) {
+Database::Database(QString connName) {
 	
+	m_sqlDb = NULL;
+	
+	m_dbName = connName;
+	g_settings->beginGroup("App");
+		m_driverType = static_cast<DriverTypes>(g_settings->value("DatabaseDriver", 0).toInt());
+	g_settings->endGroup();
+	
+	g_settings->beginGroup("MySQL");
+		m_hostname = g_settings->value("HostName", "localhost").toString();
+		m_username = g_settings->value("UserName", QString()).toString();
+		m_password = g_settings->value("Password", QString()).toString();
+		m_database = g_settings->value("Database", "salarm").toString();
+	g_settings->endGroup();
 }
 
 
 Database::~Database() {
 	
-	qDebug() << "Closing database connection " << m_name;
+	qDebug() << "Closing database connection " << m_dbName;
 	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	sqlConnection.close();
+	delete m_sqlDb;
+	QSqlDatabase::removeDatabase(m_dbName);
 }
 
 
-bool Database::dbConnect() {
+bool Database::connect() {
 	
-	qDebug() << "Connecting " << m_name;
+	qDebug() << "Connecting " << m_dbName;
 	
-	if (QSqlDatabase::contains(m_name)) {
+	if (QSqlDatabase::contains(m_dbName)) {
 		
-		qWarning() << "Connection " << m_name << " already exists.";
+		qWarning() << "Connection " << m_dbName << " already exists.";
 		return true;
 	}
 	
-	int driver = g_settings->value("App/DatabaseDriver", 0).toInt();	
-	switch (driver) {
+	switch (m_driverType) {
 		
 		case MySQL: {
 				
-			sqlDatabase = QSqlDatabase::addDatabase("QMYSQL", m_name);
+			m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_dbName));
 				
-			g_settings->beginGroup("MySQL");
-				sqlDatabase.setHostName(g_settings->value("HostName", "localhost").toString()); // If "127.0.0.1" is configured, it can causes errors
-				sqlDatabase.setUserName(g_settings->value("UserName", QString()).toString());
-				sqlDatabase.setPassword(g_settings->value("Password", QString()).toString());
-				sqlDatabase.setDatabaseName(g_settings->value("Database", "salarm").toString());
-			g_settings->endGroup();
+			m_sqlDb->setHostName(m_hostname); // If m_hostname is "127.0.0.1" , it can cause errors
+			m_sqlDb->setUserName(m_username);
+			m_sqlDb->setPassword(m_password);
+			m_sqlDb->setDatabaseName(m_database);
 		} break;
 		
 		case SQLite: {
+		
+			m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", m_dbName));
 				
-				sqlDatabase = QSqlDatabase::addDatabase("QSQLITE", m_name);
-				sqlDatabase.setDatabaseName(SQLITE_DB_FILE);
+			if (!QFile::exists(SQLITE_DB_FILE)) {
+					
+				QString confDirPath = CONF_DIR + QDir::separator() + UNIX_NAME;
+				QDir salarmDir;
+				if (!salarmDir.exists(confDirPath))
+					salarmDir.mkdir(confDirPath);
+					
+				QFile conf(SQLITE_DB_FILE);
+				if (!conf.open(QIODevice::WriteOnly)) {
+						
+					qCritical() << "Failed to create SQLite database file";
+					return false;
+				}
+			}
+					
+			m_sqlDb->setDatabaseName(SQLITE_DB_FILE);
 		} break;
 	}
 	
-	if (!sqlDatabase.open()) {
+	if (!m_sqlDb->open()) {
 		
-		qCritical() << "Cannot connect to database " << sqlDatabase.connectionName();
-		qCritical() << "Reason: " << sqlDatabase.lastError().text();
+		qCritical() << "Cannot connect to database " << m_sqlDb->connectionName();
+		qCritical() << "Reason: " << m_sqlDb->lastError().text();
 		return false;
 	}
 	
 	// Set MySQL connection encoding
-	if (driver == MySQL)
-		QSqlQuery query("SET CHARACTER SET utf8;", sqlDatabase);
+	if (m_driverType == MySQL) {
+		QSqlQuery query("SET CHARACTER SET utf8;", *m_sqlDb);
+		query.exec();
+	}
 	
-	if (!sqlDatabase.tables(QSql::Tables).contains("Schedules", Qt::CaseSensitive))
-		dbInit(driver); // Creates DB table Schedules
+	QStringList tables = m_sqlDb->tables(QSql::AllTables);
+	if (!(tables.contains("Schedule") &&
+		  tables.contains("SchedulesCategory"))) {
+		
+		dbInit(); // Creates DB table Schedules
+	}
 	
 	return true;
 }
 
 
-void Database::dbInit(int dbType) {
+void Database::dbInit() {
 	
 	qDebug() << "Initializing database...";
 	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
+	QSqlQuery query(*m_sqlDb);
 	
-	switch (dbType) {
+	switch (m_driverType) {
 		
 		case MySQL: {
 			
-			QString sql;
-			sql = QString(
-					"CREATE TABLE IF NOT EXISTS Schedule (" \
-					" id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
-					" categoryID INT(11) UNSIGNED DEFAULT FALSE," \
-					" title VARCHAR(200) NOT NULL," \
-					" text TEXT DEFAULT NULL," \
-					" datetime DATETIME NOT NULL," \
-					" timeouted BOOL NOT NULL DEFAULT FALSE," \
-					
-					" KEY id (id)" \
+			query.exec("DROP TABLE IF EXISTS `Schedule`, `ScheduleCategory`;");
+			
+			query.exec(
+					"CREATE TABLE IF NOT EXISTS `Schedule` (" \
+					" `id` int(11) NOT NULL AUTO_INCREMENT," \
+					" `categoryID` int(11) UNSIGNED DEFAULT FALSE," \
+					" `title` varchar(250) NOT NULL," \
+					" `text` text DEFAULT NULL," \
+					" `datetime` datetime NOT NULL," \
+					" `timeouted` bool NOT NULL DEFAULT FALSE," \
+					" PRIMARY KEY (`id`)" \
 					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
-					
-					
-					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
-					" id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
-					" name VARCHAR(100) NOT NULL," \
-					
-					" KEY id (id)" \
-					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
-					
 					);
-			
-			QSqlQuery query(sql, sqlConnection);
-			
-			if (!query.exec())
-				qWarning() << query.lastError();
+					
+			query.exec(
+					"CREATE TABLE IF NOT EXISTS `ScheduleCategory` (" \
+					" `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT," \
+					" `name` varchar(255) NOT NULL," \
+					" PRIMARY KEY (`id`)" \
+					") ENGINE=MyISAM DEFAULT CHARSET=utf8;" \
+					);
 			
 		} break;
 		
 		case SQLite: {
 			
-			QStringList tables;
-			tables
-				<<  "CREATE TABLE IF NOT EXISTS Schedule (" \
-					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
-					" categoryID INTEGER," \
-					" title CHAR(200) NOT NULL," \
-					" text TEXT DEFAULT NULL," \
-					" datetime DATETIME NOT NULL," \
-					" timeouted TINYBOOLEAN NOT NULL DEFAULT 0" \
-					");"
-				<<					
-					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
-					" id INTEGER PRIMARY KEY AUTOINCREMENT," \
-					" name CHAR(100) NOT NULL" \
-					");"
-			;
+			query.exec("DROP TABLE IF EXISTS `Schedule`;");
+			query.exec("DROP TABLE IF EXISTS `ScheduleCategory`;");
 			
-			// The SQLite needs to create the database tables individually
-			for (int i = 0; i < tables.size(); i++) {
+			// The SQLite needs to create the database tables individually - it's not possible to create tables in one query
+			query.exec(
+					"CREATE TABLE IF NOT EXISTS `Schedule` (" \
+					" `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," \
+					" `categoryID` INTEGER," \
+					" `title` CHAR(200) NOT NULL," \
+					" `text` TEXT DEFAULT NULL," \
+					" `datetime` DATETIME NOT NULL," \
+					" `timeouted` TINYBOOLEAN NOT NULL DEFAULT (0)" \
+					");" \
+					);
+							
+			query.exec(
+					"CREATE TABLE IF NOT EXISTS ScheduleCategory (" \
+					" id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," \
+					" name CHAR(100) NOT NULL" \
+					");" \
+					);
+			;
 	
-				QSqlQuery query(tables.at(i), sqlConnection);
-
-				if (!query.exec())
-					qWarning() << query.lastError();
-			}
 			
 		} break;
 	}

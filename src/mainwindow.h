@@ -33,7 +33,6 @@
 
 
 class Scheduler;
-class Database;
 class KeyCatcher;
 
 namespace Ui {
@@ -97,9 +96,6 @@ private:
 	QToolBar *m_toolBar;
 	QLabel *m_lblCurrentDateTime;
 	QTimer *m_timer;
-	
-	//! The database class pointer
-	Database* m_db;
 	
 	Scheduler *m_scheduler;
 	KeyCatcher *m_keyCatcher;
