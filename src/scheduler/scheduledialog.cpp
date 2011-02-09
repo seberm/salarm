@@ -19,8 +19,14 @@
  */
 
 
+#include <QtSql>
+#include <QDebug>
+#include <QMessageBox>
+#include <QInputDialog>
+
 #include "scheduledialog.h"
 #include "ui_scheduledialog.h"
+#include "database.h"
 #include "scheduler.h"
 
 extern const Column DBID;
@@ -32,14 +38,9 @@ extern const Column Expiration;
 extern const Column Category;
 
 
-#include <QtSql>
-#include <QDebug>
-#include <QMessageBox>
-#include <QInputDialog>
-
-
-ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
+ScheduleDialog::ScheduleDialog(Database *sqlDb, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
 	
+	m_sqlDb = sqlDb;
     ui->setupUi(this);
 	
 	dialogAction = ScheduleDialog::Add;
@@ -52,8 +53,9 @@ ScheduleDialog::ScheduleDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Sc
 }
 
 
-ScheduleDialog::ScheduleDialog(const QModelIndex &index, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
+ScheduleDialog::ScheduleDialog(Database *sqlDb, const QModelIndex &index, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
 	
+	m_sqlDb = sqlDb;
 	ui->setupUi(this);
 	
 	dialogAction = ScheduleDialog::Edit;
@@ -89,14 +91,12 @@ void ScheduleDialog::initialize() {
 	// Default category
 	ui->comboBoxCategory->addItem(tr("No category"), 0);
 	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	QSqlQuery query(sqlConnection);
+	QSqlQuery query(m_sqlDb->sqlDb());
 	
 	QString sql = "SELECT id, name FROM ScheduleCategory;";
 	query.exec(sql);
-	while (query.next()) {
+	while (query.next())
 		ui->comboBoxCategory->addItem(query.value(1).toString(), query.value(0).toInt());
-	}
 	
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
 	ui->dateTimeEditExpiration->setMinimumDateTime(QDateTime::currentDateTime());
@@ -142,8 +142,7 @@ void ScheduleDialog::changeEvent(QEvent *e) {
 
 void ScheduleDialog::doSchedule() {
 
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	QSqlQuery query(sqlConnection);
+	QSqlQuery query(m_sqlDb->sqlDb());
 	
 	QString sql;
 	
@@ -205,12 +204,10 @@ void ScheduleDialog::addCategory() {
 	
 	if (ok && !category.isEmpty()) {
 		
-		QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-		
 		QString sql = "INSERT INTO ScheduleCategory (name)" \
 					  "VALUES (:name);";
 		
-		QSqlQuery query(sqlConnection);
+		QSqlQuery query(m_sqlDb->sqlDb());
 		query.prepare(sql);
 		query.addBindValue(category);
 		
@@ -236,13 +233,10 @@ void ScheduleDialog::removeCategory() {
 	if (index == 0)
 		return;
 	
-	
-	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
-	
 	QString sql = "DELETE FROM ScheduleCategory" \
 				  " WHERE id = :id;";
 
-	QSqlQuery query(sqlConnection);
+	QSqlQuery query(m_sqlDb->sqlDb());
 	query.prepare(sql);
 	query.addBindValue(id);
 	

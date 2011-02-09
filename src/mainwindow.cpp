@@ -37,6 +37,7 @@
 extern QSettings *g_settings;
 #include "scheduler.h"
 #include "keycatcher.h"
+#include "database.h"
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -57,7 +58,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 	createTrayIcon();
 	
-	m_scheduler = new Scheduler(this);
+	// Connect the database manager
+	m_sqlDb = new Database("Schedules");
+	
+	if (m_sqlDb->connect())
+		qDebug() << "Successfuly connected - " << m_sqlDb->connectionName();
+	else qCritical() << "Error in database connection - " << m_sqlDb->connectionName();
+	
+	
+	m_scheduler = new Scheduler(m_sqlDb, this);
 	m_scheduler->setContextMenuPolicy(Qt::CustomContextMenu);
 	setCentralWidget(m_scheduler);
 	
@@ -115,6 +124,7 @@ MainWindow::~MainWindow() {
 	// Removes the settings variable from memory
 	exitSettings();	
 	
+	delete m_sqlDb;
     delete ui;
 }
 
@@ -337,7 +347,7 @@ void MainWindow::openPreferences() {
 
 void MainWindow::addSchedule() {
 	
-	ScheduleDialog *d = new ScheduleDialog(this);
+	ScheduleDialog *d = new ScheduleDialog(m_sqlDb, this);
 	
 	// We need to refresh the schedule list every time the schedules change
 	connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
@@ -368,7 +378,7 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 	
 	if (m_scheduler->model()->rowCount()) {
 		
-		ScheduleDialog *d = new ScheduleDialog(i, this);
+		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, i, this);
 		connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
 		d->exec();

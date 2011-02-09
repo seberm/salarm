@@ -30,6 +30,7 @@ extern QSettings *g_settings;
 #include "constants.h"
 #include "schedulerproxymodel.h"
 #include "scheduledelegate.h"
+#include "database.h"
 
 // Columns definition
 Column DBID =		{ 0, "DBID" };
@@ -44,14 +45,9 @@ int columnCount = 7;
 /////////////////////////////////////////////////////////////////////
 
 
-Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
+Scheduler::Scheduler(Database *sqlDb, QWidget *parent) : QTreeView(parent) {
 	
-	m_sqlDb = new Database("Schedules");
-	
-	if (m_sqlDb->connect())
-		qDebug() << "Successfuly connected - " << m_sqlDb->connectionName();
-	else qCritical() << "Error in database connection - " << m_sqlDb->connectionName();
-
+	m_sqlDb = sqlDb;
 	
 	QStringList headers;
 	headers << DBID.columnName
@@ -104,7 +100,6 @@ Scheduler::Scheduler(QWidget *parent) : QTreeView(parent) {
 
 Scheduler::~Scheduler() {
 	
-	delete m_sqlDb;
 }
 
 

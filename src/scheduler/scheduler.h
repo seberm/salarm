@@ -29,7 +29,6 @@
 #include <QList>
 #include <QSqlDatabase>
 
-#include "database.h"
 
 struct Column {
 	
@@ -40,6 +39,7 @@ struct Column {
 class SchedulerModel;
 class SchedulerProxyModel;
 class ScheduleDelegate;
+class Database;
 
 
 class Scheduler : public QTreeView {
@@ -52,7 +52,7 @@ public:
 	/*!
 	  \param parent pointer to parent object
 	*/
-    explicit Scheduler(QWidget *parent = 0);
+    explicit Scheduler(Database *sqlDb, QWidget *parent = 0);
 	
 	//! Destructor
 	~Scheduler();
@@ -94,9 +94,8 @@ private:
 	SchedulerProxyModel *m_proxyModel;
 	ScheduleDelegate *m_itemDelegate;
 	
-	//! The database class pointer
-	Database *m_sqlDb;
 	QTimer *m_scheduleTimer;
+	Database *m_sqlDb;
 	
 	//! Keeps the pairs of untimeouted schedules (<Database ID of schedule, Expiration datetime>)
 	QList<QPair<int, QDateTime> > m_schedules;

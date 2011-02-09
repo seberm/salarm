@@ -33,6 +33,8 @@ namespace Ui {
     class ScheduleDialog;
 }
 
+class Database;
+
 //! ScheduleDialog is dialog for inserting or editing of schedules
 class ScheduleDialog : public QDialog {
     
@@ -47,7 +49,7 @@ public:
 	/*!
 	  \param parent pointer to parent widget
 	*/
-	explicit ScheduleDialog(QWidget *parent = 0);
+	explicit ScheduleDialog(Database *sqlDb, QWidget *parent = 0);
 	
 	//! Overloaded contructor
 	/*!
@@ -55,7 +57,7 @@ public:
 	  \param QModelIndex 
 	  \param parent pointer to parent widget
 	*/
-	ScheduleDialog(const QModelIndex &, QWidget *parent = 0);
+	ScheduleDialog(Database *sqlDb, const QModelIndex &, QWidget *parent = 0);
 	
 	//! Destructor
     ~ScheduleDialog();
@@ -92,6 +94,9 @@ private:
 	
 	//! Represents the ID of schedule which is modified; if the schedule is inserted, the value is 0
 	int m_scheduleID;
+	
+	
+	Database *m_sqlDb;
 	
 	
 signals:

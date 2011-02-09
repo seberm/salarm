@@ -34,9 +34,9 @@
 
 class Scheduler;
 class KeyCatcher;
+class Database;
 
-namespace Ui {
-	
+namespace Ui {	
     class MainWindow;
 }
 
@@ -99,6 +99,9 @@ private:
 	
 	Scheduler *m_scheduler;
 	KeyCatcher *m_keyCatcher;
+	
+	//! The database class pointer
+	Database *m_sqlDb;
 			
 	
 private slots:
@@ -129,6 +132,7 @@ private slots:
 	  \param int is the schedule database id
 	*/
 	void timeoutInformation(int);
+	
 };
 
 #endif // MAINWINDOW_H
