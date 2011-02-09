@@ -106,6 +106,7 @@ bool Database::connect() {
 		
 		qCritical() << "Cannot connect to database " << m_sqlDb->connectionName();
 		qCritical() << "Reason: " << m_sqlDb->lastError().text();
+		m_sqlDb = NULL;
 		return false;
 	}
 	
@@ -117,9 +118,9 @@ bool Database::connect() {
 	
 	QStringList tables = m_sqlDb->tables(QSql::AllTables);
 	if (!(tables.contains("Schedule") &&
-		  tables.contains("SchedulesCategory"))) {
+		  tables.contains("ScheduleCategory"))) {
 		
-		dbInit(); // Creates DB table Schedules
+		dbInit(); // Creates DB tables
 	}
 	
 	return true;
