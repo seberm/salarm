@@ -21,12 +21,12 @@
 
 #include <QtDebug>
 
-#include <settings.h>
+#include "settings.h"
 
 // We must define an extern variable with a default value
 QSettings* g_settings = 0;
 
-#include <constants.h>
+#include "constants.h"
 
 
 void initSettings() {
