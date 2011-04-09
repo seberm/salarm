@@ -1,6 +1,6 @@
 /*
  * sAlarm - Scheduler
- * http://seberm.homelinux.org/project/salarm
+ * http://salarm.seberm.com
  *
  * Copyright (C) 2009-2010 Otto Sabart <seberm[at]gmail[dot]com>
  * 
@@ -324,7 +324,7 @@ void MainWindow::about() {
 							 "<i><b>Version:</b> %1</i><br>"\
 							 "<b>Author:</b> Sabart Otto (Seberm)<br>"\
 							 "<b>Contact:</b> <a href=mailto:seberm@gmail.com>seberm@gmail.com</a><br>"\
-							 "<b>Homepage:</b> <a href=http://www.seberm.homelinux.org/project/salarm>seberm.homelinux.org</a><br><br>"\
+							 "<b>Homepage:</b> <a href=http://salarm.seberm.com>sAlarm.Seberm.com</a><br><br>"\
 							 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.")).arg(QString(qApp->applicationVersion()), QString(qApp->applicationName()));	
 	
 	QMessageBox::about(this, tr("About ").append(qApp->applicationName()), message.toAscii());
