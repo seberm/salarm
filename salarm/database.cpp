@@ -22,6 +22,7 @@
 #include <QtDebug>
 #include <QtSql>
 #include <QStringList>
+#include <QHostAddress>
 #include <QFile>
 
 #include "database.h"
@@ -40,7 +41,7 @@ Database::Database(QString connName) {
 	g_settings->endGroup();
 	
 	g_settings->beginGroup("MySQL");
-		m_hostname = g_settings->value("HostName", "localhost").toString();
+		m_hostname = g_settings->value("HostName", QHostAddress::LocalHost).toString();
 		m_username = g_settings->value("UserName", QString()).toString();
 		m_password = g_settings->value("Password", QString()).toString();
 		m_database = g_settings->value("Database", "salarm").toString();
