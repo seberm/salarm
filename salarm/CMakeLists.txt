@@ -38,7 +38,7 @@ set(salarm_HDRS
 	keycatcher.h
 	optionsdialog.h
 	settings.h
-	smtp.h
+    #smtp.h
 	xmlhandler.h
 	timeoutdialog.h
 	scheduler/schedule.h
@@ -57,7 +57,7 @@ set(salarm_SRCS
 	optionsdialog.cpp
 	settings.cpp
 	xmlhandler.cpp
-	smtp.cpp
+    #smtp.cpp
 	timeoutdialog.cpp
 	scheduler/schedule.cpp
 	scheduler/scheduledialog.cpp

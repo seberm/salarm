@@ -1,8 +1,7 @@
 # The KDE folder parameters file
 .directory
 
-
-*.pro.user
+tests/
 Makefile
 
 build/
@@ -19,3 +18,5 @@ TODO.*
 
 *.pro.user
 *.txt.user
+*.pro
+~*
