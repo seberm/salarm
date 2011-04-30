@@ -52,14 +52,9 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::Op
 			m_ui->groupBoxMySQL->setEnabled(true);
 			m_ui->comboBoxDatabases->setCurrentIndex(currentDBDriver);
 		}
-
-//! \todo findData nepracuje spravne...proc? zatim qdebug vraci -1 protoze fce nic nenasla - musi se spravne nastavit jmeno a hodnota prvku v comboboxu.. a potom snad vyhledavat pujde
-m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound")));
-qDebug() << m_ui->comboBoxSounds->findData(g_settings->value("AlarmSound").toString());
-qDebug() << "filename: " << g_settings->value("AlarmSound").toString();
 		
 		g_settings->beginGroup("Postpone");
-			QTime time(g_settings->value("Hour").toInt(), g_settings->value("Minute").toInt(), g_settings->value("Second").toInt());
+			QTime time(g_settings->value("Hour").toInt(), g_settings->value("Minute").toInt(), g_settings->value("Second", 10).toInt());
 			m_ui->timeEditPostpone->setTime(time);
 		g_settings->endGroup();
 	g_settings->endGroup();
@@ -78,13 +73,13 @@ qDebug() << "filename: " << g_settings->value("AlarmSound").toString();
 	g_settings->endGroup();
 	
 	int size = g_settings->beginReadArray("Sounds");
-		for (int i = 0; i < size; i++) {
+		for (int i = 1; i < size; i++) {
 			
 			g_settings->setArrayIndex(i);
 			QString filename = g_settings->value("sound").toString();
 			
 			QFileInfo f(filename);
-			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
+			m_ui->comboBoxSounds->addItem(f.baseName(), f.absoluteFilePath());
 		}
 	g_settings->endArray();
 	
@@ -94,7 +89,15 @@ qDebug() << "filename: " << g_settings->value("AlarmSound").toString();
 		m_ui->labelExpiredScheduleColor->setPalette(palette);
 	g_settings->endGroup();
 	
+	g_settings->beginGroup("App");
+		m_ui->sliderVolume->setSliderPosition(g_settings->value("AlarmVolume", 50).toInt());
 	
+		QFileInfo sound(g_settings->value("AlarmSound").toString());
+		m_ui->comboBoxSounds->setCurrentIndex(m_ui->comboBoxSounds->findText(sound.baseName()));	
+	g_settings->endGroup();
+	
+	
+	// Dialog connections
 	connect(m_ui->comboBoxDatabases, SIGNAL(currentIndexChanged(int)), this, SLOT(databaseChanged(int)));
 	connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(m_ui->pushButtonSetExpiredScheduleColor, SIGNAL(pressed()), this, SLOT(setExpiredScheduleColor()));
@@ -145,6 +148,7 @@ void OptionsDialog::dialogAccepted() {
 		g_settings->setValue("DatabaseDriver", m_ui->comboBoxDatabases->itemData(m_ui->comboBoxDatabases->currentIndex()));
 		g_settings->setValue("CanClose", !(m_ui->checkBoxCanClose->isChecked()));
 		g_settings->setValue("AlarmSound", m_ui->comboBoxSounds->itemData(m_ui->comboBoxSounds->currentIndex()));
+		g_settings->setValue("AlarmVolume", m_ui->sliderVolume->value());
 		g_settings->beginGroup("Postpone");
 			g_settings->setValue("Hour", m_ui->timeEditPostpone->time().hour());
 			g_settings->setValue("Minute", m_ui->timeEditPostpone->time().minute());
@@ -188,27 +192,25 @@ void OptionsDialog::databaseChanged(int itemIndex) {
 
 void OptionsDialog::addAlarmSound() {
 
-	QStringList filenames = QFileDialog::getOpenFileNames(this,
+	QString filename = QFileDialog::getOpenFileName(this,
 													tr("Open sound"),
 													QDir::homePath(),
 													tr("Supported files") + "(*.mp3 *.mp4 *.wav *.3gp *.ogg);; " + tr("All files") + " (*.*)");
 	
 	
-	if (filenames.isEmpty())
+	if (filename.isEmpty())
 		return;
 	
 	int size = m_ui->comboBoxSounds->count();
 	
 	g_settings->beginWriteArray("Sounds");
-		for (int i = 0; i < filenames.size(); i++) {
 				
-			QFileInfo f(filenames.at(i));
-			m_ui->comboBoxSounds->addItem(f.fileName(), f.absoluteFilePath());
+		QFileInfo f(filename);
+		m_ui->comboBoxSounds->addItem(f.baseName(), f.absoluteFilePath());
 				
-			g_settings->setArrayIndex(size + i);
-			g_settings->setValue("sound", f.absoluteFilePath());
+		g_settings->setArrayIndex(size + 1);
+		g_settings->setValue("sound", f.absoluteFilePath());
 				
-		}
 	g_settings->endArray();
 }
 

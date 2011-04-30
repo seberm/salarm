@@ -34,7 +34,14 @@ TimeoutDialog::TimeoutDialog(int scheduleID, QWidget *parent) : QDialog(parent),
 	
     ui->setupUi(this);
 	m_scheduleID = scheduleID;
-	m_player = createPlayer(MusicCategory);
+	
+	m_player = new MediaObject(this);
+	AudioOutput *audioOutput = new AudioOutput(MusicCategory, this);
+	Path path = Phonon::createPath(m_player, audioOutput);
+	
+	g_settings->beginGroup("App");
+		audioOutput->setVolume(g_settings->value("AlarmVolume", 50).toReal() / 100);
+	g_settings->endGroup();
 	
 	
 	QSqlDatabase sqlConnection = QSqlDatabase::database("Schedules");
@@ -86,7 +93,7 @@ void TimeoutDialog::inform() {
 	QFileInfo fi(g_settings->value("App/AlarmSound").toString());
 	
 	if (fi.exists()) {
-		
+
 		m_player->setCurrentSource(MediaSource(fi.absoluteFilePath()));
 		m_player->play();
 		
