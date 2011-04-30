@@ -63,6 +63,9 @@
     <addaction name="separator"/>
     <addaction name="actionEdit"/>
     <addaction name="actionRemove"/>
+    <addaction name="separator"/>
+    <addaction name="actionExportSchedules"/>
+    <addaction name="actionImportSchedules"/>
    </widget>
    <addaction name="menuMain"/>
    <addaction name="menuSchedule"/>
@@ -165,6 +168,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionExportSchedules">
+   <property name="icon">
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/icons/exportIcon</normaloff>:/icons/exportIcon</iconset>
+   </property>
+   <property name="text">
+    <string>E&amp;xport schedules</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionImportSchedules">
+   <property name="icon">
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/icons/importIcon</normaloff>:/icons/importIcon</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Import schedules</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
