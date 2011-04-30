@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QList>
+#include <QFile>
 #include <QSqlDatabase>
 
 
@@ -39,6 +40,7 @@ struct Column {
 class SchedulerModel;
 class SchedulerProxyModel;
 class ScheduleDelegate;
+class Schedule;
 class Database;
 
 
@@ -63,8 +65,15 @@ public:
 	*/
 	void removeSchedule();
 	
+	void addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int category = 0);
+	void addSchedule(Schedule *s);
+	void editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int category = 0);
+	
 	//! Makes the connections between objects
 	void makeConnections();
+	
+	
+	void generateXmlToFile(QFile *f);
 	
 	
 public slots:

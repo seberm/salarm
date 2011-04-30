@@ -38,9 +38,10 @@ extern const Column Expiration;
 extern const Column Category;
 
 
-ScheduleDialog::ScheduleDialog(Database *sqlDb, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
+ScheduleDialog::ScheduleDialog(Database *sqlDb, Scheduler *scheduler, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
 	
 	m_sqlDb = sqlDb;
+	m_scheduler = scheduler;
     ui->setupUi(this);
 	
 	dialogAction = ScheduleDialog::Add;
@@ -53,9 +54,10 @@ ScheduleDialog::ScheduleDialog(Database *sqlDb, QWidget *parent) : QDialog(paren
 }
 
 
-ScheduleDialog::ScheduleDialog(Database *sqlDb, const QModelIndex &index, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
+ScheduleDialog::ScheduleDialog(Database *sqlDb, Scheduler *scheduler, const QModelIndex &index, QWidget *parent) : QDialog(parent), ui(new Ui::ScheduleDialog) {
 	
 	m_sqlDb = sqlDb;
+	m_scheduler = scheduler;
 	ui->setupUi(this);
 	
 	dialogAction = ScheduleDialog::Edit;
@@ -142,42 +144,28 @@ void ScheduleDialog::changeEvent(QEvent *e) {
 
 void ScheduleDialog::doSchedule() {
 
-	QSqlQuery query(m_sqlDb->sqlDb());
-	
-	QString sql;
-	
 	switch (dialogAction)	{
 		
 		default:
 		case ScheduleDialog::Add:
-			sql = "INSERT INTO Schedule (title, text, datetime, categoryID)" \
-				  " VALUES(:title, :text, :datetime, :categoryID)";
-			
+		
+			m_scheduler->addSchedule(ui->lineEditTitle->text(),
+			                         ui->plainTextEditText->toPlainText(),
+			                         ui->dateTimeEditExpiration->dateTime(),
+			                         ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
 			break;
 			
-			
 		case ScheduleDialog::Edit:
-			
-			sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID, timeouted = 0" \
-				  " WHERE id = ?;";
-			
+		
+			m_scheduler->editSchedule(m_scheduleID,
+									 ui->lineEditTitle->text(),
+									 ui->plainTextEditText->toPlainText(),
+									 ui->dateTimeEditExpiration->dateTime(),
+									 ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
 			break;
 	}
 
-	query.prepare(sql);
-	
-	query.bindValue(0, ui->lineEditTitle->text().simplified());
-	query.bindValue(1, ui->plainTextEditText->toPlainText().simplified());
-	query.bindValue(2, ui->dateTimeEditExpiration->dateTime());
-	query.bindValue(3, ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
-	
-	if(dialogAction == ScheduleDialog::Edit)
-		query.bindValue(4, m_scheduleID);
-	
-	if (!query.exec())
-		qWarning() << query.lastError();
-
-	emit (changed());
+	//emit (changed());
 }
 
 

@@ -30,6 +30,7 @@ extern QSettings *g_settings;
 #include "constants.h"
 #include "schedulerproxymodel.h"
 #include "scheduledelegate.h"
+#include "schedule.h"
 #include "database.h"
 
 // Columns definition
@@ -275,4 +276,97 @@ void Scheduler::postpone(int id) {
 		qWarning() << queryUpdate.lastError();
 	
 	refreshSchedules();
+}
+
+
+void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int category) {
+	
+	QSqlQuery query(m_sqlDb->sqlDb());
+	
+	QString sql;
+	sql = "INSERT INTO Schedule (title, text, datetime, categoryID)" \
+		  " VALUES(:title, :text, :datetime, :categoryID)";
+
+	query.prepare(sql);
+	
+	query.bindValue(0, title.simplified());
+	query.bindValue(1, text.simplified());
+	query.bindValue(2, expiration);
+	query.bindValue(3, category);
+	
+	if (!query.exec())
+		qWarning() << query.lastError();
+	
+	refreshSchedules();
+}
+
+
+void Scheduler::addSchedule(Schedule *s) {
+//! \todo	
+	//addSchedule(s->title(), s->text(), s->expiration(), s->category());
+}
+
+
+void Scheduler::editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int category) {
+	
+	QSqlQuery query(m_sqlDb->sqlDb());
+	
+	QString sql;	
+	
+	sql = "UPDATE Schedule SET title = :title, text = :text, datetime = :datetime, categoryID = :categoryID, timeouted = 0" \
+		  " WHERE id = ?;";
+
+	query.prepare(sql);
+	
+	query.bindValue(0, title.simplified());
+	query.bindValue(1, text.simplified());
+	query.bindValue(2, expiration);
+	query.bindValue(3, category);
+	query.bindValue(4, id);
+	
+	if (!query.exec())
+		qWarning() << query.lastError();
+
+	refreshSchedules();
+}
+
+
+void Scheduler::generateXmlToFile(QFile *f) {
+	
+	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
+				" FROM Schedule" \
+				" LEFT JOIN ScheduleCategory" \
+				" ON ScheduleCategory.id = Schedule.categoryID" \
+				" ORDER BY Schedule.datetime ASC;" \
+				);
+
+	QSqlQuery query(sql, m_sqlDb->sqlDb());
+	
+	int dbDBID = query.record().indexOf("DBID");
+	int dbTitle = query.record().indexOf("title");
+	int dbText = query.record().indexOf("text");
+	int dbExpiration = query.record().indexOf("datetime");
+	int dbCategoryName = query.record().indexOf("name");
+	int dbCategoryID = query.record().indexOf("categoryID");
+	int dbTimeouted = query.record().indexOf("timeouted");
+
+	f->open(QFile::WriteOnly);
+	QTextStream xml(f);
+	xml.setCodec("utf-8");
+	
+	// Writes XML header
+	xml << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	
+	
+	while (query.next()) {
+		
+//! @todo It's necessary to escape variables with Qt::escape - it's not working!
+		xml << "<schedule id=\"" << query.value(dbDBID).toInt() << "\" category=\"" << query.value(dbCategoryID).toInt() << "\" timeouted=\"" << query.value(dbTimeouted).toInt() << "\">\n"
+		    << "	<title>" << query.value(dbTitle).toString() << "</title>\n"
+			<< "	<category>" << query.value(dbCategoryName).toString() << "</category>\n"
+		    << "	<text>" << query.value(dbText).toString() << "</text>\n"
+			<< "	<expiration>" << query.value(dbExpiration).toString() << "</expiration>\n"
+			<< "</schedule>\n";
+	}
+	
 }

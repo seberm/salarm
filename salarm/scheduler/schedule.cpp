@@ -29,6 +29,11 @@ Schedule::Schedule(const QVector<QVariant> &data, Schedule* parent) {
 }
 
 
+Schedule::Schedule() {
+	
+}
+
+
 Schedule::~Schedule() {
 	
 	qDeleteAll(m_childItems);	
@@ -74,6 +79,7 @@ bool Schedule::insertChildren(int position, int count, int columns) {
 		return false;
 
 	for (int row = 0; row < count; ++row) {
+		
 		QVector<QVariant> data(columns);
 		Schedule* item = new Schedule(data, this);
 		m_childItems.insert(position, item);

@@ -33,6 +33,7 @@ class Schedule : public QStandardItem {
 	
 public:
     explicit Schedule(const QVector<QVariant> &data, Schedule* parent = 0);
+	Schedule();
 	~Schedule();
 				 
 	Schedule* child(int number);
