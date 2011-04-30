@@ -16,6 +16,7 @@ find_package(Phonon REQUIRED)
 
 set(QT_USE_QTMAIN 1)
 set(QT_USE_QTSQL 1)
+set(QT_USE_QTXML 1)
 set(QT_USE_QTNETWORK 1)
 set(QT_USE_PHONON 1)
 
@@ -36,13 +37,14 @@ set(salarm_HDRS
 	database.h
 	keycatcher.h
 	optionsdialog.h
-	scheduledelegate.h
 	settings.h
 	smtp.h
+	xmlhandler.h
 	timeoutdialog.h
 	scheduler/schedule.h
 	scheduler/scheduledialog.h
 	scheduler/scheduler.h
+	scheduler/scheduledelegate.h
 	scheduler/schedulermodel.h
 	scheduler/schedulerproxymodel.h
 )
@@ -53,14 +55,15 @@ set(salarm_SRCS
 	database.cpp
 	keycatcher.cpp
 	optionsdialog.cpp
-	scheduledelegate.cpp
 	settings.cpp
+	xmlhandler.cpp
 	smtp.cpp
 	timeoutdialog.cpp
 	scheduler/schedule.cpp
 	scheduler/scheduledialog.cpp
 	scheduler/scheduler.cpp
 	scheduler/schedulermodel.cpp
+	scheduler/scheduledelegate.cpp
 	scheduler/schedulerproxymodel.cpp
 )
 
@@ -122,6 +125,7 @@ add_executable(salarm
 target_link_libraries(salarm
 		      ${QT_LIBRARIES}
 		      ${QT_QTSQL_LIBRARIES}
+			  ${QT_QTNETWORK_LIBRARIES}
 			  ${QT_PHONON_LIBRARIES}
 )
 
@@ -136,23 +140,23 @@ if(UNIX)
 			DESTINATION ${INSTALL_DATA_DIR}/applications
 	)
 
-	install(FILES ../img/desktopICons/16x16/salarm.png
+	install(FILES ./resources/img/desktopICons/16x16/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/16x16/apps
 	)
 
-	install(FILES ../img/desktopICons/32x32/salarm.png
+	install(FILES ./resources/img/desktopICons/32x32/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/32x32/apps
 	)
 
-	install(FILES ../img/desktopICons/64x64/salarm.png
+	install(FILES ./resources/img/desktopICons/64x64/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/64x64/apps
 	)
 
-	install(FILES ../img/desktopICons/128x128/salarm.png
+	install(FILES ./resources/img/desktopICons/128x128/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/128x128/apps
 	)
 
-	install(FILES ../img/desktopICons/256x256/salarm.png
+	install(FILES ./resources/img/desktopICons/256x256/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/256x256/apps
 	)
 endif(UNIX)

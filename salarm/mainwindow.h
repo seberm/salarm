@@ -114,6 +114,8 @@ private slots:
 	void about();
 	void reportBug();
 	void openPreferences();
+	void exportSchedules();
+	void importSchedules();
 	
 	void updateStatusBar();
 	

@@ -26,12 +26,14 @@
 #include <QDesktopServices>
 #include <QtDebug>
 #include <QSplashScreen>
+#include <QFileDialog>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "optionsdialog.h"
 #include "scheduledialog.h"
 #include "timeoutdialog.h"
+#include "xmlhandler.h"
 #include "constants.h"
 #include "settings.h"
 extern QSettings *g_settings;
@@ -108,6 +110,8 @@ void MainWindow::makeConnections() const {
 	connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(addSchedule()));
 	connect (ui->actionRemove, SIGNAL(triggered()), this, SLOT(removeSchedule()));
 	connect (ui->actionShowHide, SIGNAL(triggered()), this, SLOT(showHide()));
+	connect (ui->actionExportSchedules, SIGNAL(triggered()), this, SLOT(exportSchedules()));
+	connect (ui->actionImportSchedules, SIGNAL(triggered()), this, SLOT(importSchedules()));
 	
 	connect (m_scheduler, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	connect (m_scheduler, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSchedule(QModelIndex)));
@@ -133,7 +137,7 @@ void MainWindow::writeSettings() const {
 	
 	if (!g_settings) {
 		
-		qCritical() << "Cannot load settings";
+		qCritical() << "cannot load settings";
 		return;
 	}
 
@@ -209,6 +213,8 @@ void MainWindow::createToolBar() {
 	m_toolBar->addAction(ui->actionRemove);
 	m_toolBar->addSeparator();
 	m_toolBar->addAction(ui->actionPreferences);
+	m_toolBar->addAction(ui->actionExportSchedules);
+	m_toolBar->addAction(ui->actionImportSchedules);
 }
 
 
@@ -347,10 +353,10 @@ void MainWindow::openPreferences() {
 
 void MainWindow::addSchedule() {
 	
-	ScheduleDialog *d = new ScheduleDialog(m_sqlDb, this);
+	ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, this);
 	
 	// We need to refresh the schedule list every time the schedules change
-	connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
+	//connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
 	// Opens the ScheduleDialog
 	d->exec();
@@ -364,8 +370,6 @@ void MainWindow::removeSchedule() {
 
 
 void MainWindow::showContextMenu(const QPoint &p) {
-
-	//ui->menuSchedule->popup(m_scheduler->header()->mapToGlobal(p));
 	
 	ui->menuSchedule->popup(m_scheduler->viewport()->mapToGlobal(p));
 }
@@ -378,8 +382,8 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 	
 	if (m_scheduler->model()->rowCount()) {
 		
-		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, i, this);
-		connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
+		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, i, this);
+		//connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
 	
 		d->exec();
 	}
@@ -401,4 +405,32 @@ void MainWindow::timeoutInformation(int id) {
 	connect(d, SIGNAL(postponed(int)), m_scheduler, SLOT(postpone(int)));
 	connect(d, SIGNAL(confirmed(int)), m_scheduler, SLOT(markTimeouted(int)));
 	d->exec();
+}
+
+
+void MainWindow::importSchedules() {
+	
+//! @todo pozdeji umoznit vice souboru najednou ve vlaknech
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open file to import"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
+	
+	QFile file(filename);
+	QXmlInputSource iSource(&file);
+	QXmlSimpleReader reader;
+	/*
+	XmlHandler handler(m_scheduler);
+	reader.setContentHandler(&handler);
+	reader.setErrorHandler(&handler);
+	
+	if (!reader.parse(iSource))
+		qWarning() << QString("unable to parse xml file %1").arg(file.fileName());
+	*/
+}
+
+
+void MainWindow::exportSchedules() {
+	
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save exported file to"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
+	
+	QFile f(filename);
+	m_scheduler->generateXmlToFile(&f);
 }
