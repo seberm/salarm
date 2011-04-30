@@ -14,6 +14,8 @@ doc/
 
 # The TODO file(s)
 TODO.*
+TODO
 
-
+*.txt.user
 *.pro.user
+*.pro

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schedule id="2" category="3" timeouted="1">
+	<title>Tom's birthday party!</title>
+	<category>Birthday</category>
+	<text>Tom celebrates his eighteenth!</text>
+	<expiration>2011-02-23T21:00:47</expiration>
+</schedule>
+<schedule id="5" category="5" timeouted="1">
+	<title>Ahoj asfsf</title>
+	<category>schuze</category>
+	<text>safdsjfdsjf sf;ds f;jsdf; jdfsd</text>
+	<expiration>2011-03-21T13:16:27</expiration>
+</schedule>
+<schedule id="6" category="3" timeouted="1">
+	<title>rfewfd</title>
+	<category>Birthday</category>
+	<text>fdfd dsfsf sdf</text>
+	<expiration>2011-03-21T13:18:59</expiration>
+</schedule>
+<schedule id="8" category="0" timeouted="1">
+	<title>df</title>
+	<category></category>
+	<text>dfasfdsfdsafsaf</text>
+	<expiration>2011-04-10T18:56:23</expiration>
+</schedule>
+<schedule id="7" category="5" timeouted="0">
+	<title>ahoj</title>
+	<category>schuze</category>
+	<text>zkusebni</text>
+	<expiration>2011-04-20T18:56:32</expiration>
+</schedule>
