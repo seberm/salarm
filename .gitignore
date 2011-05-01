@@ -1,8 +1,7 @@
 # The KDE folder parameters file
 .directory
 
-
-*.pro.user
+tests/
 Makefile
 
 build/
@@ -13,9 +12,12 @@ doc/
 #PKGBUILD
 
 # The TODO file(s)
+TODO
 TODO.*
 TODO
 
-*.txt.user
+
 *.pro.user
+*.txt.user
 *.pro
+~*

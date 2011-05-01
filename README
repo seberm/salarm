@@ -2,9 +2,9 @@
 
 > * Author: Sabart Otto <seberm[at]gmail[dot]com>
 > * Jabber: seberm[at]jabber[dot]cz
-> * Version: 0.5
+> * Version: 0.4
 > * Contributors: Nobody (only for a while I hope)
-> * Web: http://www.seberm.homelinux.org/project/salarm.php
+> * Web: http://salarm.seberm.com
 
 
 > # About application
@@ -27,7 +27,8 @@
 
 
 ### 2) COMPILING
-It's possible to add the INSTALL_PREFIX to qmake (EXAMPLE: qmake INSTALL_PREFIX=/usr)
+It's possible to add the prefix INSTALL_PREFIX to qmake (EXAMPLE: qmake INSTALL_PREFIX=/usr)
+
 > qmake
 > make
 > make install

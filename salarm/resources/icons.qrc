@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="bugIcon">img/icons/bug_icon.png</file>
+        <file alias="closeIcon">img/icons/close_icon.png</file>
+        <file alias="deleteIcon">img/icons/delete_icon.png</file>
+        <file alias="helpIcon">img/icons/help_icon.png</file>
+        <file alias="infoIcon">img/icons/info_icon.png</file>
+        <file alias="loadIcon">img/icons/load_icon.png</file>
+        <file alias="optionsIcon">img/icons/options_icon.png</file>
+        <file alias="startIcon">img/icons/play_icon.png</file>
+        <file alias="qtIcon">img/icons/qt_icon.png</file>
+        <file alias="stopIcon">img/icons/stop_icon.png</file>
+        <file alias="nextIcon">img/icons/next_icon.png</file>
+        <file alias="pauseIcon">img/icons/pause_icon.png</file>
+        <file alias="previousIcon">img/icons/previous_icon.png</file>
+        <file alias="repeatIcon">img/icons/repeat_icon.png</file>
+        <file alias="repeatAllIcon">img/icons/repeatall_icon.png</file>
+        <file alias="openIcon">img/icons/open_icon.png</file>
+        <file alias="editIcon">img/icons/edit_icon.png</file>
+        <file alias="alarmIcon">img/icons/alarm_icon_blue.png</file>
+        <file alias="waitingIcon">img/icons/alarm_icon_red.png</file>
+        <file alias="showHideIcon">img/icons/show_hide_icon.png</file>
+        <file alias="importIcon">img/icons/import_icon.png</file>
+        <file alias="exportIcon">img/icons/export_icon.png</file>
+    </qresource>
+    <qresource prefix="/splashs">
+        <file alias="sAlarmIcon">img/splash/salarm.png</file>
+    </qresource>
+    <qresource prefix="/statusIcons">
+        <file alias="checkIcon">img/icons/check_icon.png</file>
+    </qresource>
+</RCC>
