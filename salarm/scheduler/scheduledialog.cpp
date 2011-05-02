@@ -89,17 +89,19 @@ ScheduleDialog::ScheduleDialog(Database *sqlDb, Scheduler *scheduler, const QMod
 
 void ScheduleDialog::initialize() {
 	
-	// Add schedule categories to combo box
 	// Default category
 	ui->comboBoxCategory->addItem(tr("No category"), 0);
 	
 	QSqlQuery query(m_sqlDb->sqlDb());
 	
+	// Get schedules categories from the database
 	QString sql = "SELECT id, name FROM ScheduleCategory;";
 	query.exec(sql);
 	while (query.next())
 		ui->comboBoxCategory->addItem(query.value(1).toString(), query.value(0).toInt());
 	
+	
+	// Set datetime objects to current date and time
 	ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTime());
 	ui->dateTimeEditExpiration->setMinimumDateTime(QDateTime::currentDateTime());
 	
@@ -164,8 +166,6 @@ void ScheduleDialog::doSchedule() {
 									 ui->comboBoxCategory->itemData(ui->comboBoxCategory->currentIndex()).toInt());
 			break;
 	}
-
-	//emit (changed());
 }
 
 
@@ -179,8 +179,10 @@ void ScheduleDialog::scheduleAccepted() {
 		return;
 	}
 	
+	// Process the schedule
 	doSchedule();
 	
+	// Close the dialog
 	close();
 }
 
@@ -188,7 +190,7 @@ void ScheduleDialog::scheduleAccepted() {
 void ScheduleDialog::addCategory() {
 	
 	bool ok;
-	QString category = QInputDialog::getText(this, tr("Category name"), tr("Insert the category name:"),QLineEdit::Normal, tr("Category"), &ok);
+	QString category = QInputDialog::getText(this, tr("Category name"), tr("Insert the category name:"), QLineEdit::Normal, tr("Category"), &ok);
 	
 	if (ok && !category.isEmpty()) {
 		
@@ -200,6 +202,7 @@ void ScheduleDialog::addCategory() {
 		query.addBindValue(category);
 		
 		if (!query.exec()) {
+			
 			qWarning() << query.lastError();
 			return;
 		}

@@ -331,7 +331,7 @@ void Scheduler::editSchedule(int id, const QString &title, const QString &text, 
 }
 
 
-void Scheduler::generateXmlToFile(QFile *f) {
+bool Scheduler::generateXmlToFile(QFile *f) {
 	
 	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
 				" FROM Schedule" \
@@ -350,7 +350,9 @@ void Scheduler::generateXmlToFile(QFile *f) {
 	int dbCategoryID = query.record().indexOf("categoryID");
 	int dbTimeouted = query.record().indexOf("timeouted");
 
-	f->open(QFile::WriteOnly);
+	if (!f->open(QFile::WriteOnly))
+		return false;
+	
 	QTextStream xml(f);
 	xml.setCodec("utf-8");
 	
@@ -369,4 +371,6 @@ void Scheduler::generateXmlToFile(QFile *f) {
 			<< "</schedule>\n";
 	}
 	
+	f->close();
+	return true;
 }
