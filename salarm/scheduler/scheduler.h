@@ -72,14 +72,17 @@ public:
 	//! Makes the connections between objects
 	void makeConnections();
 	
-	
-	void generateXmlToFile(QFile *f);
-	
-	
-public slots:
+	//! Generates XML file with schedules data to given file
+	/*!
+	  \param QFile file
+	*/
+	bool generateXmlToFile(QFile *f);
 	
 	//! Updates a list of schedules
 	void refreshSchedules();
+	
+	
+public slots:
 	
 	//! Tells which schedules are timeouted
 	void checkSchedules();

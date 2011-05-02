@@ -101,12 +101,6 @@ private:
 	Scheduler *m_scheduler;
 	
 	
-signals:
-	
-	//! Is emitted when is the update of schedules needed
-	//void changed();
-	
-	
 private slots:
 	
 	//! The schedule dialog is accepted

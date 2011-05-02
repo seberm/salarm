@@ -355,9 +355,6 @@ void MainWindow::addSchedule() {
 	
 	ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, this);
 	
-	// We need to refresh the schedule list every time the schedules change
-	//connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
-	
 	// Opens the ScheduleDialog
 	d->exec();
 }
@@ -383,8 +380,6 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 	if (m_scheduler->model()->rowCount()) {
 		
 		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, i, this);
-		//connect (d, SIGNAL(changed()), m_scheduler, SLOT(refreshSchedules()));
-	
 		d->exec();
 	}
 }
@@ -410,7 +405,7 @@ void MainWindow::timeoutInformation(int id) {
 
 void MainWindow::importSchedules() {
 	
-//! @todo pozdeji umoznit vice souboru najednou ve vlaknech
+//! @todo pozdeji umoznit vice souboru najednou a to asi ve vlaknech, aby aplikace nacitala automaticky xml a zaroven se program nezastavil a nestal po tu dobu necinnym
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open file to import"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
 	
 	QFile file(filename);
@@ -432,5 +427,7 @@ void MainWindow::exportSchedules() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save exported file to"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
 	
 	QFile f(filename);
-	m_scheduler->generateXmlToFile(&f);
+	
+	if (m_scheduler->generateXmlToFile(&f))	
+		QMessageBox::information(this, tr("XML Generated"), tr("XML was successfuly generated"));
 }
