@@ -22,13 +22,14 @@
 #ifndef XMLHANDLER_H
 #define XMLHANDLER_H
 
-
+#include <QDateTime>
 #include <QXmlDefaultHandler>
 
 class Scheduler;
-class Schedule;
 
 class XmlHandler : public QXmlDefaultHandler {
+	
+	
 	
 public:
 	XmlHandler(Scheduler *scheduler);
@@ -40,7 +41,17 @@ public:
 	
 private:
 	Scheduler *m_scheduler;
-	Schedule *m_schedule;
+	
+	QString m_currentText;
+	
+	
+	quint8 m_scheduleID;
+	quint8 m_scheduleCategoryID;
+	QString m_scheduleCategory;
+	bool m_scheduleTimeouted;
+	QString m_scheduleTitle;
+	QString m_scheduleText;
+	QDateTime m_scheduleExpiration;
 	
 };
 

@@ -411,14 +411,14 @@ void MainWindow::importSchedules() {
 	QFile file(filename);
 	QXmlInputSource iSource(&file);
 	QXmlSimpleReader reader;
-	/*
+	
 	XmlHandler handler(m_scheduler);
 	reader.setContentHandler(&handler);
 	reader.setErrorHandler(&handler);
 	
 	if (!reader.parse(iSource))
 		qWarning() << QString("unable to parse xml file %1").arg(file.fileName());
-	*/
+	
 }
 
 
