@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 	QTranslator translator;
 	{
 		QString locale = QLocale::system().name();
-		qDebug() << "Current locale" << locale;
+		qDebug() << QObject::tr("current locale %1").arg(locale);
 
 //! \todo dodelat preklad! nefunguje nacitani zkompilovanych locales s konecne instalace... co nam vrati umisteni /usr/share/APP/* ? jaka fce?		
 		QString pkgDataDir = "/usr/share";

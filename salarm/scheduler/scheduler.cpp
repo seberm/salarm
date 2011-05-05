@@ -148,7 +148,7 @@ void Scheduler::removeSchedule() {
 
 void Scheduler::refreshSchedules() {
 
-	qDebug() << "Refreshing schedules ...";
+	qDebug() << tr("refreshing schedules ...");
 	
 	// Fist we need to remove all schedules from scheduler
 	m_model->removeRows(0, m_model->rowCount(QModelIndex()));
@@ -281,6 +281,19 @@ void Scheduler::postpone(int id) {
 
 void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int category) {
 	
+	if (title.isEmpty()) {
+		
+		return;
+		qWarning() << tr("cannot add schedule - title is empty");
+	}
+	
+	if (!expiration.isValid()) {
+	
+		return;
+		qWarning() << tr("cannot add schedule - expiration date is not valid");
+	}
+	
+	
 	QSqlQuery query(m_sqlDb->sqlDb());
 	
 	QString sql;
@@ -331,7 +344,7 @@ void Scheduler::editSchedule(int id, const QString &title, const QString &text, 
 }
 
 
-bool Scheduler::generateXmlToFile(QFile *f) {
+void Scheduler::generateXmlToFile(QFile *f) {
 	
 	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
 				" FROM Schedule" \
@@ -350,15 +363,17 @@ bool Scheduler::generateXmlToFile(QFile *f) {
 	int dbCategoryID = query.record().indexOf("categoryID");
 	int dbTimeouted = query.record().indexOf("timeouted");
 
-	if (!f->open(QFile::WriteOnly))
-		return false;
+	if (!f->open(QFile::WriteOnly)) {
+		
+		QMessageBox::warning(this, tr("Open error"), tr("Open file for write failed"));
+		return;
+	}
 	
 	QTextStream xml(f);
 	xml.setCodec("utf-8");
 	
 	// Writes XML header
-	xml << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	
+	xml << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	
 	while (query.next()) {
 		
@@ -372,5 +387,6 @@ bool Scheduler::generateXmlToFile(QFile *f) {
 	}
 	
 	f->close();
-	return true;
+	
+	QMessageBox::information(this, tr("XML Generated"), tr("XML was successfuly generated"));
 }

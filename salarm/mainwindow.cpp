@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	// The alignment of the splash notice text
 	Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
 	
-	splash->showMessage(QObject::tr("Setting up the main window ..."), topRight, Qt::white);
+	splash->showMessage(tr("Setting up the main window ..."), topRight, Qt::white);
 	readSettings();
 
 	createTrayIcon();
@@ -64,8 +64,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	m_sqlDb = new Database("Schedules");
 	
 	if (m_sqlDb->connect())
-		qDebug() << "Successfuly connected - " << m_sqlDb->connectionName();
-	else qCritical() << "Error in database connection - " << m_sqlDb->connectionName();
+		qDebug() << tr("Successfuly connected - %1").arg(m_sqlDb->connectionName());
+	else qCritical() << tr("error in database connection - %1").arg(m_sqlDb->connectionName());
 	
 	
 	m_scheduler = new Scheduler(m_sqlDb, this);
@@ -137,7 +137,7 @@ void MainWindow::writeSettings() const {
 	
 	if (!g_settings) {
 		
-		qCritical() << "cannot load settings";
+		qCritical() << tr("cannot load settings");
 		return;
 	}
 
@@ -156,7 +156,7 @@ void MainWindow::readSettings() {
 		QDir newDir;
 		if (!newDir.mkdir(CONF_DIR)) {
 			
-			qWarning() << QString("unable to create directory: %1").arg(CONF_DIR);
+			qWarning() << tr("unable to create directory: %1").arg(CONF_DIR);
 			return;
 		}
 	}
@@ -181,7 +181,7 @@ void MainWindow::readSettings() {
 
 void MainWindow::createStatusBar() {
 	
-	QLabel *lblVersion = new QLabel(tr("Version: ") + qApp->applicationVersion());
+	QLabel *lblVersion = new QLabel(tr("Version: %1").arg(qApp->applicationVersion()));
 	lblVersion->setMinimumSize(lblVersion->sizeHint());
 	
 	m_lblCurrentDateTime->setAlignment(Qt::AlignRight);
@@ -326,14 +326,14 @@ void MainWindow::showHide() {
 
 void MainWindow::about() {
 	
-	QString message = QString(tr("<h2>%2</h2>"\
+	QString message = tr("<h2>%2</h2>"\
 							 "<i><b>Version:</b> %1</i><br>"\
 							 "<b>Author:</b> Sabart Otto (Seberm)<br>"\
 							 "<b>Contact:</b> <a href=mailto:seberm@gmail.com>seberm@gmail.com</a><br>"\
 							 "<b>Homepage:</b> <a href=http://salarm.seberm.com>sAlarm.Seberm.com</a><br><br>"\
-							 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.")).arg(QString(qApp->applicationVersion()), QString(qApp->applicationName()));	
+							 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.").arg(qApp->applicationVersion(), qApp->applicationName());	
 	
-	QMessageBox::about(this, tr("About ").append(qApp->applicationName()), message.toAscii());
+	QMessageBox::about(this, tr("About %1\n%2").arg(qApp->applicationName()), message.toAscii());
 }
 
 
@@ -408,6 +408,9 @@ void MainWindow::importSchedules() {
 //! @todo pozdeji umoznit vice souboru najednou a to asi ve vlaknech, aby aplikace nacitala automaticky xml a zaroven se program nezastavil a nestal po tu dobu necinnym
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open file to import"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
 	
+	if (filename.isEmpty())
+		return;
+	
 	QFile file(filename);
 	QXmlInputSource iSource(&file);
 	QXmlSimpleReader reader;
@@ -417,17 +420,21 @@ void MainWindow::importSchedules() {
 	reader.setErrorHandler(&handler);
 	
 	if (!reader.parse(iSource))
-		qWarning() << QString("unable to parse xml file %1").arg(file.fileName());
+		qWarning() << tr("unable to parse xml file %1").arg(file.fileName());
 	
 }
 
 
 void MainWindow::exportSchedules() {
 	
+	if (m_scheduler->model()->rowCount() <= 0) {
+	
+		QMessageBox::warning(this, tr("No schedules"), tr("There are no schedules to export"));
+		return;
+	}
+	
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save exported file to"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
 	
 	QFile f(filename);
-	
-	if (m_scheduler->generateXmlToFile(&f))	
-		QMessageBox::information(this, tr("XML Generated"), tr("XML was successfuly generated"));
+	m_scheduler->generateXmlToFile(&f);
 }

@@ -81,7 +81,7 @@ bool Schedule::insertChildren(int position, int count, int columns) {
 	for (int row = 0; row < count; ++row) {
 		
 		QVector<QVariant> data(columns);
-		Schedule* item = new Schedule(data, this);
+		Schedule *item = new Schedule(data, this);
 		m_childItems.insert(position, item);
 	}
 	

@@ -173,18 +173,18 @@ void OptionsDialog::databaseChanged(int itemIndex) {
 	switch (itemData) {
 		
 		case Database::MySQL:
-			qDebug() << "changed database to: MySQL";
+			qDebug() << tr("changed database to: MySQL");
 			m_ui->groupBoxMySQL->setEnabled(true);
 			dbChanged = true;
 			break;
 		case Database::SQLite:
-			qDebug() << "changed database to: SQLite";
+			qDebug() << tr("changed database to: SQLite");
 			m_ui->groupBoxMySQL->setDisabled(true);
 			dbChanged = true;
 			break;
 		
 		default:
-			qWarning() << "bad database id: " << itemData;
+			qWarning() << tr("bad database id: %1").arg(itemData);
 			break;
 	}
 }

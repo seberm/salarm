@@ -175,7 +175,7 @@ void ScheduleDialog::scheduleAccepted() {
 	
 	if (str.isEmpty()) {
 		
-		QMessageBox::warning(this, tr("Fill the title"), tr("You must fill the title."));
+		QMessageBox::warning(this, tr("Fill the title"), tr("You must fill the title"));
 		return;
 	}
 	

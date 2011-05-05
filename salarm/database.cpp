@@ -51,7 +51,7 @@ Database::Database(QString connName) {
 
 Database::~Database() {
 	
-	qDebug() << "Closing database connection " << m_dbName;
+	qDebug() << tr("closing database connection %1").arg(m_dbName);
 	
 	delete m_sqlDb;
 	QSqlDatabase::removeDatabase(m_dbName);
@@ -60,11 +60,11 @@ Database::~Database() {
 
 bool Database::connect() {
 	
-	qDebug() << "Connecting " << m_dbName;
+	qDebug() << tr("connecting %1").arg(m_dbName);
 	
 	if (QSqlDatabase::contains(m_dbName)) {
 		
-		qWarning() << "Connection " << m_dbName << " already exists.";
+		qWarning() << tr("connection %1 already exists").arg(m_dbName);
 		return true;
 	}
 	
@@ -94,7 +94,7 @@ bool Database::connect() {
 				QFile conf(SQLITE_DB_FILE);
 				if (!conf.open(QIODevice::WriteOnly)) {
 						
-					qCritical() << "Failed to create SQLite database file";
+					qCritical() << tr("failed to create SQLite database file");
 					return false;
 				}
 			}
@@ -105,14 +105,16 @@ bool Database::connect() {
 	
 	if (!m_sqlDb->open()) {
 		
-		qCritical() << "Cannot connect to database " << m_sqlDb->connectionName();
-		qCritical() << "Reason: " << m_sqlDb->lastError().text();
+		qCritical() << tr("cannot connect to database %1").arg(m_sqlDb->connectionName());
+		qCritical() << tr("reason: %1").arg(m_sqlDb->lastError().text());
 		m_sqlDb = NULL;
+		
 		return false;
 	}
 	
 	// Set MySQL connection encoding
 	if (m_driverType == MySQL) {
+		
 		QSqlQuery query("SET CHARACTER SET utf8;", *m_sqlDb);
 		query.exec();
 	}
@@ -130,7 +132,7 @@ bool Database::connect() {
 
 void Database::dbInit() {
 	
-	qDebug() << "Initializing database...";
+	qDebug() << tr("initializing database...");
 	
 	QSqlQuery query(*m_sqlDb);
 	

@@ -76,7 +76,7 @@ public:
 	/*!
 	  \param QFile file
 	*/
-	bool generateXmlToFile(QFile *f);
+	void generateXmlToFile(QFile *f);
 	
 	//! Updates a list of schedules
 	void refreshSchedules();
