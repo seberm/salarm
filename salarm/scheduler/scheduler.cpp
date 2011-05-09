@@ -283,14 +283,14 @@ void Scheduler::addSchedule(const QString &title, const QString &text, const QDa
 	
 	if (title.isEmpty()) {
 		
-		return;
 		qWarning() << tr("cannot add schedule - title is empty");
+		return;
 	}
 	
 	if (!expiration.isValid()) {
 	
-		return;
 		qWarning() << tr("cannot add schedule - expiration date is not valid");
+		return;
 	}
 	
 	
@@ -315,6 +315,7 @@ void Scheduler::addSchedule(const QString &title, const QString &text, const QDa
 
 
 void Scheduler::addSchedule(Schedule *s) {
+	
 //! \todo	
 	//addSchedule(s->title(), s->text(), s->expiration(), s->category());
 }
@@ -373,7 +374,7 @@ void Scheduler::generateXmlToFile(QFile *f) {
 	xml.setCodec("utf-8");
 	
 	// Writes XML header
-	xml << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+	xml << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<schedules>\n";
 	
 	while (query.next()) {
 		
@@ -385,6 +386,8 @@ void Scheduler::generateXmlToFile(QFile *f) {
 			<< "	<expiration>" << query.value(dbExpiration).toString() << "</expiration>\n"
 			<< "</schedule>\n";
 	}
+	
+	xml << "</schedules>";
 	
 	f->close();
 	

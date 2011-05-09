@@ -34,7 +34,7 @@ XmlHandler::XmlHandler(Scheduler *scheduler) {
 
 
 bool XmlHandler::startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts) {
-	
+
 	if (qName == "schedule") {
 		
 		m_scheduleID = atts.value("id").toInt();
@@ -57,7 +57,7 @@ bool XmlHandler::startElement(const QString &namespaceURI, const QString &localN
 
 
 bool XmlHandler::endElement(const QString &namespaceURI, const QString &localName, const QString &qName) {
-	
+
 	if (qName == "title")
 		m_scheduleTitle = m_currentText;
 	
@@ -65,8 +65,7 @@ bool XmlHandler::endElement(const QString &namespaceURI, const QString &localNam
 		m_scheduleCategory = m_currentText;
 	
 	if (qName == "expiration")
-		m_scheduleExpiration = QDateTime::fromString(m_currentText, Qt::TextDate);
-	
+		m_scheduleExpiration = QDateTime::fromString(m_currentText, Qt::ISODate);
 	
 	if (qName == "schedule")
 		m_scheduler->addSchedule(m_scheduleTitle, m_scheduleText, m_scheduleExpiration);
@@ -76,7 +75,8 @@ bool XmlHandler::endElement(const QString &namespaceURI, const QString &localNam
 
 
 bool XmlHandler::characters(const QString &ch) {
-	
+
+
 	m_currentText = ch;
 	
 	return true;
