@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
 	salarm.setApplicationName(NAME);
 	salarm.setApplicationVersion(VERSION);
 	salarm.setProperty("projectHomePage", HOMEPAGE);
+	salarm.setProperty("projectBugzilla", BUGZILLA);
 
 	// Initiating a application global translator
 	QTranslator translator;

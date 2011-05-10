@@ -35,11 +35,12 @@
 #include "timeoutdialog.h"
 #include "xmlhandler.h"
 #include "constants.h"
-#include "settings.h"
-extern QSettings *g_settings;
 #include "scheduler.h"
 #include "keycatcher.h"
 #include "database.h"
+
+#include "settings.h"
+extern QSettings *g_settings;
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -340,7 +341,7 @@ void MainWindow::about() {
 void MainWindow::reportBug() {
 	
 	// Opens page of the project
-	QDesktopServices::openUrl(QUrl(qApp->property("projectHomePage").toString(), QUrl::TolerantMode));
+	QDesktopServices::openUrl(QUrl(qApp->property("projectBugzilla").toString(), QUrl::TolerantMode));
 }
 
 
@@ -368,17 +369,21 @@ void MainWindow::removeSchedule() {
 
 void MainWindow::showContextMenu(const QPoint &p) {
 	
+	// Popup context menu at given point
 	ui->menuSchedule->popup(m_scheduler->viewport()->mapToGlobal(p));
 }
 
 
 void MainWindow::editSchedule(const QModelIndex &i) {
 	
+	// Check if model index is valid
 	if (!i.isValid())
 		return;
 	
+	// Check if there are schedules
 	if (m_scheduler->model()->rowCount()) {
 		
+		// Shows a schedule dialog
 		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, i, this);
 		d->exec();
 	}
@@ -388,24 +393,28 @@ void MainWindow::editSchedule(const QModelIndex &i) {
 void MainWindow::editSchedule() {
 	
 	QModelIndex i(m_scheduler->currentIndex());
+	
 	editSchedule(i);
 }
 
 
 void MainWindow::timeoutInformation(int id) {
 	
+	// We create timeout dialog with given schedule ID
 	TimeoutDialog *d = new TimeoutDialog(id, this);
 	
 	// When postpone button is pressed
 	connect(d, SIGNAL(postponed(int)), m_scheduler, SLOT(postpone(int)));
 	connect(d, SIGNAL(confirmed(int)), m_scheduler, SLOT(markTimeouted(int)));
+	
+	// Popup dialog
 	d->exec();
 }
 
 
 void MainWindow::importSchedules() {
 	
-//! @todo pozdeji umoznit vice souboru najednou a to asi ve vlaknech, aby aplikace nacitala automaticky xml a zaroven se program nezastavil a nestal po tu dobu necinnym
+//! \todo pozdeji umoznit vice souboru najednou a to asi ve vlaknech, aby aplikace nacitala automaticky xml a zaroven se program nezastavil a nestal po tu dobu necinnym
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open file to import"), QDir::homePath(), tr("XML Files (*.xml);;All files (*.*)"));
 	
 	if (filename.isEmpty())
