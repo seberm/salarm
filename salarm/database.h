@@ -19,7 +19,6 @@
  */
 
 
-
 #ifndef DATABASE_H
 #define DATABASE_H
 
@@ -29,35 +28,89 @@
 #include <QtSql/QSqlQuery>
 
 
+//! Database objects handles connection to database
+/*!
+  Database class is used for establishing database connection.
+*/
 class Database : public QObject {
 	
 	Q_OBJECT
 	Q_ENUMS(DriverTypes)
 			
 	public:
-		Database(QString connName = "");
-		~Database();
-		QSqlDatabase sqlDatabase;
-		bool connect();
+		
+		//! Enumerates supported database backends
+		/*!
+		  DriverTypes provide enumeration of supported database drivers.
+		  \sa driverType()
+		*/
 		enum DriverTypes { SQLite, MySQL };
 		
+		//! Constructor
+		/*!
+		  Initializes the database. Recieves connection name as parameter.
+		  \param connName database connection name
+		  \sa connectionName()
+		*/
+		Database(QString connName = "");
+		
+		//! Destructor
+		~Database();
+		
+		//! Connects the database
+		/*!
+		  \return Returns true if connection was successful
+		*/
+		bool connect();
+		
+		//! Returns database connection name
+		/*!
+		  \return Returns the database connection name
+		*/
 		inline QString connectionName() const { return m_dbName; }
+		
+		//! Returns current driver type
+		/*!
+		  \return Returns current database driver type
+		*/
 		inline DriverTypes driverType() const { return m_driverType; }
-		inline QSqlDatabase sqlDb() { return *m_sqlDb; }
+		
+		//! Returns pointer to QSqlDatabase
+		/*!
+		  \return Returns pointer to QSqlDatabase object
+		*/
+		inline QSqlDatabase *sqlDb() { return m_sqlDb; }
+
 		
 	private:
-		// Name of connection
+		
+		//! Check if the database contains all required tables and if not creates them
+		/*!
+		  Checks the structure of tables.
+		*/
+		void dbInit();
+		
+		
+		//! Name of database connection
 		QString m_dbName;
 		
+		//! Database hostname
 		QString m_hostname;
+		
+		//! Database username
 		QString m_username;
+		
+		//! Database password
 		QString m_password;
+		
+		//! Database name
 		QString m_database;
+		
+		//! Database driver type
 		DriverTypes m_driverType;
 		
+		//! Pointer to QSqlDatabase
 		QSqlDatabase *m_sqlDb;
-		
-		void dbInit();
 };
 
 #endif // DATABASE_H

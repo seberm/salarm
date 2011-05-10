@@ -24,23 +24,37 @@
 
 #include <QObject>
 
-
+//! This object provides basic key filter
+/*!
+  It is used for catching Enter and Return key in the scheduler.
+*/
 class KeyCatcher : public QObject {
 	
     Q_OBJECT
 	
 public:
 	
-	/*! Constructor
+	//! Constructor
+	/*!
 	  \param parent pointer to parent object
 	*/
     explicit KeyCatcher(QObject *parent = 0);
 
 protected:
+	
+	//! The Event filter
+	/*!
+	  \param obj pointer to object
+	  \param event
+	*/
 	bool eventFilter(QObject *obj, QEvent *event);
 	
 signals:
-	//! Is emmited when the some key is pressed
+	
+	//! Is emmited when some key is pressed
+	/*!
+	  \param key is the integer value of pressed key
+	*/
 	void keyPressed(int key);
 
 };
