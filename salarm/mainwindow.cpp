@@ -291,15 +291,15 @@ void MainWindow::changeEvent(QEvent *e) {
 }
 
 
-void MainWindow::closeEvent(QCloseEvent *e) {
+void MainWindow::closeEvent(QCloseEvent *event) {
 	
 	if (isVisible()) {
 		
 		if (m_canClose) {
-			e->accept();
+			event->accept();
 			qApp->quit();
 		} else {
-			e->ignore();
+			event->ignore();
 			hide();
 		}
 	}
@@ -367,24 +367,24 @@ void MainWindow::removeSchedule() {
 }
 
 
-void MainWindow::showContextMenu(const QPoint &p) {
+void MainWindow::showContextMenu(const QPoint &point) {
 	
 	// Popup context menu at given point
-	ui->menuSchedule->popup(m_scheduler->viewport()->mapToGlobal(p));
+	ui->menuSchedule->popup(m_scheduler->viewport()->mapToGlobal(point));
 }
 
 
-void MainWindow::editSchedule(const QModelIndex &i) {
+void MainWindow::editSchedule(const QModelIndex &index) {
 	
 	// Check if model index is valid
-	if (!i.isValid())
+	if (!index.isValid())
 		return;
 	
 	// Check if there are schedules
 	if (m_scheduler->model()->rowCount()) {
 		
 		// Shows a schedule dialog
-		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, i, this);
+		ScheduleDialog *d = new ScheduleDialog(m_sqlDb, m_scheduler, index, this);
 		d->exec();
 	}
 }

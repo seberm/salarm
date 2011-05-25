@@ -33,11 +33,20 @@
 #define SALARM_VERSION_MINOR "40"
 #define SALARM_VERSION "0.40.0"
 
-
+//! sAlarm version
 const QString VERSION = "0.40.0";
+
+//! sAlarm complete program name
 const QString NAME = "sAlarm Scheduler";
+
+//! sAlarm short UNIX name
 const QString UNIX_NAME = "salarm";
-const QString HOMEPAGE = "http://www.seberm.homelinux.org/project/salarm.php";
+
+//! Project homepage
+const QString HOMEPAGE = "http://salarm.seberm.com";
+
+//! Project bugzilla
+const QString BUGZILLA = "http://bugs.seberm.com";
 
 // Default configuration file definition
 const QString CONF_DIR = QDir::homePath().append(QDir::separator()).append(".config");

@@ -55,7 +55,8 @@ public:
 	//! Overloaded contructor
 	/*!
 	  This constructor is called when the schedule is edited.
-	  \param QModelIndex 
+	  \param scheduler pointer to Scheduler object
+	  \param sqlDb pointer to database instance
 	  \param parent pointer to parent widget
 	*/
 	ScheduleDialog(Database *sqlDb, Scheduler *scheduler, const QModelIndex &, QWidget *parent = 0);
@@ -70,7 +71,10 @@ public:
 protected:
 	
 	//! When the language is changed the window is simply retranslated
-    void changeEvent(QEvent *e);
+	/*!
+	  \param event contains more specific pieces of information about event
+	*/
+    void changeEvent(QEvent *event);
 
 	
 private:
@@ -96,8 +100,10 @@ private:
 	//! Represents the ID of schedule which is modified; if the schedule is inserted, the value is 0
 	int m_scheduleID;
 	
-	
+	//! Pointer to Database object
 	Database *m_sqlDb;
+	
+	//! Pointer to Scheduler object
 	Scheduler *m_scheduler;
 	
 	

@@ -44,10 +44,10 @@ protected:
 	
 	//! The Event filter
 	/*!
-	  \param obj pointer to object
+	  \param object pointer to object
 	  \param event
 	*/
-	bool eventFilter(QObject *obj, QEvent *event);
+	bool eventFilter(QObject *object, QEvent *event);
 	
 signals:
 	

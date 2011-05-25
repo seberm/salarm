@@ -79,7 +79,7 @@ class Database : public QObject {
 		/*!
 		  \return Returns pointer to QSqlDatabase object
 		*/
-		inline QSqlDatabase *sqlDb() { return m_sqlDb; }
+		inline QSqlDatabase sqlDb() { return *m_sqlDb; }
 
 		
 	private:

@@ -129,10 +129,10 @@ void ScheduleDialog::makeConnections() {
 }
 
 
-void ScheduleDialog::changeEvent(QEvent *e) {
+void ScheduleDialog::changeEvent(QEvent *event) {
 	
-    QDialog::changeEvent(e);
-    switch (e->type()) {
+    QDialog::changeEvent(event);
+    switch (event->type()) {
 		
 		case QEvent::LanguageChange:
 			ui->retranslateUi(this);

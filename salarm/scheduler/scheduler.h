@@ -43,7 +43,7 @@ class ScheduleDelegate;
 class Schedule;
 class Database;
 
-
+//! Provides QTreeWiew component with some more functions
 class Scheduler : public QTreeView {
 	
 	Q_OBJECT
@@ -59,36 +59,67 @@ public:
 	//! Destructor
 	~Scheduler();
 			
-	//! Removes schedule
+	//! Removes schedule at current model index
 	/*!
-	  \param i pointer to QTreeWidgetItem class
+	  \sa addSchedule()
 	*/
 	void removeSchedule();
 	
-	void addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int category = 0);
-	void addSchedule(Schedule *s);
-	void editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int category = 0);
+	//! Adds a new schedule into Scheduler
+	/*!
+	  \param title title of the schedule
+	  \param text description text
+	  \param expiration indicates when schedule expire
+	  \param categoryID schedule category database ID
+	  \sa removeSchedule()
+	*/
+	void addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int categoryID = 0);
 	
-	//! Makes the connections between objects
+	//! \todo It's not implemented yet
+	void addSchedule(Schedule *s);
+	
+	//! Edits schedule
+	/*!
+	  \param id ID of schedule which we want to edit
+	  \param title title of schedule
+	  \param text schedule description text
+	  \param expiration new date and time of schedule expiration
+	  \param categoryID schedule category ID
+	*/
+	void editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int categoryID = 0);
+	
+	//! Makes connections between objects
 	void makeConnections();
 	
-	//! Generates XML file with schedules data to given file
+	//! Generates XML file with schedules to given file
 	/*!
-	  \param QFile file
+	  \param file file for export
 	*/
-	void generateXmlToFile(QFile *f);
+	void generateXmlToFile(QFile *file);
 	
-	//! Updates a list of schedules
+	//! Updates list of schedules
 	void refreshSchedules();
 	
 	
 public slots:
 	
-	//! Tells which schedules are timeouted
+	//! Checks schedules
+	/*!
+	  If some schedule timeouted it emites signal scheduleTimeouted(x) where "x" is schedule ID.
+	*/
 	void checkSchedules();
 	
+	//! Postpones schedule with given ID
+	/*!
+	  Postpone interval can be set in preferences.
+	  \param id schedule ID
+	*/
 	void postpone(int id);
 	
+	//! Marks schedule with given ID timeouted
+	/*!
+	  \param id schedule ID
+	*/
 	void markTimeouted(int id);
 
 signals:
@@ -102,11 +133,19 @@ signals:
 	
 private:
 
+	//! Pointer to item model
 	SchedulerModel *m_model;
+	
+	//! Pointer to item proxy model
 	SchedulerProxyModel *m_proxyModel;
+	
+	//! Pointer to item model delegate
 	ScheduleDelegate *m_itemDelegate;
 	
+	//! Pointer to timer
 	QTimer *m_scheduleTimer;
+	
+	//! Pointer to database instance
 	Database *m_sqlDb;
 	
 	//! Keeps the pairs of untimeouted schedules (<Database ID of schedule, Expiration datetime>)

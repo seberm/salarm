@@ -22,6 +22,7 @@
 #include "schedulerproxymodel.h"
 #include "scheduler.h"
 
+extern const int COLUMN_COUNT;
 
 SchedulerProxyModel::SchedulerProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 	
@@ -33,8 +34,7 @@ SchedulerProxyModel::SchedulerProxyModel(QObject *parent) : QSortFilterProxyMode
 
 bool SchedulerProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
 
-	extern const int columnCount;
-	for (int col = 0; col < columnCount; col++) {
+	for (int col = 0; col < COLUMN_COUNT; col++) {
 		
 		QModelIndex index = sourceModel()->index(sourceRow, col, sourceParent);
 		

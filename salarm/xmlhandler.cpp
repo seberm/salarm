@@ -74,10 +74,10 @@ bool XmlHandler::endElement(const QString &namespaceURI, const QString &localNam
 }
 
 
-bool XmlHandler::characters(const QString &ch) {
+bool XmlHandler::characters(const QString &characters) {
 
 
-	m_currentText = ch;
+	m_currentText = characters;
 	
 	return true;
 }

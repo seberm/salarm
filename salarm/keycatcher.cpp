@@ -29,7 +29,7 @@ KeyCatcher::KeyCatcher(QObject *parent) : QObject(parent) {
 }
 
 
-bool KeyCatcher::eventFilter(QObject *obj, QEvent *event) {
+bool KeyCatcher::eventFilter(QObject *object, QEvent *event) {
 	
 	if (event->type() == QEvent::KeyPress) {
 		
@@ -38,5 +38,5 @@ bool KeyCatcher::eventFilter(QObject *obj, QEvent *event) {
 		emit keyPressed(keyEvent->key());
 	}
 	
-	return QObject::eventFilter(obj, event);
+	return QObject::eventFilter(object, event);
 }

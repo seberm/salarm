@@ -41,6 +41,7 @@ namespace Ui {
 }
 
 
+//! It provides a main window of sAlarm
 class MainWindow : public QMainWindow {
 	
     Q_OBJECT
@@ -60,8 +61,15 @@ public:
 	
 protected:
 	
+	//! When language is changed the window is retranslated
 	void changeEvent(QEvent* e);
-	void closeEvent(QCloseEvent* e);
+	
+	//! Close event handler
+	/*!
+	  It is executed when trying to close main window.
+	  \param event pointer to QCloseEvent
+	*/
+	void closeEvent(QCloseEvent* event);
 
 	
 private:
@@ -79,9 +87,15 @@ private:
 	void makeConnections() const;
 
 	//! Reads the main application settings
+	/*!
+	  \sa writeSettings()
+	*/
 	void readSettings();
 	
 	//! Saves application and window settings	
+	/*!
+	  \sa readSettings()
+	*/
 	void writeSettings() const;
 
 	
@@ -107,7 +121,10 @@ private:
 	//! Pointer to toolbar
 	QToolBar *m_toolBar;
 	
+	//! Pointer to current date and time label
 	QLabel *m_lblCurrentDateTime;
+	
+	//! Pointer to application timer
 	QTimer *m_timer;
 	
 	//! Pointer to KeyCatcher
@@ -131,17 +148,49 @@ private slots:
 	//! Shows an about dialog
 	void about();
 	
+	//! Opens a browser with project bugzilla
 	void reportBug();
+	
+	//! Shows preferences dialog
 	void openPreferences();
+	
+	//! Exports schedules
+	/*!
+	  It opens a save dialog and saves a dump file with schedules and their category, expiration, title and description.
+	  \sa importSchedules()
+	*/
 	void exportSchedules();
+	
+	//! Imports schedules from file
+	/*!
+	  
+	  \sa exportSchedules()
+	*/
 	void importSchedules();
 	
-	//! Shows the dialog that helps simplify add the schedule into the SchedulesList
+	//! Shows the dialog that helps simplify add the schedule into schedules list
+	/*!
+	  \sa removeSchedule()
+	*/
 	void addSchedule();
-	void removeSchedule();
-	void showContextMenu(const QPoint &);
 	
-	void editSchedule(const QModelIndex &);
+	//! Removes a schedule from schedule list
+	/*!
+	  \sa addSchedule()
+	*/
+	void removeSchedule();
+	
+	//! Shows context menu on given point
+	/*!
+	  \param point
+	*/
+	void showContextMenu(const QPoint &point);
+	
+	//! Edits schedule on given index
+	/*!
+	  \param index of schedule which we want to edit
+	*/
+	void editSchedule(const QModelIndex &index);
 	
 	//! Overloaded edit-schedule function
 	void editSchedule();
@@ -151,7 +200,16 @@ private slots:
 	*/
 	void timeoutInformation(int);
 	
+	//! Updates pieces of information in status bar
+	/*!
+	  It is called whenever timer object emits timeout() signal
+	*/
 	void updateStatusBar();
+	
+	//! It's called whenever some key is pressed
+	/*!
+	  This slot is connected with KeyCatcher signal keyPressed(int).
+	*/
 	void keyPressed(int key);
 	
 };

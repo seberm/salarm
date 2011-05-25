@@ -33,24 +33,39 @@ namespace Ui {
     class OptionsDialog;
 }
 
+
+//! Provides preferences dialog
 class OptionsDialog : public QDialog {
 	
     Q_OBJECT
 	
 	public:
+	
+		//! Constructor
+		/*!
+		  \param parent pointer to parent object
+		*/
 		OptionsDialog(QWidget *parent = 0);
+		
+		//! Destructor
 		~OptionsDialog();
 	
-	signals:
-		
 	protected:
+		
+		//! When language is changed the window is retranslated
 		void changeEvent(QEvent *e);
 	
 	private:
+		
+		//! Pointer to Option dialog's UI
 		Ui::OptionsDialog *m_ui;
 	
 	private slots:
+		
+		//! Is called whenever database structure is changed
 		void databaseChanged(int);
+		
+		//! Is called when dialog is accepted
 		void dialogAccepted();
 		
 		//! Opens the color dialog and sets color of expired schedule in scheduler

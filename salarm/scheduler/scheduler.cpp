@@ -34,16 +34,15 @@ extern QSettings *g_settings;
 #include "database.h"
 
 // Columns definition
-Column DBID =		{ 0, "DBID" };
+Column DBID =			{ 0, "DBID" };
 Column CategoryID =	{ 1, "CategoryID" };
 Column Status =		{ 2, "" };
 Column Title =		{ 3, QObject::tr("Title") };
-Column Text =		{ 4, QObject::tr("Text") };
+Column Text =			{ 4, QObject::tr("Text") };
 Column Expiration =	{ 5, QObject::tr("Expiration") };
-Column Category =	{ 6, QObject::tr("Category") };
+Column Category =		{ 6, QObject::tr("Category") };
 
-int columnCount = 7;
-/////////////////////////////////////////////////////////////////////
+int COLUMN_COUNT = 7;
 
 
 Scheduler::Scheduler(Database *sqlDb, QWidget *parent) : QTreeView(parent) {
@@ -279,7 +278,7 @@ void Scheduler::postpone(int id) {
 }
 
 
-void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int category) {
+void Scheduler::addSchedule(const QString &title, const QString &text, const QDateTime &expiration, int categoryID) {
 	
 	if (title.isEmpty()) {
 		
@@ -305,7 +304,7 @@ void Scheduler::addSchedule(const QString &title, const QString &text, const QDa
 	query.bindValue(0, title.simplified());
 	query.bindValue(1, text.simplified());
 	query.bindValue(2, expiration);
-	query.bindValue(3, category);
+	query.bindValue(3, categoryID);
 	
 	if (!query.exec())
 		qWarning() << query.lastError();
@@ -316,12 +315,12 @@ void Scheduler::addSchedule(const QString &title, const QString &text, const QDa
 
 void Scheduler::addSchedule(Schedule *s) {
 	
-//! \todo	
+	//! \todo It's neccessary to edit Schedule class and adapt it	
 	//addSchedule(s->title(), s->text(), s->expiration(), s->category());
 }
 
 
-void Scheduler::editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int category) {
+void Scheduler::editSchedule(int id, const QString &title, const QString &text, const QDateTime &expiration, int categoryID) {
 	
 	QSqlQuery query(m_sqlDb->sqlDb());
 	
@@ -335,7 +334,7 @@ void Scheduler::editSchedule(int id, const QString &title, const QString &text, 
 	query.bindValue(0, title.simplified());
 	query.bindValue(1, text.simplified());
 	query.bindValue(2, expiration);
-	query.bindValue(3, category);
+	query.bindValue(3, categoryID);
 	query.bindValue(4, id);
 	
 	if (!query.exec())
@@ -345,7 +344,7 @@ void Scheduler::editSchedule(int id, const QString &title, const QString &text, 
 }
 
 
-void Scheduler::generateXmlToFile(QFile *f) {
+void Scheduler::generateXmlToFile(QFile *file) {
 	
 	QString sql("SELECT Schedule.id AS DBID, Schedule.title, Schedule.text, Schedule.datetime, ScheduleCategory.name, ScheduleCategory.id AS categoryID, Schedule.timeouted" \
 				" FROM Schedule" \
@@ -364,13 +363,13 @@ void Scheduler::generateXmlToFile(QFile *f) {
 	int dbCategoryID = query.record().indexOf("categoryID");
 	int dbTimeouted = query.record().indexOf("timeouted");
 
-	if (!f->open(QFile::WriteOnly)) {
+	if (!file->open(QFile::WriteOnly)) {
 		
 		QMessageBox::warning(this, tr("Open error"), tr("Open file for write failed"));
 		return;
 	}
 	
-	QTextStream xml(f);
+	QTextStream xml(file);
 	xml.setCodec("utf-8");
 	
 	// Writes XML header
@@ -378,7 +377,7 @@ void Scheduler::generateXmlToFile(QFile *f) {
 	
 	while (query.next()) {
 		
-//! @todo It's necessary to escape variables with Qt::escape - it's not working!
+//! @todo It's necessary to escape variables with Qt::escape - it's not working -> Why?
 		xml << "<schedule id=\"" << query.value(dbDBID).toInt() << "\" category=\"" << query.value(dbCategoryID).toInt() << "\" timeouted=\"" << query.value(dbTimeouted).toInt() << "\">\n"
 		    << "	<title>" << query.value(dbTitle).toString() << "</title>\n"
 			<< "	<category>" << query.value(dbCategoryName).toString() << "</category>\n"
@@ -389,7 +388,7 @@ void Scheduler::generateXmlToFile(QFile *f) {
 	
 	xml << "</schedules>";
 	
-	f->close();
+	file->close();
 	
 	QMessageBox::information(this, tr("XML Generated"), tr("XML was successfuly generated"));
 }

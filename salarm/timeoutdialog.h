@@ -36,13 +36,15 @@ namespace Ui {
 namespace Phonon {
 	
 	class MediaObject;
-	//class MediaSource;
-	//class AudioOutput;
 }
 
 using namespace Phonon;
 
 
+//! Dialog which indicates expiration of schedule
+/*!
+  This dialog shows title and description of schedule. It's possible to confirm or postpone the Schedule. Postpone interval is defined in preferences.
+*/
 class TimeoutDialog : public QDialog {
     
 	Q_OBJECT
@@ -81,19 +83,34 @@ private:
 	//! Datetime information about schedule timeout
 	QDateTime m_expiration;
 	
-	//! It plays schedule timeout sound
+	//! Pointer to MediaObjecst
+	/*!
+	  This object plays schedule timeout sound
+	*/
 	MediaObject *m_player;
 
 	
 signals:
 	
+	//! Is emmited when the schedule is postponed
 	void postponed(int);
+	
+	//! Is emmited when the schedule is confirmed
 	void confirmed(int);
 	
 	
 private slots:
 	
+	//! It's called when confirm button is clicked
+	/*!
+	  \sa confirmed()
+	*/
 	void confirm();
+	
+	//! It's called when postpone button is clicked
+	/*!
+	  \sa postponed();
+	*/
 	void postpone();
 	
 };

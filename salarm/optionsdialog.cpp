@@ -166,7 +166,7 @@ void OptionsDialog::dialogAccepted() {
 
 void OptionsDialog::databaseChanged(int itemIndex) {
 
-	if (itemIndex == -1)
+	if (itemIndex < 0)
 		return;
 	
 	int itemData = m_ui->comboBoxDatabases->itemData(itemIndex).toInt();

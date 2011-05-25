@@ -35,16 +35,30 @@
 #cmakedefine SALARM_VERSION_MAJOR "${SALARM_VERSION}"
 
 
+//! sAlarm version
 const QString VERSION = "0.40.0";
+
+//! sAlarm complete program name
 const QString NAME = "sAlarm Scheduler";
+
+//! sAlarm short UNIX name
 const QString UNIX_NAME = "salarm";
+
+//! Project homepage
 const QString HOMEPAGE = "http://salarm.seberm.com";
+
+//! Project bugzilla
 const QString BUGZILLA = "http://bugs.seberm.com";
 
-// Default configuration file definition
+//! Configuration directory
 const QString CONF_DIR = QDir::homePath().append(QDir::separator()).append(".config");
+
+//! Configuration file
 const QString CONFIG_FILE = QString(CONF_DIR).append(QDir::separator()).append("salarm").append(QDir::separator()).append("main.conf");
+
+//! SQLite database file
 const QString SQLITE_DB_FILE = QString(CONF_DIR).append(QDir::separator()).append("salarm").append(QDir::separator()).append("schedules.db");
+
 
 
 #endif // CONSTANTS_H
