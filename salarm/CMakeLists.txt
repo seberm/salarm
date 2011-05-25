@@ -140,23 +140,23 @@ if(UNIX)
 			DESTINATION ${INSTALL_DATA_DIR}/applications
 	)
 
-	install(FILES ./resources/img/icons/16x16/salarm.png
+	install(FILES ./resources/img/desktopIcons/16x16/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/16x16/apps
 	)
 
-	install(FILES ./resources/img/icons/32x32/salarm.png
+	install(FILES ./resources/img/desktopIcons/32x32/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/32x32/apps
 	)
 
-	install(FILES ./resources/img/icons/64x64/salarm.png
+	install(FILES ./resources/img/desktopIcons/64x64/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/64x64/apps
 	)
 
-	install(FILES ./resources/img/icons/128x128/salarm.png
+	install(FILES ./resources/img/desktopIcons/128x128/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/128x128/apps
 	)
 
-	install(FILES ./resources/img/icons/256x256/salarm.png
+	install(FILES ./resources/img/desktopIcons/256x256/salarm.png
 			DESTINATION ${INSTALL_DATA_DIR}/icons/hicolor/256x256/apps
 	)
 endif(UNIX)
