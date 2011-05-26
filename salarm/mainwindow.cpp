@@ -172,11 +172,6 @@ void MainWindow::readSettings() {
 		restoreGeometry(g_settings->value("Geometry", saveGeometry()).toByteArray());
 		restoreState(g_settings->value("State", saveState()).toByteArray());
 	g_settings->endGroup();
-	
-	
-	g_settings->beginGroup("App");
-		m_canClose = g_settings->value("CanClose", false).toBool();
-	g_settings->endGroup();
 }
 
 
@@ -295,7 +290,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 	
 	if (isVisible()) {
 		
-		if (m_canClose) {
+		if (g_settings->value("App/CanClose", false).toBool()) {
 			event->accept();
 			qApp->quit();
 		} else {

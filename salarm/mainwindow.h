@@ -109,9 +109,6 @@ private:
 	//! Pointer to main window's UI (it's generated from mainwindow.ui)
 	Ui::MainWindow *ui;
 	
-	//! Indicates if the user can close the MainWindow by clicking on close
-	bool m_canClose;
-	
 	//! Pointer to application's tray icon
 	QSystemTrayIcon *m_trayIcon;
 	
