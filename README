@@ -1,9 +1,8 @@
 # sAlarm
 
-> * Author: Sabart Otto <seberm[at]gmail[dot]com>
+> * Author: Sabart Otto <seberm[at]seberm[dot]com>
 > * Jabber: seberm[at]jabber[dot]cz
 > * Version: 0.4
-> * Contributors: Nobody (only for a while I hope)
 > * Web: http://salarm.seberm.com
 
 
@@ -11,7 +10,7 @@
 > sAlarm is a scheduler written in C++, with General public license version 3 used.
 
 
-#### Copyright © 2009-2010 Sabart Otto <seberm[at]gmail[dot]com>
+#### Copyright © 2009-2010 Sabart Otto <seberm[at]seberm[dot]com>
 
 
 ## CONTENT
@@ -41,5 +40,4 @@ If you find something you think that is a bug, feel free to contact me (e-mail i
 ### 4) CONTRIBUTING
 You can feel free to contribute to sAlarm.
 You can checkout current sources from gitorious.org
-> git clone git://gitorious.org/salarm/salarm.git
-> git clone http://git.gitorious.org/salarm/salarm.git
+> git clone https://github.com/seberm/salarm.git
